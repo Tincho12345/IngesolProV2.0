@@ -1,0 +1,242 @@
+﻿@model WebIngesol.Models.LoginRequest
+
+@{
+    ViewData["Title"] = "Login";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - Ingesol</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: url('/images/login.webp') no-repeat center center fixed;
+            background-size: cover;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+        }
+
+        .login-container {
+            background-color: rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 2.5rem;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            color: white;
+        }
+
+            .login-container h2 {
+                margin-bottom: 1.5rem;
+                text-align: center;
+                color: white;
+            }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: white;
+            font-weight: 500;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            transition: border-color 0.3s ease;
+            background-color: #fff;
+        }
+
+            input:focus {
+                border-color: #457b9d;
+                outline: none;
+            }
+
+        .btn-primary, .btn-secondary {
+            border: 2px solid white !important;
+            border-radius: 25px;
+            font-weight: 500;
+            background-color: transparent !important;
+            color: white;
+            padding: 0.8rem;
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+            .btn-primary:hover {
+                background-color: #0056b3 !important;
+                color: white !important;
+                border-color: white !important;
+            }
+
+            .btn-secondary:hover {
+                background-color: #999 !important;
+                color: white !important;
+                border-color: white !important;
+            }
+
+            .btn-primary i, .btn-secondary i {
+                transition: transform 0.3s ease;
+            }
+
+            .btn-primary:hover i, .btn-secondary:hover i {
+                transform: scale(1.3);
+                color: white !important;
+            }
+
+            .btn-primary:active, .btn-secondary:active {
+                animation: bounce 0.2s;
+                box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+            }
+
+        .alert {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 0.75rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .text-danger {
+            color: #ff6b6b;
+            font-size: 0.85rem;
+        }
+
+        .footer-text {
+            text-align: center;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: #ccc;
+        }
+
+        #togglePassword {
+            position: absolute;
+            top: 55%;
+            right: 15px;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #888;
+            margin-top: 11px;
+        }
+
+        .btn-group-login {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+            .btn-group-login .btn {
+                width: 48%;
+            }
+        .btn-register {
+            margin-top: 1.5rem;
+            width: 100%;
+            font-weight: 600;
+            text-decoration: none;
+            color: white;
+            display: inline-block;
+            text-align: center;
+        }
+            .btn-register:hover {
+                text-decoration: underline;
+                color: #457b9d;
+            }
+    </style>
+</head>
+<body>
+    <form asp-controller="Home" asp-action="Login" method="post" class="login-container" novalidate>
+        <h2>Iniciar Sesión</h2>
+        @if (TempData["error"] != null)
+        {
+            <div class="alert">@TempData["error"]</div>
+        }
+
+        <div class="form-group">
+            <label asp-for="NombreUsuario"></label>
+            <input asp-for="NombreUsuario" class="form-control" autocomplete="username" />
+            <span asp-validation-for="NombreUsuario" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Password"></label>
+            <input asp-for="Password" class="form-control" type="password" id="passwordInput" placeholder="Password" autocomplete="current-password" />
+            <i class="fas fa-eye" id="togglePassword" title="Mostrar/Ocultar contraseña"></i>
+            <span asp-validation-for="Password" class="text-danger"></span>
+        </div>
+
+        <div class="btn-group-login">
+            <a href="@Url.Action("Index", "Home")"
+               class="btn btn-secondary"
+               style="text-decoration: none !important;">
+                <i class="fa-notdog-duo fa-solid fa-ban"></i> Cancelar
+            </a>
+            <button type="submit" class="btn btn-primary">
+                <i class="fa-notdog fa-solid fa-arrow-right-from-bracket"></i>
+                <span style="font-size: 1.1rem;">Ingresar</span>
+            </button>
+        </div>
+
+        <a href="@Url.Action("Register", "Home")" class="btn-register">
+            ¿No tenés cuenta? Registrarse
+        </a>
+
+        <div class="footer-text">
+            &copy; 2025 Ingesol. Todos los derechos reservados.
+        </div>
+    </form>
+
+    <script>
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('passwordInput');
+
+        togglePassword.addEventListener('click', function () {
+            const isPasswordVisible = passwordInput.getAttribute('type') === 'text';
+            passwordInput.setAttribute('type', isPasswordVisible ? 'password' : 'text');
+
+            // Alternar icono
+            this.classList.toggle('fa-eye', isPasswordVisible);
+            this.classList.toggle('fa-eye-slash', !isPasswordVisible);
+        });
+
+        // Inicializa el ícono correctamente
+        passwordInput.addEventListener('input', () => {
+            if (passwordInput.getAttribute('type') === 'password') {
+                togglePassword.classList.add('fa-eye');
+                togglePassword.classList.remove('fa-eye-slash');
+            }
+        });
+    </script>
+
+</body>
+</html>

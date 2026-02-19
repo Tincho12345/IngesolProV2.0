@@ -1,0 +1,63 @@
+﻿@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Valor Movilidad";
+    ViewData["Titles"] = "Valores Movilidad";
+    var ruta = ViewContext.RouteData.Values["controller"]?.ToString();
+}
+
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+
+<div class="container-fluid py-2">
+    <div class="row mb-1 mb-md-2"></div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="table-responsive">
+                <table id="tblList" class="table table-striped table-bordered nowrap" style="width:100%">
+                    <thead class="table-dark"> <tr id="tableHeaders"> </tr> </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Crear/Editar Área Técnica -->
+<div class="modal fade" id="createEditModal" tabindex="-1" aria-labelledby="createEditModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form id="formCrearEditar">
+            @Html.AntiForgeryToken() <!-- 🔐 MOVIDO AQUÍ -->
+            <input type="hidden" id="createEditEntityId" name="id" />
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createEditModalLabel">Crear/Editar @ViewData["Title"]</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body" id="dynamicFormFields">
+                    <!-- Campos dinámicos -->
+                </div>
+                @await Html.PartialAsync("_ModalFooter", "success")
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        window._ruta = '@ruta';
+        window._mostrarColumnasDefault = false;
+        window._viewTitle = '@ViewData["Title"]';
+        window._viewTitles = '@ViewData["Titles"]';
+        window._viewIcon = 'fas fa-car-side';
+
+        window._columnasPersonalizadas = [
+            { data: 'tipoMovilidadId', label: 'Tipo de Movilidad:', type: 'search-youtube', includeInForm: true, includeInTable: false },
+            { data: 'fechaDesde', label: 'Fecha Desde', type: 'date', includeInForm: true, includeInTable: true, render: data => data ? new Date(data).toLocaleDateString('es-AR') : '' },
+            { data: 'tipoMovilidadNombre', label: 'Tipo de Movilidad', type: 'string', includeInForm: false, includeInTable: true },
+            { data: 'nombre', label: 'Descripción', type: 'string', includeInForm: false, includeInTable: true },
+            { data: 'valor', label: 'Valor Movilidad', type: 'number', includeInForm: true, includeInTable: true, render: data => data != null ? data.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' }) : '', className: 'text-end fuente-grande' }
+        ];
+
+    </script>
+
+    <script type="module" src="/js/main.js"></script>
+}

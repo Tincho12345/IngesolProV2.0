@@ -1,0 +1,123 @@
+﻿@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Orden";
+    ViewData["Titles"] = "Ordenes";
+    var ruta = ViewContext.RouteData.Values["controller"]?.ToString() ?? "Materiales";
+}
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery AntiforgeryService
+
+<div class="container-fluid py-2">
+    <div class="row mb-1 mb-md-2"></div>
+
+    <div class="row">
+        <div class="col-12">
+            <!-- Spinner moderno, oculto por defecto -->
+            <div id="spinnerCarga" class="text-center py-4" style="display: none;">
+                <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+                    <span class="visually-hidden">Cargando...</span>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table id="tblList" class="table table-striped table-bordered nowrap" style="width:100%">
+                    <thead class="table-dark">
+                        <tr id="tableHeaders">
+                            <th>@ViewData["Titles"]</th>
+                            <!-- Se agregan dinámicamente más columnas desde JS -->
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Modal Crear/Editar Material -->
+<div class="modal fade" id="createEditModal" tabindex="-1" aria-labelledby="createEditModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form id="formCrearEditar" enctype="multipart/form-data">
+            @Html.AntiForgeryToken()
+            <input type="hidden" id="createEditEntityId" name="id" />
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createEditModalLabel">Crear/Editar @ViewData["Title"]</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body custom-scroll-body" id="dynamicFormFields">
+                    <!-- Campos dinámicos generados por JS -->
+                </div>
+                @await Html.PartialAsync("_ModalFooter", "success")
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        window._ruta = '@ruta';
+        window._mostrarColumnasDefault = false;
+        window._viewTitle = '@ViewData["Title"]';
+        window._viewTitles = '@ViewData["Titles"]';
+        window._viewIcon = "fas fa-tasks";
+        
+        // 🧩 Enum: Estado del Proyecto con emojis y valores numéricos
+        window._estadoEnum = [
+            { value: 0, label: '📂 Abierta' },
+            { value: 1, label: '⏳ En Curso' },
+            { value: 2, label: '🔒 Cerrada' },
+            { value: 3, label: '✅ Finalizada' },
+            { value: 4, label: '❌ Anulada' }
+        ];
+
+        // 🗂️ Proyectos obtenidos dinámicamente
+        window._proyectos = [];
+
+        // Cargar proyectos desde el backend
+        async function cargarProyectos() {
+            const response = await fetch('/Ordenes/ObtenerProyecto');
+            if (response.ok) {
+                window._proyectos = await response.json();
+            }
+        }
+
+        // 📋 Columnas para formulario y tabla
+        window._columnasPersonalizadas = [
+            { data: 'numeroOrden', label: 'Nº Orden', type: 'number', includeInForm: true, align: 'center', includeInTable: true },
+            { data: 'nombre', label: 'Nombre Orden', type: 'string', includeInForm: true, includeInTable: true, width: '12%' },
+            { data: 'plantaNombre', label: 'Planta Industrial', type: 'string', includeInForm: false, includeInTable: true, width: '12%' },
+            { data: 'areaNombre', label: 'Area', type: 'string', includeInForm: false, includeInTable: true, width: '12%' },
+            { data: 'responsableNombre', label: 'Responsable', type: 'string', includeInForm: false, includeInTable: true },
+            { data: 'proyectoId', label: 'Proyecto', type: 'search-youtube', includeInForm: true, includeInTable: false },
+            { data: 'responsableId', label: 'Responsable', type: 'search-youtube', includeInForm: true, includeInTable: false },
+            { data: 'fechaInicio', label: 'Fecha Inicio', type: 'date', includeInForm: true, includeInTable: true },
+            { data: 'fechaFin', label: 'Fecha Fin', type: 'date', includeInForm: true, includeInTable: true },
+            {
+              data: 'descripcionOrden',
+              label: 'Descripcion',
+              type: 'string',
+              includeInForm: true,
+              includeInTable: true,
+              width: '20%',                // 👉 ancho fijo del 20%
+              className: 'descripcion-wrap' // 👉 clase para aplicar estilos de ajuste
+            },
+
+            {
+                data: 'estado',
+                label: 'Estado Or.',
+                type: 'dropdown',
+                width: '8%',
+                includeInForm: true,
+                includeInTable: true,
+                options: window._estadoEnum,
+                render: function (data) {
+                    const estado = window._estadoEnum.find(e => e.value === data);
+                    return estado ? estado.label : data;
+                }
+            },
+        ];
+    </script>
+
+    <!-- 🚀 Importa el script principal que inicia toda la lógica -->
+    <script type="module" src="/js/main.js"></script>
+}

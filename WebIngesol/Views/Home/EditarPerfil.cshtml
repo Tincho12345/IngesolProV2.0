@@ -1,0 +1,117 @@
+﻿@model WebIngesol.Models.EditarPerfilDto
+
+@{
+    ViewData["Title"] = "Editar Perfil";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Editar Perfil - Ingesol</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/registro.css" />
+</head>
+
+<body>
+    <form asp-controller="Home" asp-action="EditarPerfil" method="post" enctype="multipart/form-data" class="register-container" autocomplete="off">
+        @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+
+        <div class="form-content">
+            <div class="form-section">
+                <h2 style="color: white; text-align: center; margin-bottom: 0.5rem;">Editar mis datos</h2>
+
+                <div class="form-row">
+                    <div class="floating-group">
+                        <input asp-for="FirstName" class="floating-input" placeholder=" " />
+                        <label asp-for="FirstName" class="floating-label">Nombre/s</label>
+                        <span asp-validation-for="FirstName" class="text-danger"></span>
+                    </div>
+
+                    <div class="floating-group">
+                        <input asp-for="LastName" class="floating-input" placeholder=" " />
+                        <label asp-for="LastName" class="floating-label">Apellido/s</label>
+                        <span asp-validation-for="LastName" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="floating-group">
+                        <input asp-for="UserName" class="floating-input" placeholder=" " readonly />
+                        <label asp-for="UserName" class="floating-label">Nombre Usuario</label>
+                        <span asp-validation-for="UserName" class="text-danger"></span>
+                    </div>
+
+                    <div class="floating-group">
+                        <input asp-for="Email" type="email" class="floating-input" placeholder=" " />
+                        <label asp-for="Email" class="floating-label">Correo electrónico</label>
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="floating-group">
+                        <input asp-for="Password" type="password" class="floating-input" placeholder=" " autocomplete="new-password" />
+                        <label asp-for="Password" class="floating-label">Nueva Contraseña (opcional)</label>
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+
+                    <div class="floating-group">
+                        <input asp-for="ConfirmPassword" type="password" class="floating-input" placeholder=" " autocomplete="new-password" />
+                        <label asp-for="ConfirmPassword" class="floating-label">Confirmar Nueva Contraseña</label>
+                        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="photo-section">
+                <label asp-for="UserPic">Foto de perfil</label>
+                <input asp-for="UserPic" type="file" accept="image/*" id="userPicInput" />
+                <span asp-validation-for="UserPic" class="text-danger"></span>
+
+                @if (!string.IsNullOrEmpty(Model.ImagePath))
+                {
+                    <img id="imagePreview" src="@Model.ImagePath" alt="Vista previa de la foto" style="max-width: 100%; height: auto; display: block;" />
+                }
+                else
+                {
+                    <img id="imagePreview" src="#" alt="Vista previa de la foto" style="max-width: 100%; height: auto; display: none;" />
+                }
+            </div>
+        </div>
+
+        <div class="button-row">
+            <a href="@Url.Action("Index", "Home")" class="btn btn-secondary">
+                <i class="fas fa-times" style="margin-right: 12px;"></i> Cancelar
+            </a>
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save" style="margin-right: 12px;"></i> Guardar Cambios
+            </button>
+        </div>
+
+        <div class="footer-text">
+            &copy; 2025 Ingesol. Todos los derechos reservados.
+        </div>
+    </form>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        document.getElementById('userPicInput').addEventListener('change', function (event) {
+            const [file] = event.target.files;
+            const preview = document.getElementById('imagePreview');
+            if (file) {
+                preview.src = URL.createObjectURL(file);
+                preview.style.display = 'block';
+                preview.onload = () => URL.revokeObjectURL(preview.src);
+            }
+        });
+    </script>
+
+    <partial name="_ValidationScriptsPartial" />
+</body>
+</html>

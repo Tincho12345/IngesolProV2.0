@@ -1,0 +1,1066 @@
+﻿@{
+    Layout = User.Identity?.IsAuthenticated == true
+        ? "~/Views/Shared/_Layout.cshtml"
+        : "~/Views/Shared/_LayoutLanding.cshtml";
+    ViewData["Title"] = "Home";
+}
+
+<!-- HERO + TARJETAS ACOPLADAS -->
+<section id="hero" class="hero section dark-background">
+    <!-- HERO CONTENT -->
+    <div class="hero-content">
+        <div class="container position-relative">
+            <div class="row justify-content-center text-center">
+                <div class="col-lg-8">
+
+                    <div class="hero-glass-card" data-aos="fade-up">
+                        <h1 data-aos="fade-up" data-aos-delay="100">
+                            Soluciones Integrales en Ingeniería Industrial
+                        </h1>
+
+                        <p data-aos="fade-up" data-aos-delay="200">
+                            En INGESOL desarrollamos proyectos de ingeniería, confección de planos, diseño y ejecución de montajes electromecánicos con calidad y seguridad.
+                            Realizamos instalaciones industriales, movimiento de cargas, inspecciones técnicas y trabajos especializados para optimizar procesos productivos y ampliar la capacidad de tus instalaciones.
+                        </p>
+
+                        <div class="hero-buttons" data-aos="fade-up" data-aos-delay="300">
+                            <a href="#services" class="btn btn-primary">Nuestros Servicios</a>
+                            <a href="#contact" class="btn btn-outline">Contáctanos</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TARJETAS -->
+    <div class="glass-cards-section">
+        <div class="container">
+            <div class="row text-center justify-content-center">
+
+                <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="100">
+                    <div class="glass-card h-100">
+                        <div class="glass-card-body">
+                            <i class="fas fa-boxes fa-3x mb-3 text-primary"></i>
+                            <h5>Maestro Materiales</h5>
+                            <p>Gestioná familias, clases y tipos de materiales.</p>
+                            <a href="/Materiales/Index" class="btn btn-outline-warning btn-sm">
+                                Ver más
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="200">
+                    <div class="glass-card h-100">
+                        <div class="glass-card-body">
+                            <i class="fas fa-globe-americas fa-3x mb-3 text-success"></i>
+                            <h5>Datos Geográficos</h5>
+                            <p>Administrá países, provincias, ciudades y más.</p>
+                            <a href="/Paises/Index" class="btn btn-outline-warning btn-sm">
+                                Ver más
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="300">
+                    <div class="glass-card h-100">
+                        <div class="glass-card-body">
+                            <i class="fas fa-users-cog fa-3x mb-3 text-warning"></i>
+                            <h5>Gestión Usuarios</h5>
+                            <p>Gestioná usuarios, roles y accesos al sistema.</p>
+                            <a href="/Usuarios/Index" class="btn btn-outline-warning btn-sm">
+                                Ver más
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</section>
+
+<!-- About Section -->
+<section id="about" class="hero section dark-background">
+    <!-- CONTENT -->
+    <div class="hero-content">
+        <div class="container position-relative">
+
+            <!-- Section Title -->
+            <div class="row justify-content-center text-center mb-5">
+                <div class="col-lg-8">
+                    <div class="hero-glass-card" data-aos="fade-up">
+                        <span class="subtitle">Sobre Nosotros</span>
+                        <h2>INGESOL Ingeniería y Soluciones</h2>
+                        <p>
+                            Somos una empresa especializada en ingeniería industrial y servicios técnicos,
+                            orientada a brindar soluciones eficientes, seguras y adaptadas a las necesidades
+                            de cada cliente.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- About Content -->
+            <div class="row align-items-center justify-content-center">
+
+                <!-- Texto -->
+                <div class="col-lg-6 mb-4" data-aos="fade-right" data-aos-delay="200">
+                    <div class="hero-glass-card text-start">
+                        <h3>Compromiso, experiencia y mejora continua</h3>
+                        <p class="lead">
+                            En INGESOL acompañamos a industrias y empresas en el desarrollo,
+                            ampliación y optimización de sus procesos productivos.
+                        </p>
+                        <p>
+                            Realizamos proyectos de ingeniería, montajes electromecánicos,
+                            instalaciones industriales, movimiento de cargas e inspecciones técnicas,
+                            priorizando la calidad, la seguridad y el cumplimiento de normas.
+                        </p>
+
+                        <!-- Stats -->
+                        <div class="stats-wrapper d-flex justify-content-between text-center mt-4">
+                            <div class="stat-item">
+                                <span class="number purecounter"
+                                      data-purecounter-start="0"
+                                      data-purecounter-end="8"
+                                      data-purecounter-duration="1"></span>
+                                <span class="label">Años de experiencia</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="number purecounter"
+                                      data-purecounter-start="0"
+                                      data-purecounter-end="150"
+                                      data-purecounter-duration="1"></span>
+                                <span class="label">Proyectos realizados</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="number purecounter"
+                                      data-purecounter-start="0"
+                                      data-purecounter-end="12"
+                                      data-purecounter-duration="1"></span>
+                                <span class="label">Profesionales</span>
+                            </div>
+                        </div>
+
+                        <div class="hero-buttons mt-4">
+                            <a href="#services" class="btn btn-primary">Ver Servicios</a>
+                            <a href="#contact" class="btn btn-outline">Contactanos</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Imagen -->
+                <div class="col-lg-6 mb-4" data-aos="fade-left" data-aos-delay="300">
+                    <div class="hero-glass-card">
+                        <img src="~/assets/img/about/about.jpg"
+                             alt="INGESOL Ingeniería"
+                             class="img-fluid rounded mb-3">
+
+                        <blockquote class="mb-0">
+                            “La excelencia no es un acto, es un hábito.
+                            Trabajamos cada día para mejorar procesos, resultados y confianza.”
+                        </blockquote>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</section>
+
+<!-- Clients Section -->
+<section id="clients" class="hero section dark-background">
+    <!-- CONTENT -->
+    <div class="hero-content">
+        <div class="container position-relative">
+
+            <!-- Section Title -->
+            <div class="row justify-content-center text-center mb-5">
+                <div class="col-lg-8">
+                    <div class="hero-glass-card" data-aos="fade-up">
+                        <span class="subtitle">Nuestros Clientes</span>
+                        <h2>Empresas que confían en INGESOL</h2>
+                        <p>
+                            Trabajamos junto a organizaciones de distintos sectores,
+                            brindando soluciones de ingeniería confiables, seguras y eficientes.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Clients Logos -->
+            <div class="row justify-content-center gy-4">
+
+                <div class="col-xl-2 col-lg-3 col-md-4 col-6" data-aos="zoom-in" data-aos-delay="100">
+                    <div class="glass-card h-100 d-flex align-items-center justify-content-center p-3">
+                        <img src="~/assets/img/clients/Captura.webp" class="img-fluid" alt="Cliente 1">
+                    </div>
+                </div>
+
+                <div class="col-xl-2 col-lg-3 col-md-4 col-6" data-aos="zoom-in" data-aos-delay="150">
+                    <div class="glass-card h-100 d-flex align-items-center justify-content-center p-3">
+                        <img src="~/assets/img/clients/clients-2.webp" class="img-fluid" alt="Cliente 2">
+                    </div>
+                </div>
+
+                <div class="col-xl-2 col-lg-3 col-md-4 col-6" data-aos="zoom-in" data-aos-delay="200">
+                    <div class="glass-card h-100 d-flex align-items-center justify-content-center p-3">
+                        <img src="~/assets/img/clients/clients-3.webp" class="img-fluid" alt="Cliente 3">
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</section>
+
+<!-- Features Section -->
+<section id="features" class="hero section dark-background">
+    <!-- CONTENT -->
+    <div class="hero-content">
+        <div class="container position-relative">
+
+            <!-- Section Title -->
+            <div class="row justify-content-center text-center mb-5">
+                <div class="col-lg-8">
+                    <div class="hero-glass-card" data-aos="fade-up">
+                        <span class="subtitle">Servicios</span>
+                        <h2>Capacidades y Soluciones de INGESOL</h2>
+                        <p>
+                            Acompañamos a la industria con soluciones de ingeniería confiables,
+                            orientadas a la eficiencia operativa, la seguridad y la mejora continua.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="tabs-wrapper">
+
+                <!-- Tabs Header -->
+                <div class="tabs-header mb-4" data-aos="fade-up" data-aos-delay="200">
+                    <ul class="nav nav-tabs justify-content-center">
+
+                        <li class="nav-item">
+                            <a class="nav-link active show" data-bs-toggle="tab" data-bs-target="#features-tab-1">
+                                <div class="tab-content-preview">
+                                    <span class="tab-number">01</span>
+                                    <div class="tab-text">
+                                        <h6>Ingeniería</h6>
+                                        <small>Proyectos & planos</small>
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="tab" data-bs-target="#features-tab-2">
+                                <div class="tab-content-preview">
+                                    <span class="tab-number">02</span>
+                                    <div class="tab-text">
+                                        <h6>Montajes</h6>
+                                        <small>Electromecánicos</small>
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+
+                    </ul>
+                </div>
+
+                <!-- Tabs Content -->
+                <div class="tab-content" data-aos="fade-up" data-aos-delay="300">
+
+                    <!-- TAB 1 -->
+                    <div class="tab-pane fade active show" id="features-tab-1">
+                        <div class="row align-items-center">
+
+                            <div class="col-lg-6 mb-4">
+                                <div class="hero-glass-card text-start">
+                                    <h3>Proyectos de Ingeniería</h3>
+                                    <p>
+                                        Desarrollamos proyectos integrales de ingeniería industrial,
+                                        confección de planos técnicos y documentación conforme a normas vigentes.
+                                    </p>
+
+                                    <div class="feature-points">
+                                        <div class="point-item">
+                                            <i class="bi bi-arrow-right"></i>
+                                            <span>Ingeniería básica y de detalle</span>
+                                        </div>
+                                        <div class="point-item">
+                                            <i class="bi bi-arrow-right"></i>
+                                            <span>Planos y documentación técnica</span>
+                                        </div>
+                                        <div class="point-item">
+                                            <i class="bi bi-arrow-right"></i>
+                                            <span>Asesoramiento técnico especializado</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6 mb-4">
+                                <div class="hero-glass-card">
+                                    <img src="~/assets/img/features/features-2.webp" class="img-fluid rounded" alt="">
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- TAB 2 -->
+                    <div class="tab-pane fade" id="features-tab-2">
+                        <div class="row align-items-center">
+
+                            <div class="col-lg-6 mb-4">
+                                <div class="hero-glass-card text-start">
+                                    <h3>Montajes Electromecánicos</h3>
+                                    <p>
+                                        Ejecutamos montajes electromecánicos industriales,
+                                        garantizando calidad, seguridad y cumplimiento de plazos.
+                                    </p>
+
+                                    <div class="feature-points">
+                                        <div class="point-item">
+                                            <i class="bi bi-arrow-right"></i>
+                                            <span>Montaje de estructuras y equipos</span>
+                                        </div>
+                                        <div class="point-item">
+                                            <i class="bi bi-arrow-right"></i>
+                                            <span>Movimiento y posicionamiento de cargas</span>
+                                        </div>
+                                        <div class="point-item">
+                                            <i class="bi bi-arrow-right"></i>
+                                            <span>Puesta en marcha y pruebas</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6 mb-4">
+                                <div class="hero-glass-card">
+                                    <img src="~/assets/img/features/features-4.webp" class="img-fluid rounded" alt="">
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</section>
+
+<!-- Features Cards Section -->
+<section id="features-cards" class="hero section dark-background">
+    <!-- CONTENT -->
+    <div class="hero-content">
+        <div class="container position-relative">
+
+            <!-- Section Title -->
+            <div class="row justify-content-center text-center mb-5">
+                <div class="col-lg-8">
+                    <div class="hero-glass-card" data-aos="fade-up">
+                        <span class="subtitle">Valor Diferencial</span>
+                        <h2>Por qué elegir INGESOL</h2>
+                        <p>
+                            Combinamos experiencia técnica, planificación y seguridad
+                            para brindar soluciones industriales confiables y eficientes.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Feature Cards -->
+            <div class="row g-4 justify-content-center">
+
+                <div class="col-lg-4" data-aos="fade-up" data-aos-delay="150">
+                    <div class="glass-card h-100">
+                        <div class="glass-card-body text-center">
+                            <i class="bi bi-diagram-3 fa-3x mb-3 text-primary"></i>
+                            <h3>Ingeniería Integral</h3>
+                            <p>
+                                Desarrollo de proyectos de ingeniería industrial,
+                                con planificación detallada y documentación técnica.
+                            </p>
+                            <ul class="feature-benefits text-start mt-3">
+                                <li><i class="bi bi-check-circle-fill"></i> Ingeniería básica y de detalle</li>
+                                <li><i class="bi bi-check-circle-fill"></i> Planos técnicos normalizados</li>
+                                <li><i class="bi bi-check-circle-fill"></i> Asesoramiento especializado</li>
+                            </ul>
+                            <img src="~/assets/img/features/features-1.webp"
+                                 alt="Ingeniería"
+                                 class="img-fluid rounded feature-img"
+                                 loading="lazy">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4" data-aos="fade-up" data-aos-delay="200">
+                    <div class="glass-card h-100">
+                        <div class="glass-card-body text-center">
+                            <i class="bi bi-tools fa-3x mb-3 text-success"></i>
+                            <h3>Montajes Industriales</h3>
+                            <p>
+                                Ejecución de montajes electromecánicos
+                                cumpliendo normas de seguridad y calidad.
+                            </p>
+                            <ul class="feature-benefits text-start mt-3">
+                                <li><i class="bi bi-check-circle-fill"></i> Montaje de equipos y estructuras</li>
+                                <li><i class="bi bi-check-circle-fill"></i> Movimiento de cargas</li>
+                                <li><i class="bi bi-check-circle-fill"></i> Puesta en marcha</li>
+                            </ul>
+                            <img src="~/assets/img/features/features-2.webp"
+                                 alt="Montajes"
+                                 class="img-fluid rounded feature-img"
+                                 loading="lazy">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4" data-aos="fade-up" data-aos-delay="250">
+                    <div class="glass-card h-100">
+                        <div class="glass-card-body text-center">
+                            <i class="bi bi-shield-check fa-3x mb-3 text-warning"></i>
+                            <h3>Seguridad e Inspecciones</h3>
+                            <p>
+                                Inspecciones técnicas y controles para garantizar
+                                la seguridad y confiabilidad operativa.
+                            </p>
+                            <ul class="feature-benefits text-start mt-3">
+                                <li><i class="bi bi-check-circle-fill"></i> Inspecciones industriales</li>
+                                <li><i class="bi bi-check-circle-fill"></i> Evaluación de riesgos</li>
+                                <li><i class="bi bi-check-circle-fill"></i> Informes técnicos</li>
+                            </ul>
+                            <img src="~/assets/img/features/features-3.webp"
+                                 alt="Seguridad"
+                                 class="img-fluid rounded feature-img"
+                                 loading="lazy">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Testimonial -->
+            <div class="row justify-content-center mt-5" data-aos="fade-up" data-aos-delay="300">
+                <div class="col-lg-10">
+                    <div class="hero-glass-card">
+                        <div class="row align-items-center">
+                            <div class="col-lg-6 mb-3 mb-lg-0">
+                                <img src="~/assets/img/features/features-4.webp"
+                                     alt="Cliente INGESOL"
+                                     class="img-fluid rounded">
+                            </div>
+                            <div class="col-lg-6">
+                                <blockquote>
+                                    “INGESOL nos acompañó en la ejecución de proyectos críticos,
+                                    aportando profesionalismo, cumplimiento y soluciones eficientes.”
+                                </blockquote>
+                                <div class="testimonial-author mt-3">
+                                    <h5 class="mb-0">Cliente Industrial</h5>
+                                    <span>Sector Productivo</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</section>
+<!-- /Features Cards Section -->
+
+<section id="cta-testimonials" class="hero section dark-background">
+    <!-- CONTENT -->
+    <div class="hero-content">
+        <div class="container position-relative">
+
+            <!-- CALL TO ACTION -->
+            <div class="row justify-content-center mb-5" data-aos="fade-up">
+                <div class="col-lg-10">
+                    <div class="hero-glass-card">
+                        <div class="row align-items-center g-4">
+                            <div class="col-lg-8">
+                                <h3>
+                                    Impulsá tus proyectos industriales con
+                                    <em>ingeniería confiable</em>
+                                </h3>
+                                <p class="mt-3">
+                                    En INGESOL acompañamos a nuestros clientes desde la
+                                    planificación hasta la ejecución, garantizando seguridad,
+                                    eficiencia y resultados sostenibles.
+                                </p>
+                                <a href="#contact" class="btn btn-primary mt-3">
+                                    Contactanos
+                                </a>
+                            </div>
+
+                            <div class="col-lg-4 text-center">
+                                <img src="~/assets/img/misc/misc-portrait-8.webp"
+                                     alt="INGESOL"
+                                     class="img-fluid rounded">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TESTIMONIALS TITLE -->
+            <div class="row justify-content-center text-center mb-4">
+                <div class="col-lg-8">
+                    <div class="hero-glass-card" data-aos="fade-up">
+                        <span class="subtitle">Testimonios</span>
+                        <h2>Lo que dicen nuestros clientes</h2>
+                        <p>
+                            Empresas de distintos sectores confían en INGESOL
+                            para ejecutar proyectos críticos con éxito.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TESTIMONIALS SLIDER -->
+            <div class="row" data-aos="fade-up" data-aos-delay="150">
+                <div class="col-12">
+
+                    <div class="swiper init-swiper"
+                         data-speed="600"
+                         data-delay="5000">
+
+                        <script type="application/json" class="swiper-config">
+                            {
+                              "loop": true,
+                              "speed": 600,
+                              "autoplay": { "delay": 5000 },
+                              "pagination": {
+                                "el": ".swiper-pagination",
+                                "clickable": true
+                              },
+                              "breakpoints": {
+                                "320": { "slidesPerView": 1, "spaceBetween": 30 },
+                                "992": { "slidesPerView": 2, "spaceBetween": 30 },
+                                "1200": { "slidesPerView": 3, "spaceBetween": 30 }
+                              }
+                            }
+                        </script>
+
+                        <div class="swiper-wrapper">
+
+                            <!-- Testimonial Item -->
+                            <div class="swiper-slide">
+                                <div class="hero-glass-card text-center h-100 d-flex flex-column justify-content-between">
+
+                                    <p>
+                                        <i class="bi bi-quote quote-icon-left"></i>
+                                        INGESOL nos acompañó en proyectos complejos,
+                                        cumpliendo plazos y estándares de seguridad.
+                                        <i class="bi bi-quote quote-icon-right"></i>
+                                    </p>
+
+                                    <!-- Avatar -->
+                                    <div class="testimonial-avatar mt-3">
+                                        <img src="~/assets/img/person/person-m-9.webp"
+                                             alt="Saul Goodman">
+                                    </div>
+
+                                    <div class="mt-3">
+                                        <h5 class="mb-0">Saul Goodman</h5>
+                                        <span>CEO · Industria</span>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="swiper-slide">
+                                <div class="hero-glass-card text-center h-100 d-flex flex-column justify-content-between">
+
+                                    <p>
+                                        <i class="bi bi-quote quote-icon-left"></i>
+                                        Profesionalismo, planificación y excelente
+                                        comunicación durante todo el proyecto.
+                                        <i class="bi bi-quote quote-icon-right"></i>
+                                    </p>
+
+                                    <!-- Avatar -->
+                                    <div class="testimonial-avatar mt-3">
+                                        <img src="~/assets/img/person/person-f-5.webp"
+                                             alt="Sara Wilson">
+                                    </div>
+
+                                    <div class="mt-3">
+                                        <h5 class="mb-0">Sara Wilson</h5>
+                                        <span>Gerencia Técnica</span>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="swiper-slide">
+                                <div class="hero-glass-card text-center h-100 d-flex flex-column justify-content-between">
+
+                                    <p>
+                                        <i class="bi bi-quote quote-icon-left"></i>
+                                        Un socio estratégico para ingeniería,
+                                        montajes e inspecciones industriales.
+                                        <i class="bi bi-quote quote-icon-right"></i>
+                                    </p>
+
+                                    <!-- Avatar -->
+                                    <div class="testimonial-avatar mt-3">
+                                        <img src="~/assets/img/person/person-m-12.webp"
+                                             alt="Matt Brandon">
+                                    </div>
+
+                                    <div class="mt-3">
+                                        <h5 class="mb-0">Matt Brandon</h5>
+                                        <span>Supervisor de Planta</span>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                        <div class="swiper-pagination mt-4"></div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</section>
+
+<!-- SERVICES SECTION -->
+<section id="services" class="hero section dark-background">
+    <!-- CONTENT -->
+    <div class="hero-content">
+        <div class="container position-relative">
+
+            <!-- Section Title -->
+            <div class="row justify-content-center text-center mb-5">
+                <div class="col-lg-8">
+                    <div class="hero-glass-card" data-aos="fade-up">
+                        <span class="subtitle">Servicios</span>
+                        <h2>Qué hacemos en INGESOL</h2>
+                        <p>
+                            Brindamos soluciones integrales en ingeniería industrial,
+                            acompañando cada proyecto desde el diseño hasta la ejecución,
+                            con foco en seguridad, calidad y eficiencia operativa.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Services Cards -->
+            <div class="row g-4 justify-content-center">
+
+                <div class="col-lg-4" data-aos="fade-up" data-aos-delay="100">
+                    <div class="glass-card h-100">
+                        <div class="glass-card-body text-center">
+                            <i class="bi bi-diagram-3 fa-3x mb-3 text-primary"></i>
+                            <h4>Ingeniería de Proyectos</h4>
+                            <p>
+                                Desarrollo de ingeniería básica y de detalle,
+                                elaboración de planos y documentación técnica.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4" data-aos="fade-up" data-aos-delay="200">
+                    <div class="glass-card h-100">
+                        <div class="glass-card-body text-center">
+                            <i class="bi bi-tools fa-3x mb-3 text-success"></i>
+                            <h4>Montajes Electromecánicos</h4>
+                            <p>
+                                Ejecución de montajes industriales,
+                                movimiento de cargas y puesta en marcha de equipos.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4" data-aos="fade-up" data-aos-delay="300">
+                    <div class="glass-card h-100">
+                        <div class="glass-card-body text-center">
+                            <i class="bi bi-shield-check fa-3x mb-3 text-warning"></i>
+                            <h4>Inspecciones y Seguridad</h4>
+                            <p>
+                                Inspecciones técnicas, evaluación de riesgos
+                                y control de condiciones operativas seguras.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</section>
+
+<!-- PRICING / PLANES SECTION -->
+<section id="pricing" class="hero section dark-background">
+    <!-- CONTENT -->
+    <div class="hero-content">
+        <div class="container position-relative">
+
+            <!-- Section Title -->
+            <div class="row justify-content-center text-center mb-5">
+                <div class="col-lg-8">
+                    <div class="hero-glass-card" data-aos="fade-up">
+                        <span class="subtitle">Planes</span>
+                        <h2>Modalidades de Trabajo</h2>
+                        <p>
+                            Adaptamos nuestros servicios a las necesidades de cada cliente,
+                            ofreciendo soluciones flexibles según el alcance del proyecto.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pricing Cards -->
+            <div class="row g-4 justify-content-center">
+
+                <div class="col-lg-4" data-aos="zoom-in" data-aos-delay="100">
+                    <div class="glass-card h-100">
+                        <div class="glass-card-body text-center">
+                            <h4>Asesoramiento Técnico</h4>
+                            <p>
+                                Consultoría puntual para análisis,
+                                diagnóstico y soporte técnico especializado.
+                            </p>
+                            <ul class="feature-benefits text-start mt-3">
+                                <li><i class="bi bi-check-circle-fill"></i> Evaluación técnica</li>
+                                <li><i class="bi bi-check-circle-fill"></i> Recomendaciones</li>
+                                <li><i class="bi bi-check-circle-fill"></i> Informes técnicos</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4" data-aos="zoom-in" data-aos-delay="200">
+                    <div class="glass-card h-100">
+                        <div class="glass-card-body text-center">
+                            <h4>Proyecto Integral</h4>
+                            <p>
+                                Gestión completa del proyecto,
+                                desde la ingeniería hasta la ejecución.
+                            </p>
+                            <ul class="feature-benefits text-start mt-3">
+                                <li><i class="bi bi-check-circle-fill"></i> Ingeniería y planos</li>
+                                <li><i class="bi bi-check-circle-fill"></i> Montajes</li>
+                                <li><i class="bi bi-check-circle-fill"></i> Puesta en marcha</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4" data-aos="zoom-in" data-aos-delay="300">
+                    <div class="glass-card h-100">
+                        <div class="glass-card-body text-center">
+                            <h4>Servicio a Medida</h4>
+                            <p>
+                                Soluciones personalizadas según
+                                el tipo de industria y complejidad operativa.
+                            </p>
+                            <ul class="feature-benefits text-start mt-3">
+                                <li><i class="bi bi-check-circle-fill"></i> Alcance flexible</li>
+                                <li><i class="bi bi-check-circle-fill"></i> Adaptación técnica</li>
+                                <li><i class="bi bi-check-circle-fill"></i> Soporte continuo</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</section>
+
+<!-- FAQ + PORTFOLIO + TEAM + CONTACT -->
+<section id="faq" class="hero section dark-background">
+    <div class="hero-content">
+        <div class="container position-relative">
+
+            <!-- FAQ TITLE -->
+            <div class="row justify-content-center text-center mb-5">
+                <div class="col-lg-8">
+                    <div class="hero-glass-card" data-aos="fade-up">
+                        <span class="subtitle">Preguntas Frecuentes</span>
+                        <h2>¿Cómo trabajamos en INGESOL?</h2>
+                        <p>
+                            Respondemos las consultas más habituales sobre nuestros servicios,
+                            modalidades de trabajo y alcance de proyectos.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ ITEMS -->
+            <div class="row justify-content-center">
+                <div class="col-lg-9">
+
+                    <div class="faq-wrapper">
+
+                        <div class="faq-item faq-active">
+                            <div class="faq-header">
+                                <span class="faq-number">01</span>
+                                <h4>¿Qué tipo de proyectos realiza INGESOL?</h4>
+                                <div class="faq-toggle">
+                                    <i class="bi bi-plus"></i>
+                                    <i class="bi bi-dash"></i>
+                                </div>
+                            </div>
+                            <div class="faq-content">
+                                <p>
+                                    Desarrollamos proyectos de ingeniería industrial,
+                                    montajes electromecánicos, inspecciones técnicas
+                                    y asesoramiento especializado.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <div class="faq-header">
+                                <span class="faq-number">02</span>
+                                <h4>¿Trabajan con proyectos llave en mano?</h4>
+                                <div class="faq-toggle">
+                                    <i class="bi bi-plus"></i>
+                                    <i class="bi bi-dash"></i>
+                                </div>
+                            </div>
+                            <div class="faq-content">
+                                <p>
+                                    Sí. Ofrecemos soluciones integrales desde la ingeniería
+                                    hasta la ejecución y puesta en marcha.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <div class="faq-header">
+                                <span class="faq-number">03</span>
+                                <h4>¿Cumplen normativas de seguridad?</h4>
+                                <div class="faq-toggle">
+                                    <i class="bi bi-plus"></i>
+                                    <i class="bi bi-dash"></i>
+                                </div>
+                            </div>
+                            <div class="faq-content">
+                                <p>
+                                    Todos nuestros trabajos se realizan cumpliendo
+                                    normas vigentes de seguridad industrial y calidad.
+                                </p>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</section>
+
+<!-- PORTFOLIO -->
+<section id="portfolio" class="hero section dark-background">
+    <div class="hero-content">
+        <div class="container position-relative">
+
+            <div class="row justify-content-center text-center mb-5">
+                <div class="col-lg-8">
+                    <div class="hero-glass-card" data-aos="fade-up">
+                        <span class="subtitle">Proyectos</span>
+                        <h2>Trabajos Realizados</h2>
+                        <p>
+                            Algunos de los proyectos y soluciones desarrolladas
+                            junto a nuestros clientes.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row gy-4">
+
+                <div class="col-lg-4 col-md-6">
+                    <div class="glass-card p-4">
+                        <img src="~/assets/img/portfolio/portfolio-3.webp" class="img-fluid rounded mb-3" alt="">
+                        <h5 class="text-center">Ingeniería Industrial</h5>
+                        <p class="text-center">Diseño y planificación técnica.</p>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-6">
+                    <div class="glass-card p-4">
+                        <img src="~/assets/img/portfolio/portfolio-7.webp" class="img-fluid rounded mb-3" alt="">
+                        <h5 class="text-center">Montajes</h5>
+                        <p class="text-center">Ejecución electromecánica.</p>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-6">
+                    <div class="glass-card p-4">
+                        <img src="~/assets/img/portfolio/portfolio-8.webp" class="img-fluid rounded mb-3" alt="">
+                        <h5 class="text-center">Inspecciones</h5>
+                        <p class="text-center">Control y verificación técnica.</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</section>
+
+<!-- TEAM -->
+<section id="team" class="hero section dark-background">
+    <div class="hero-content">
+        <div class="container position-relative">
+
+            <div class="row justify-content-center text-center mb-5">
+                <div class="col-lg-8">
+                    <div class="hero-glass-card" data-aos="fade-up">
+                        <span class="subtitle">Equipo</span>
+                        <h2>Profesionales Especializados</h2>
+                        <p>
+                            Nuestro equipo está conformado por profesionales
+                            con amplia experiencia en ingeniería industrial.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4 justify-content-center">
+
+                <div class="col-lg-3 col-md-6">
+                    <div class="glass-card text-center">
+                        <img src="~/assets/img/person/person-m-11.webp" class="img-fluid rounded-circle mb-3" alt="">
+                        <h5>Ingeniería</h5>
+                        <p>Gestión técnica de proyectos</p>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <div class="glass-card text-center">
+                        <img src="~/assets/img/person/person-f-12.webp" class="img-fluid rounded-circle mb-3" alt="">
+                        <h5>Seguridad</h5>
+                        <p>Normativas y control</p>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <div class="glass-card text-center">
+                        <img src="~/assets/img/person/person-m-7.webp" class="img-fluid rounded-circle mb-3" alt="">
+                        <h5>Operaciones</h5>
+                        <p>Montajes y ejecución</p>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="hero section dark-background">
+    <div class="hero-content">
+        <div class="container position-relative">
+
+            <div class="row justify-content-center text-center mb-5">
+                <div class="col-lg-8">
+                    <div class="hero-glass-card" data-aos="fade-up">
+                        <span class="subtitle">Contacto</span>
+                        <h2>Hablemos de tu Proyecto</h2>
+                        <p>
+                            Contactanos para recibir asesoramiento
+                            o solicitar una propuesta técnica.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="glass-card">
+                        <form id="contactForm" method="post">
+                            @Html.AntiForgeryToken()
+
+                            <!-- CAMPOS VISIBLES -->
+                            <input type="text"
+                                   name="Nombre"
+                                   class="form-control mb-3"
+                                   placeholder="Nombre Proyecto"
+                                   required />
+
+                            <input type="email"
+                                   name="Email"
+                                   class="form-control mb-3"
+                                   placeholder="Email"
+                                   required />
+
+                            <input type="text"
+                                   name="Telefono"
+                                   class="form-control mb-3"
+                                   placeholder="Teléfono (opcional)" />
+
+                            <input type="text"
+                                   name="Ubicacion"
+                                   class="form-control mb-3"
+                                   placeholder="Ubicación (opcional)" />
+
+                            <textarea name="Mensaje"
+                                      class="form-control mb-3"
+                                      rows="4"
+                                      placeholder="Mensaje"
+                                      required></textarea>
+
+                            <!-- CAMPOS OCULTOS → MVC -->
+                            <input type="hidden" name="EtapaProyecto" value="Consulta inicial" />
+                            <input type="hidden" name="TipoProyecto" value="Profesional" />
+                            <input type="hidden" name="Estado" value="Nuevo" />
+
+                            <!-- CAMPOS OCULTOS → EMAILJS -->
+                            <input type="hidden" name="name" />
+                            <input type="hidden" name="email" />
+                            <textarea name="message" hidden></textarea>
+
+                            <button type="submit" class="btn btn-outline-warning w-100">
+                                Enviar Consulta
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+}

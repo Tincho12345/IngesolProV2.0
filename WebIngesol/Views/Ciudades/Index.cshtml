@@ -1,0 +1,66 @@
+﻿@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Ciudad";
+    ViewData["Titles"] = "Ciudades";
+    var ruta = ViewContext.RouteData.Values["controller"]?.ToString();
+}
+
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+
+<div class="container-fluid py-2">
+     <div class="row mb-1 mb-md-2"></div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="table-responsive">
+                <table id="tblList" class="table table-striped table-bordered nowrap" style="width:100%">
+                    <thead class="table-dark">
+                        <tr id="tableHeaders">
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Crear/Editar Área Técnica -->
+<div class="modal fade" id="createEditModal" tabindex="-1" aria-labelledby="createEditModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form id="formCrearEditar">
+            @Html.AntiForgeryToken()
+            <input type="hidden" id="createEditEntityId" name="id" />
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createEditModalLabel">Crear/Editar @ViewData["Title"]</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body" id="dynamicFormFields">
+                    <!-- Campos dinámicos -->
+                </div>
+                @await Html.PartialAsync("_ModalFooter", "success")
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        window._ruta = '@ruta';
+        window._mostrarColumnasDefault = false;
+        window._viewTitle = '@ViewData["Title"]';
+        window._viewTitles = '@ViewData["Titles"]';
+        window._viewIcon = 'fas fa-city';
+
+        // Columnas con flags de visibilidad
+        window._columnasPersonalizadas = [
+            { data: 'codigo', label: 'Código', type: 'number', includeInForm: true, includeInTable: true },
+            { data: 'nombre', label: 'Ciudades', type: 'string', includeInForm: true, includeInTable: true },
+            { data: 'descripcion', label: 'Descripción', type: 'string', includeInForm: true, includeInTable: true },
+            { data: 'provinciaNombre', label: 'Provincia', type: 'string', includeInForm: false, includeInTable: true },
+            { data: 'provinciaId', label: 'Provincia:', type: 'search-youtube', includeInForm: true, includeInTable: false }
+        ];
+    </script>
+
+    <script type="module" src="/js/main.js"></script>
+}

@@ -1,0 +1,24 @@
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.vcxproj.user
+
+# Build results
+[Bb]in/
+[Oo]bj/
+*.dll
+*.exe
+*.app
+
+# Logs
+*.log
+
+# Database
+*.mdf
+*.ldf
+*.dbmdl
+
+# Otros
+Thumbs.db
+*.cache

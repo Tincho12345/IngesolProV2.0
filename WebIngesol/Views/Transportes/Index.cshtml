@@ -1,0 +1,87 @@
+﻿@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Transporte";
+    ViewData["Titles"] = "Transportes";
+    var ruta = ViewContext.RouteData.Values["controller"]?.ToString() ?? "Transportes";
+}
+
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+
+<div class="container-fluid py-2">
+    <div class="row mb-1 mb-md-2"></div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="table-responsive">
+                <table id="tblList" class="table table-striped table-bordered nowrap" style="width:100%">
+                    <thead class="table-dark">
+                        <tr id="tableHeaders">
+                            <th>Transportes</th>
+                            <!-- Se agregan dinámicamente más columnas desde JS -->
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Crear/Editar Transporte -->
+<div class="modal fade" id="createEditModal" tabindex="-1" aria-labelledby="createEditModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form id="formCrearEditar" enctype="multipart/form-data">
+            @Html.AntiForgeryToken()
+            <input type="hidden" id="createEditEntityId" name="id" />
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createEditModalLabel">Crear/Editar @ViewData["Title"]</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body" id="dynamicFormFields">
+                    <!-- Campos dinámicos -->
+                </div>
+                @await Html.PartialAsync("_ModalFooter", "success")
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Vista: Scripts -> window._columnasPersonalizadas (Quitar isActive) -->
+@section Scripts {
+    <script>
+        window._ruta = '@ruta';
+        window._mostrarColumnasDefault = false;
+        window._viewTitle = '@ViewData["Title"]';
+        window._viewTitles = '@ViewData["Titles"]';
+        window._viewIcon = "fas fa-route";
+
+        window._columnasPersonalizadas = [
+            { data: 'desde', label: 'Desde', type: 'text', includeInForm: true, includeInTable: true },
+
+            { data: 'hasta', label: 'Hasta', type: 'text', includeInForm: true, includeInTable: true },
+
+            {
+                data: 'kilometros',
+                label: 'Kilómetros',
+                type: 'decimal',
+                includeInForm: true,
+                includeInTable: true,
+                className: 'text-end fuente-grande'
+            },
+
+            {
+                data: 'costo',
+                label: 'Costo ($)',
+                type: 'decimal',
+                includeInForm: true,
+                includeInTable: true,
+                render: data => data != null
+                    ? data.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })
+                    : '',
+                className: 'text-end fuente-grande'
+            }
+        ];
+    </script>
+
+    <script type="module" src="/js/main.js"></script>
+}

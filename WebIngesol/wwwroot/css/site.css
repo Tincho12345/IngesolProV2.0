@@ -1,0 +1,1238 @@
+﻿html {
+    font-size: 14px;
+    position: relative;
+    min-height: 100%;
+    scroll-behavior: smooth;
+}
+@media (min-width: 768px) {
+    html { font-size: 16px; }
+}
+body {
+    padding-top: 120px; /* altura del header fijo */
+}
+
+.modal-lightblue .modal-content {
+    background-color: lightblue;
+}
+.custom-scroll-body {
+    max-height: 65vh;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+.table-responsive { overflow-x: auto; }
+#tblList {
+    font-size: 12px;
+}
+#tblList td:nth-child(2) {
+    max-width: 50px;
+    white-space: normal !important;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    vertical-align: top;
+}
+
+#tblList tbody td.text-end {
+    text-align: right !important;
+}
+
+    #tblList thead th {
+        text-align: center !important;
+        vertical-align: middle !important;
+    }
+#tblList .btn {
+    font-size: 12px;
+    padding: 4px 8px;
+}
+#tblList img {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: zoom-in;
+    border-radius: 4px;
+    max-height: 60px;
+}
+#tblList img:hover {
+    transform: scale(4);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    z-index: 999;
+    position: relative;
+}
+.col-observaciones {
+    max-width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+div.dataTables_filter {
+    display: none;
+}
+.dataTables_filter input {
+    height: auto;
+    padding: 6px 10px;
+    margin-top: 0.5rem;
+    margin-right: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: none;
+}
+#createEditModal .modal-content {
+    background-color: lightblue;
+    border-radius: 25px;
+    border: none;
+}
+#createEditModal .modal-header {
+    background-color: #007bff;
+    color: white;
+    border-bottom: none;
+    border-top-left-radius: 25px;
+    border-top-right-radius: 25px;
+}
+#createEditModal .btn-close { filter: invert(1); }
+#createEditModal .form-control,
+#createEditModal .form-check-input {
+    border: 1px solid #007bff;
+}
+#createEditModal .form-label,
+#createEditModal .form-check-label {
+    font-weight: 500;
+    color: #003366;
+}
+.form-floating > .form-control-plaintext::placeholder,
+.form-floating > .form-control::placeholder {
+    color: var(--bs-secondary-color);
+    text-align: end;
+}
+.form-floating > .form-control-plaintext:focus::placeholder,
+.form-floating > .form-control:focus::placeholder {
+    text-align: start;
+}
+.btn:focus,
+.btn:active:focus,
+.btn-link.nav-link:focus,
+.form-control:focus,
+.form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+.dropdown-menu .dropdown-item {
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+.dropdown-menu .dropdown-item:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+    color: black !important;
+}
+.dropdown-submenu {
+    position: relative;
+}
+.dropdown-submenu > .dropdown-menu {
+    top: 0;
+    left: 100%;
+    margin-top: -0.125rem;
+}
+.btn-outline-white {
+    color: white !important;
+    background-color: transparent !important;
+    border: 2px solid white !important;
+    border-radius: 25px;
+    padding: 8px 16px;
+    font-size: 14px;
+    transition: background-color 0.3s, color 0.3s;
+}
+.btn-outline-white:hover {
+    background-color: white !important;
+    color: black !important;
+}
+.btn-outline-cancel {
+    color: white !important;
+    background-color: transparent !important;
+    border: 2px solid #ff6666 !important;
+    border-radius: 25px;
+    padding: 8px 16px;
+    font-size: 14px;
+    transition: background-color 0.3s, color 0.3s;
+}
+.btn-outline-cancel:hover {
+    background-color: #ff6666 !important;
+    color: white !important;
+}
+.btn-outline-edit {
+    color: #17a2b8 !important;
+    background-color: transparent !important;
+    border: 2px solid #17a2b8 !important;
+    border-radius: 25px;
+    padding: 6px 12px;
+    font-size: 12px;
+    transition: background-color 0.3s, color 0.3s;
+}
+.btn-outline-edit:hover {
+    background-color: #17a2b8 !important;
+    color: white !important;
+}
+.btn-outline-delete {
+    color: darkred !important;
+    background-color: transparent !important;
+    border: 2px solid #dc3545 !important;
+    border-radius: 25px;
+    padding: 6px 12px;
+    font-size: 12px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+    .btn-outline-delete:hover {
+        background-color: #dc3545 !important;
+        color: white !important;
+    }
+
+    /* Esto es lo que agregamos para el ícono */
+    .btn-outline-delete i {
+        color: red !important;
+        transition: color 0.3s;
+    }
+
+    .btn-outline-delete:hover i {
+        color: white !important;
+    }
+
+.btn-outline-contact {
+    color: blueviolet !important;
+    background-color: transparent !important;
+    border: 2px solid #0d6efd !important;
+    border-radius: 25px;
+    padding: 6px 12px;
+    font-size: 12px;
+    transition: background-color 0.3s, color 0.3s;
+}
+.btn-outline-contact:hover {
+    background-color: #0d6efd !important;
+    color: white !important;
+}
+.btn-outline-contact i {
+    transition: transform 0.3s ease, color 0.3s ease;
+}
+.btn-outline-contact:hover i {
+    transform: scale(1.3);
+    color: white !important;
+}
+.btn-outline-primary i,
+.btn-outline-edit i,
+.btn-outline-delete i,
+.btn-outline-white i,
+.btn-outline-cancel i {
+    transition: transform 0.3s ease, color 0.3s ease;
+}
+.btn-outline-primary i,
+.btn-outline-edit:hover i,
+.btn-outline-delete:hover i,
+.btn-outline-white:hover i,
+.btn-outline-cancel:hover i {
+    transform: scale(1.3);
+    color: white !important;
+}
+.btn-primary {
+    border: 2px solid white !important;
+    border-radius: 25px;
+    font-weight: 500;
+    background-color: transparent !important;
+}
+.btn-primary:hover {
+    background-color: #0056b3 !important;
+    color: white !important;
+    border-color: white !important;
+}
+i.fas,
+i.far,
+i.fab,
+i.fa {
+    color: dodgerblue;
+    transition: color 0.3s ease;
+}
+i.fas:hover,
+i.far:hover,
+i.fab:hover,
+i.fa:hover {
+    color: #0056b3;
+}
+i[aria-hidden="true"] {
+    pointer-events: none;
+}
+
+body.dark-theme {
+    background-color: #121212;
+    color: #e0e0e0;
+}
+.dark-theme .navbar,
+.dark-theme .container-fluid,
+.dark-theme .modal-content {
+    background-color: #1e1e1e !important;
+    color: #e0e0e0;
+}
+.dark-theme .dropdown-menu {
+    background-color: #2c2c2c;
+    color: #ffffff;
+}
+.dark-theme .dropdown-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Items dentro del dropdown */
+.dropdown-item {
+    padding: 8px 16px;
+    border-radius: 6px;
+}
+
+/* Animación de entrada suave para el menú */
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Submenú moderno */
+.dropdown-submenu > .dropdown-menu {
+    border-radius: 8px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
+}
+
+.user-profile-img:hover {
+    transform: scale(1.5);
+    position: relative;
+    z-index: 10000;
+    transition: transform 0.3s ease;
+    transform-origin: center center;
+}
+.user-profile-img {
+    width: 48px;
+    height: 48px;
+    object-fit: cover;
+    border: 2px solid #0d6efd;
+    transition: transform 0.3s ease; /* lo aumenté a 0.3s para que se note mejor */
+}
+
+.text-red {
+    color: red;
+}
+
+.text-black {
+    color: black;
+}
+.contenedor-principal {
+    background-color: rgba(255, 255, 255, 0.1); /* fondo muy transparente */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* sombra suave */
+    padding: 2rem;
+    border-radius: 12px;
+}
+.card {
+    background-color: rgba(255, 255, 255, 0.6); /* Ajustá la opacidad a gusto */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    border-radius: 20px;
+}
+
+.logo-hover-effect {
+    transition: all 0.3s ease;
+    border-radius: 8px; /* Bordes redondeados por defecto */
+}
+
+.logo-hover-effect:hover {
+    transform: scale(1.2); /* Aumenta levemente el tamaño */
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4); /* Sombra envolvente */
+    filter: brightness(0.95); /* Muy leve oscurecimiento */
+    border-radius: 15px; /* Más redondeado al hacer hover */
+    cursor: pointer;
+}
+
+#tblItemsPresupuesto td, #tblItemsPresupuesto th {
+    font-size: 9pt;
+}
+#tblItemsPresupuesto thead th {
+    text-align: center !important;
+}
+
+#tblItemsPresupuesto {
+    table-layout: fixed;
+    width: 100% !important;
+}
+
+    #tblItemsPresupuesto th:nth-child(2),
+    #tblItemsPresupuesto td:nth-child(2) {
+        width: 60% !important;
+        word-wrap: break-word;
+    }
+
+
+    #tblItemsPresupuesto th:nth-child(8),
+    #tblItemsPresupuesto td:nth-child(8) {
+        width: 8% !important;
+        word-wrap: break-word;
+    }
+.text-red {
+    color: red;
+    font-weight: bold;
+}
+
+.text-black {
+    color: black;
+    font-weight: bold;
+}
+#modalItemsPresupuesto .modal-xl {
+    max-width: 90% !important;
+}
+
+.select2-search__field {
+    pointer-events: auto !important;
+    user-select: text !important;
+    background-color: white !important;
+}
+
+.list-group {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background: white;
+}
+
+.list-group-item {
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+    .list-group-item:hover {
+        background-color: #eee;
+    }
+
+.navbar-toggler {
+    border: none;
+    outline: none;
+}
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(33,37,41,1)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+}
+
+/* 🔹 Contenedor para el input y el select */
+.dropdown-container {
+    position: relative;
+    width: 100%;
+}
+
+/* 🔹 Estilo del input buscador tipo YouTube / WhatsApp con lupa interna */
+.dropdown-search-input {
+    padding: 8px 12px 8px 36px; /* espacio para la lupa */
+    border-radius: 50px;
+    border: 1px solid #ccc;
+    outline: none;
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 14px;
+    background: #f5f5f5;
+    transition: all 0.3s ease-in-out;
+    color: #333;
+    position: relative;
+}
+
+    /* 🔹 Lupa dentro del input */
+    .dropdown-search-input::before {
+        content: "🔍";
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 16px;
+        color: #888;
+        pointer-events: none;
+    }
+
+    /* 🔹 Hover y foco del input */
+    .dropdown-search-input:hover {
+        background: #f0f0f0;
+    }
+
+    .dropdown-search-input:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 0.25rem rgba(13,110,253,.25);
+        transition: all 0.2s ease-in-out;
+    }
+
+.list-group-item-action.active {
+    background-color: #0d6efd;
+    color: #fff;
+}
+/* Contenedor general */
+.buscador-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+    /* Lupa a la derecha */
+    .buscador-container .icono-lupa {
+        position: absolute;
+        right: 12px;
+        pointer-events: none;
+        font-size: 1.2em;
+        color: #888;
+    }
+
+/* Input estilo pill con fondo suave */
+.buscador-pill {
+    width: 100%;
+    padding: 10px 40px 10px 15px; /* espacio a la derecha para la lupa */
+    border-radius: 50px; /* bordes redondeados tipo pill */
+    border: 1px solid #ccc;
+    background-color: #f5f5f5; /* color de fondo suave */
+    transition: all 0.2s ease-in-out;
+}
+
+    /* Efecto al enfocar */
+    .buscador-pill:focus {
+        outline: none;
+        border-color: #6c63ff;
+        box-shadow: 0 0 8px rgba(108, 99, 255, 0.3);
+    }
+
+/* 🎯 Lista de sugerencias alineada al input */
+#sugerenciasMateriales {
+    position: absolute;
+    top: 100%; /* justo debajo del input */
+    left: 0; /* empieza al borde del input */
+    width: 100%; /* mismo ancho que el input */
+    box-sizing: border-box; /* incluye padding y borde en el ancho */
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 2000;
+    display: none;
+    max-height: 220px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+    /* 🔹 Pequeña “punta” tipo tooltip */
+    #sugerenciasMateriales::before {
+        content: "";
+        position: absolute;
+        top: -6px;
+        left: 12px; /* alineada con la lupa del input */
+        border-left: 6px solid transparent;
+        border-right: 6px solid transparent;
+        border-bottom: 6px solid #ffffff;
+    }
+
+    /* 📋 Ítems individuales */
+    /* Ítems individuales */
+    #sugerenciasMateriales .list-group-item {
+        font-size: 0.875rem;
+        padding: 0.4rem 0.75rem;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+    }
+
+        #sugerenciasMateriales .list-group-item:hover {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+/* ✨ Efecto al enfocar el input */
+#materialInput:focus {
+    box-shadow: none !important;
+    border-color: #86b7fe;
+    outline: none;
+}
+
+/* 🎨 Botón lupa */
+.btn-outline-secondary {
+    background-color: #f8f9fa;
+    transition: background-color 0.2s ease-in-out;
+}
+
+    .btn-outline-secondary:hover {
+        background-color: #e9ecef;
+    }
+
+    #modalCrearItemPresupuesto .modal-body .row.mb-3:last-child {
+        margin-bottom: 0 !important;
+    }
+
+.fuente-grande {
+    font-size: 1.5em;
+    font-weight: bold; /* opcional */
+}
+/* ===========================
+   🔧 Ajuste tabla Órdenes
+   Evita scroll horizontal y adapta texto largo correctamente
+   =========================== */
+
+/* En pantallas pequeñas, permitir scroll horizontal */
+@media (max-width: 768px) {
+    .table-responsive {
+        overflow-x: auto !important; /* permite desplazamiento horizontal en móvil */
+    }
+}
+
+/* Alineación y comportamiento general de celdas */
+#tblList th,
+#tblList td {
+    white-space: normal !important;
+    vertical-align: top !important;
+}
+
+/* 🔹 Columna Descripción: texto multilinea y ancho controlado */
+.descripcion-wrap {
+    white-space: normal !important; /* permite salto de línea */
+    word-wrap: break-word !important; /* divide palabras largas */
+    word-break: break-word !important;
+    max-width: 250px !important; /* ancho fijo razonable */
+}
+
+/* 🔹 Encabezados centrados vertical y horizontalmente */
+#tblList th {
+    text-align: center !important;
+    vertical-align: middle !important;
+}
+
+/* 🔹 Fuerza un ancho mínimo de la tabla para evitar compresión extrema */
+#tblList {
+    min-width: 1100px; /* genera scroll horizontal si es necesario */
+}
+
+.btn-see-more {
+    background-color: rgba(0,0,0,0.15);
+    backdrop-filter: blur(2px);
+    color: #fff !important;
+    border-color: rgba(0,0,0,0.25) !important;
+}
+
+.card-blur {
+    background: rgba(0, 0, 0, 0.50); /* igual que bg-dark bg-opacity-50 */
+    backdrop-filter: blur(6px); /* mismo estilo del caption */
+    -webkit-backdrop-filter: blur(6px);
+    border-radius: 20px; /* igual que el caption */
+    color: white;
+}
+
+.card.custom-card {
+    background-color: rgba(0, 0, 0, 0.25);
+    border: 1.5px solid rgba(255, 255, 255, 0.25);
+    border-radius: 12px;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+}
+
+    /* ❗ SOLO texto blanco */
+    .card.custom-card .card-title,
+    .card.custom-card .card-text {
+        color: #ffffff !important;
+    }
+.btn-group-login a {
+    text-decoration: none !important;
+}
+
+#heroCarousel .carousel-item {
+    height: 550px !important;
+}
+
+    #heroCarousel .carousel-item img {
+        height: 100% !important;
+        width: 100% !important;
+        object-fit: cover !important;
+        object-position: center;
+    }
+
+@media (max-width: 767px) {
+    #heroCarousel img {
+        height: 350px; /* si querés un alto menor en teléfonos */
+        object-fit: cover;
+        width: 100%;
+    }
+}
+
+@media (max-width: 576px) {
+    #modalContactos .modal-dialog {
+        max-width: 95% !important;
+        margin: 0 auto;
+    }
+}
+/* PONER ESTO EN TU CSS PRINCIPAL (site.css o styles.css) */
+.dataTables_wrapper .row .col-sm-12.col-md-6 {
+    padding-top: 4px;
+}
+
+@media (max-width: 768px) {
+    #divFiltros {
+        width: 100% !important;
+        justify-content: center !important;
+    }
+
+        #divFiltros button,
+        #divFiltros input {
+            flex: 1 1 auto;
+        }
+}
+
+.codigo-barra-readonly {
+    width: 100%;
+    padding: 10px 0;
+}
+
+.codigo-barra-text {
+    display: block;
+    font-size: 1.4rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    color: #0d6efd; /* azul bootstrap */
+    background: transparent;
+    border: none;
+}
+
+/* ================= MODAL XXL PRESUPUESTO ================= */
+
+#modalCrearItemPresupuesto .modal-dialog {
+    width: 100%;
+    max-width: 96vw;
+    margin: 1.5rem auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+@media (min-width: 1400px) {
+    #modalCrearItemPresupuesto .modal-dialog {
+        max-width: 94vw;
+    }
+}
+
+#modalCrearItemPresupuesto .modal-content {
+    max-height: 92vh;
+    overflow: hidden;
+}
+
+/* 🔽 SCROLL VERTICAL EN EL BODY DEL MODAL */
+#modalCrearItemPresupuesto .modal-body {
+    overflow-y: auto;
+    max-height: calc(92vh - 70px);
+}
+
+/* 🔽 SCROLL VERTICAL EN LA TABLA DE FAVORITOS */
+#modalCrearItemPresupuesto .table-responsive {
+    overflow-y: auto;
+    max-height: 35vh;
+}
+
+/* ================= FILTRO FAVORITOS ================= */
+
+#filtroFavoritos {
+    height: 36px;
+    padding: 6px 14px;
+    border-radius: 10px;
+    border: 1px solid #ced4da;
+    box-shadow: none;
+}
+
+    #filtroFavoritos:focus {
+        border: 2px solid #0d6efd;
+        box-shadow: none;
+        outline: none;
+    }
+
+.form-switch .form-check-input {
+    width: 2.2rem;
+    height: 1.2rem;
+    cursor: pointer;
+}
+
+.toggle-favorite:checked {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+input[readonly] {
+    background-color: #f5f5f5;
+    cursor: not-allowed;
+}
+
+.codigo-barra-box {
+    background: #f4f6f8;
+    border: 1px dashed #b6c2cf;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1f2937;
+    text-align: center;
+    letter-spacing: 1px;
+}
+
+.codigo-barra-value {
+    display: inline-block;
+}
+.table-responsive {
+    position: relative;
+}
+
+.table-blocker {
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.6);
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: all;
+}
+
+    .table-blocker.d-none {
+        display: none;
+    }
+
+/* Contenedor de la tabla para control total */
+#tblItemsFavoritos {
+    font-size: 0.82rem; /* Tamaño de fuente reducido */
+    width: 100% !important;
+}
+
+    /* Reducción de encabezados */
+    #tblItemsFavoritos thead th {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 6px 4px !important;
+        background-color: #f8f9fa; /* Fondo sutil para headers */
+    }
+
+    /* Reducción de celdas y ajuste de línea */
+    #tblItemsFavoritos tbody td {
+        padding: 3px 6px !important; /* Padding vertical mínimo */
+        line-height: 1.2; /* Reduce el espacio entre líneas de texto */
+        vertical-align: middle;
+        white-space: nowrap; /* Evita que el texto salte a 2 líneas y ensanche la fila */
+        overflow: hidden;
+        text-overflow: ellipsis; /* Si el nombre es muy largo, pone "..." */
+    }
+
+    /* Ajuste fino para los iconos y botones */
+    #tblItemsFavoritos .btn-usar-favorito {
+        padding: 1px 5px !important;
+        font-size: 0.7rem !important;
+        line-height: 1;
+    }
+
+/* ============================
+   FONDO FIJO HOME INGESOL
+============================ */
+
+.fondo-fijo {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;
+    z-index: -1;
+}
+
+/* Reset controlado para permitir fondos */
+html, body {
+    margin: 0;
+    min-height: 100%;
+    background: transparent;
+}
+
+.btn-crear-entity {
+    transition: all 0.2s ease-in-out;
+}
+
+    .btn-crear-entity:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    }
+
+    .btn-crear-entity .icon-crear {
+        display: inline-block;
+        transition: transform 0.2s ease-in-out;
+    }
+
+    .btn-crear-entity:hover .icon-crear {
+        transform: scale(1.15);
+    }
+
+/* 🔹 Normaliza padding para botones de acción */
+.btn-crear-entity {
+    padding: 8px 16px !important;
+    font-size: 14px;
+    border-radius: 25px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* =========================
+   🔍 BUSCADOR ESTILO YOUTUBE (FIX BORDES)
+   ========================= */
+.buscador-youtube {
+    display: flex;
+    align-items: stretch;
+    border-radius: 999px;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    overflow: hidden;
+    transition: all 0.25s ease;
+}
+
+    /* Hover */
+    .buscador-youtube:hover {
+        background: rgba(255, 255, 255, 0.85);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+    }
+
+    /* Focus */
+    .buscador-youtube:focus-within {
+        border-color: #1a73e8;
+        box-shadow: 0 0 0 1px #1a73e8;
+    }
+
+
+/* INPUT */
+.buscador-input {
+    flex: 1;
+    padding: 10px 16px;
+    font-size: 15px;
+    border-radius: 999px 0 0 999px; /* pill solo a la izquierda */
+    border: 1px solid #000;
+    border-right: none; /* 🔥 quita borde derecho */
+    outline: none;
+    background: transparent;
+}
+
+/* BOTÓN */
+.buscador-btn {
+    padding: 0 22px;
+    border: none;
+    border-left: 1px solid #ddd;
+    background-color: #f8f8f8;
+    transition: background-color 0.2s ease;
+}
+
+    /* Hover botón */
+    .buscador-btn:hover {
+        background-color: #e9e9e9;
+    }
+
+    /* Ícono */
+    .buscador-btn i {
+        color: #000;
+        font-size: 16px;
+    }
+
+.img-material {
+    width: 42px;
+    height: 42px;
+    object-fit: cover; /* recorta sin deformar */
+    border-radius: 6px; /* esquinas suaves */
+    border: 1px solid #e0e0e0; /* borde sutil */
+    background-color: #fafafa;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+    .img-material:hover {
+        transform: scale(1.15);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        z-index: 10;
+    }
+
+/* =========================
+   🪟 MODAL PRODUCTO (SOLO ESTE SWAL)
+   ========================= */
+.producto-modal {
+    border-radius: 14px !important;
+    padding: 0 !important;
+    overflow: hidden;
+}
+
+    .producto-modal .swal2-html-container {
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+/* =========================
+   📦 CONTENEDOR GENERAL
+   ========================= */
+.producto-wrapper {
+    display: flex;
+    width: 100%;
+    min-height: 420px;
+}
+
+/* =========================
+   🖼️ IMAGEN
+   ========================= */
+.producto-imagen {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+}
+
+    .producto-imagen img {
+        max-width: 100%;
+        max-height: 420px;
+        object-fit: contain;
+    }
+
+/* =========================
+   📝 PANEL INFO
+   ========================= */
+.producto-info {
+    flex: 1;
+    background: #29d7f3;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* TÍTULO */
+.producto-titulo {
+    font-size: 22px;
+    font-weight: 600;
+    margin: 10px 0;
+    color: #1f2937;
+}
+
+/* =========================
+   📦 NIVEL / CANTIDAD
+   ========================= */
+.producto-rating {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 18px;
+    margin-bottom: 16px;
+    color: #1a73e8;
+}
+
+.producto-cantidad {
+    font-size: 14px;
+    color: #555;
+}
+
+/* =========================
+   💰 PRECIO
+   ========================= */
+.producto-precio {
+    font-size: 32px;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 16px;
+}
+
+/* =========================
+   📄 DETALLES
+   ========================= */
+.producto-detalle p {
+    margin: 6px 0;
+    color: #374151;
+}
+
+/* =========================
+   ❌ NO TOCAR PADDING GLOBAL DE SWAL
+   ========================= */
+
+/* BOTÓN CERRAR SWEETALERT */
+.swal2-close {
+    color: #000 !important;
+    font-size: 42px;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+    .swal2-close:hover {
+        opacity: 0.6;
+        transform: scale(1.15) rotate(90deg);
+    }
+
+/* BADGE */
+.producto-badge {
+    color: #1a73e8;
+    font-size: 18px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+/* Navbar transparente (para que tome el fondo del header) */
+#header .navbar {
+    background: transparent !important;
+}
+
+/* Dropdown */
+#header .dropdown-menu {
+    background: rgba(33, 53, 63, 0.9);
+    backdrop-filter: blur(10px);
+    border: none;
+}
+
+    #header .dropdown-item,
+    #header .dropdown-menu .nav-link {
+        color: #ffffff !important;
+    }
+
+        #header .dropdown-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+/* Alert estilo vidrio - igual al header */
+.alert-glass {
+    background: rgba(33, 53, 63, 0.55);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 14px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+}
+
+    /* Emoji y strong más visibles */
+    .alert-glass strong {
+        color: #ff6b4a; /* acento */
+    }
+/* 🔥 FORZAR HEADER VIDRIO (OVERRIDE FINAL) */
+#header .navbar {
+    background: transparent !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+}
+
+/* =========================
+   HEADER NAV – SOLUCIÓN FINAL
+   ========================= */
+
+/* Estado normal */
+#header .nav-link {
+    color: #ffffff !important;
+    font-weight: 600;
+    transition: color 0.25s ease;
+}
+
+    /* Hover */
+    #header .nav-link:hover {
+   
+        font-weight: 700;
+    }
+
+    /* Active (click / página actual) */
+    #header .nav-link.active,
+    #header .show > .nav-link {
+        color: #003cff !important;
+        font-weight: 700;
+    }
+
+/* =====================================================
+   HEADER + NAVBAR – BLOQUE ÚNICO Y DEFINITIVO
+   ===================================================== */
+
+/* Header vidrio */
+#header.header {
+    background: rgba(33, 53, 63, 0.55) !important;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    z-index: 997;
+}
+
+/* Navbar transparente */
+#header .navbar {
+    background: transparent !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+}
+
+/* =========================
+   LINKS NAV
+   ========================= */
+#header .nav-link {
+    color: #ffffff !important;
+    font-weight: 600;
+    transition: color 0.25s ease, font-weight 0.25s ease;
+    cursor: pointer;
+}
+
+    /* Hover */
+    #header .nav-link:hover {
+        color: #003cff !important;
+        font-weight: 700;
+    }
+
+    /* Active (click / ruta actual) */
+    #header .nav-link.active,
+    #header .show > .nav-link {
+        color: #003cff !important;
+        font-weight: 700;
+    }
+
+/* =========================
+   DROPDOWN
+   ========================= */
+#header .dropdown-menu {
+    background: rgba(33, 53, 63, 0.9);
+    backdrop-filter: blur(10px);
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+}
+
+#header .dropdown-item {
+    color: #ffffff !important;
+    font-weight: 500;
+}
+
+    #header .dropdown-item:hover {
+        background: rgba(255, 255, 255, 0.08);
+        color: #003cff !important;
+    }
+
+/* =========================
+   BADGE ROL
+   ========================= */
+.role-badge {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(6px);
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #ff6b4a;
+}
+
+/* =========================
+   TOGGLER MOBILE
+   ========================= */
+.navbar-toggler {
+    border: none;
+    outline: none;
+}
+
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(255,255,255,1)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+}
+
+/* Fix foco cortado en selector de registros DataTable */
+.dataTables_length {
+    padding-top: 0.5rem;
+    overflow: visible;
+}
+
+    .dataTables_length .form-select:focus {
+        box-shadow: 0 0 0 0.2rem rgba(13,110,253,.25);
+        outline: 0;
+    }
+
+/* opcional: un pelín más de aire arriba */
+.dataTables_wrapper .dataTables_length {
+    margin-top: 0.25rem;
+}

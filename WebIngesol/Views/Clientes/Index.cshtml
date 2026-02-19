@@ -1,0 +1,184 @@
+﻿@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Cliente";
+    ViewData["Titles"] = "Clientes";
+    var ruta = ViewContext.RouteData.Values["controller"]?.ToString() ?? "Materiales";
+}
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery AntiforgeryService
+
+<div class="container-fluid py-2">
+    <div class="row mb-1 mb-md-2"></div>
+
+    <div class="row">
+        <div class="col-12">
+            <div id="spinnerCarga" class="text-center py-4" style="display: none;">
+                <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+                    <span class="visually-hidden">Cargando...</span>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table id="tblList" class="table table-striped table-bordered nowrap" style="width:100%">
+                    <thead class="table-dark">
+                        <tr id="tableHeaders">
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Crear/Editar Contacto -->
+<div class="modal fade modal-lightblue" id="modalCrearContacto" tabindex="-1" aria-labelledby="modalCrearContactoLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form id="formCrearContacto">
+            <div class="modal-content">
+                <div class="modal-header justify-content-center position-relative">
+                    <button type="button" class="btn-close position-absolute end-0 me-3" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="editarContactoId" name="Id" />
+                    <input type="hidden" id="nuevoContactoClienteId" name="ClienteId" />
+
+                    <div class="mb-3">
+                        <label for="nombreContacto" class="form-label">Nombre</label>
+                        <input type="text" class="form-control" id="nombreContacto" name="Nombre" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="telefonoContacto" class="form-label">Teléfono</label>
+                        <input type="text" class="form-control" id="telefonoContacto" name="NumeroTelefono">
+                    </div>
+                </div>
+
+                @await Html.PartialAsync("_ModalFooter", "success")
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal Contactos del Cliente -->
+<div class="modal fade" id="modalContactos" tabindex="-1" aria-labelledby="modalContactosLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div id="formContactosCliente">
+            <input type="hidden" id="contactosClienteId" name="clienteId" />
+
+            <div class="modal-content">
+
+                <div class="modal-header justify-content-center position-relative">
+                    <button type="button" class="btn-close position-absolute end-0 me-3"
+                            data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="row mb-3">
+                        <div class="modal-header justify-content-center position-relative w-100">
+                            <h3 class="text-primary m-0 w-100 text-center" id="modalContactosLabel">
+                                <i class="fas fa-user-tie"></i>
+                                <span id="nombreDinamico"></span>
+                            </h3>
+
+                            <div class="col text-end">
+                                <button type="button" id="AddContacto" class="btn btn-outline-edit">Nuevo</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contenedor con fondo celeste claro -->
+                    <div class="p-3 rounded" style="background-color: lightblue;">
+
+                        <!-- ⭐ IMPORTANTE: table-responsive evita que se salga en mobile -->
+                        <div class="table-responsive">
+                            <table id="tblContactosCliente"
+                                   class="table table-hover table-bordered nowrap"
+                                   style="width:100%">
+                                <thead class="table-primary">
+                                    <tr>
+                                        <th style="display: none;">Id</th>
+                                        <th>Nombre Contacto</th>
+                                        <th>Teléfono</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal Crear/Editar Cliente -->
+<div class="modal fade" id="createEditModal" tabindex="-1" aria-labelledby="createEditModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <form id="formCrearEditar" enctype="multipart/form-data">
+            @Html.AntiForgeryToken()
+            <input type="hidden" id="createEditEntityId" name="id" />
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createEditModalLabel">Crear/Editar @ViewData["Title"]</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body custom-scroll-body" id="dynamicFormFields">
+                    <!-- Campos dinámicos generados por JS -->
+                </div>
+                @await Html.PartialAsync("_ModalFooter", "success")
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <!-- ✅ Configuración de la tabla -->
+    <script>
+        window._mostrarBotonContactos = true;
+        window._guardadoContactoExitoso = '';
+        window._ruta = '@ruta';
+        window._mostrarColumnasDefault = false;
+
+        // 👉 Enum TipoPersona usado en formulario y tabla
+        window._tipoPersonaEnum = [
+            { value: 0, label: '🧍 Cliente' },
+            { value: 1, label: '🏢 Proveedor' },
+            { value: 2, label: '🔁 Ambos' }
+        ];
+        window._viewTitle = '@ViewData["Title"]';
+        window._viewTitles = '@ViewData["Titles"]';
+        window.viewIcon = 'fas fa-user-tie';
+        window._viewIconAux = 'fas fa-phone';
+        window._mensaje = 'Ver Contactos del Cliente'
+
+        window._columnasPersonalizadas = [
+            { data: 'codigo', label: 'Código', type: 'string', includeInForm: true, includeInTable: true },
+            { data: 'nombre', label: 'Nombre Cliente', type: 'string', includeInForm: true, includeInTable: true },
+            { data: 'nombreFantasia', label: 'Razón Social', type: 'string', includeInForm: true, includeInTable: true },
+            { data: 'email', label: 'Correo Electrónico', type: 'email', includeInForm: true, includeInTable: true, required: false },
+            { data: 'cuit', label: 'CUIT', type: 'string', includeInForm: true, includeInTable: true, required: true, mask: '99-99999999-9' },
+            { data: 'cbu', label: 'CBU', type: 'number', includeInForm: true, includeInTable: true, required: false },
+            { data: 'domicilio', label: 'Dirección', type: 'string', includeInForm: true, includeInTable: true, required: false },
+            {
+                data: 'tipo',
+                label: 'Tipo de Persona',
+                type: 'dropdown',
+                includeInForm: true,
+                includeInTable: true,
+                options: _tipoPersonaEnum,
+                render: function (data, type, row) {
+                    const tipo = _tipoPersonaEnum.find(t => t.value === data);
+                    return tipo ? tipo.label : data;
+                }
+            }
+        ];
+    </script>
+
+    <!-- 🚀 Main general -->
+    <script type="module" src="/js/main.js"></script>
+
+    <!-- ✅ Contactos cliente SOLO para esta vista -->
+    <script src="/js/contactosCliente.js"></script>
+}

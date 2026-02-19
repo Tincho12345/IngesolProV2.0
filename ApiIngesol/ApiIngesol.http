@@ -1,0 +1,6 @@
+@ApiIngesol_HostAddress = http://localhost:5189
+
+GET {{ApiIngesol_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

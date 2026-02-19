@@ -1,0 +1,476 @@
+﻿@inject Microsoft.AspNetCore.Http.IHttpContextAccessor httpAcc
+@using WebIngesol.ConstantsRoute
+@using System.Globalization
+
+@{
+    var usuario = httpAcc.HttpContext?.Session.GetString("Usuario") ?? "";
+    var email = httpAcc.HttpContext?.Session.GetString("Email") ?? "";
+    var rawFirstName = httpAcc.HttpContext?.Session.GetString("Nombre") ?? "";
+    var firstName = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(rawFirstName.ToLower());
+    var lastName = httpAcc.HttpContext?.Session.GetString("LastName") ?? "";
+    var fullName = httpAcc.HttpContext?.Session.GetString("FullName") ?? "";
+    var rol = httpAcc.HttpContext?.Session.GetString("Role") ?? "";
+    var imagePath = httpAcc.HttpContext?.Session.GetString("ImagePath");
+    var backendOrigin = CT.Base;
+    var profileImageUrl = string.IsNullOrEmpty(imagePath)
+        ? Url.Content("~/images/SinFoto.png")
+        : $"{backendOrigin}{(imagePath.StartsWith("/") ? "" : "/")}{imagePath}";
+}
+
+<!DOCTYPE html>
+<html lang="es-ar">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Ingesol</title>
+
+    <!-- CSS externos -->
+    <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.10.5/sweetalert2.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+    <!-- Estilos propios -->
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+
+    <!-- Favicons -->
+    <link rel="icon" href="~/assets/img/favicon.ico" />
+    <link rel="apple-touch-icon" href="~/assets/img/apple-touch-icon.png" />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Montserrat:wght@400;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet" />
+
+    <!-- Vendor CSS (Landing) -->
+    <link rel="stylesheet" href="~/assets/vendor/bootstrap-icons/bootstrap-icons.css" />
+    <link rel="stylesheet" href="~/assets/vendor/aos/aos.css" />
+    <link rel="stylesheet" href="~/assets/vendor/swiper/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="~/assets/vendor/glightbox/css/glightbox.min.css" />
+
+    <!-- Main CSS Landing -->
+    <link rel="stylesheet" href="~/assets/css/main.css" asp-append-version="true" />
+
+</head>
+<body>
+    @{
+        var currentController = ViewContext.RouteData.Values["Controller"]?.ToString();
+        var currentAction = ViewContext.RouteData.Values["Action"]?.ToString();
+        var isHomeIndex = currentController == "Home" && currentAction == "Index";
+    }
+
+    @if (isHomeIndex)
+    {
+        <img src="~/images/Fondo1.webp" alt="Fondo" class="fondo-fijo" />
+    }
+
+    <header id="header" class="header fixed-top">
+
+        <div class="nav-wrap">
+            <nav class="navbar navbar-expand-md navbar-dark">
+
+                <div class="container-fluid d-flex align-items-center justify-content-between" style="background-color: transparent;">
+
+                <!-- LOGO -->
+                <div class="d-flex align-items-center">
+                    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                        <img src="/LogoIngesol.png" alt="Logo" class="logo-hover-effect" style="width: 200px; height: 40px; margin-left: 15px;" />
+                    </a>
+                </div>
+
+                <!-- HAMBURGUESA -->
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- MENÚ CENTRAL -->
+                <div class="collapse navbar-collapse justify-content-center" id="mainNavbar">
+                    @if (User.Identity?.IsAuthenticated ?? false)
+                    {
+                        <ul class="navbar-nav">
+
+                            @{
+                                bool isAdmin = rol.Trim() == "🛡️ Admin";
+                                bool isDataEntry = rol.Trim() == "✏️ Data Entry";
+                                bool isEmpleado = rol.Trim() == "👤 Empleados";
+                            }
+
+                            @* --- Menú Proyectos --- *@
+                            @if (isAdmin || isDataEntry || isEmpleado)
+                            {
+                                    <li class="nav-item dropdown">
+                                        <a class="nav-link dropdown-toggle text-dark"
+                                           href="#"
+                                           id="gestionProyectosDropdown"
+                                           role="button"
+                                           data-bs-toggle="dropdown"
+                                           aria-expanded="false">
+                                            <i class="fas fa-project-diagram me-1"></i> Proyectos
+                                        </a>
+
+                                        <ul class="dropdown-menu" aria-labelledby="gestionProyectosDropdown">
+
+                                            @* Solicitudes de Proyecto (entrada comercial) *@
+                                            @if (isAdmin || isDataEntry)
+                                            {
+                                                <li>
+                                                    <a class="nav-link text-dark"
+                                                       asp-controller="SolicitudesProyecto"
+                                                       asp-action="Index">
+                                                        <i class="fas fa-envelope-open-text me-2"></i> Solicitudes de Proyecto
+                                                    </a>
+                                                </li>
+                                                <li><hr class="dropdown-divider" /></li>
+                                            }
+
+                                            <li>
+                                                <a class="nav-link text-dark"
+                                                   asp-controller="Proyectos"
+                                                   asp-action="Index">
+                                                    <i class="fas fa-project-diagram me-2"></i> Proyectos
+                                                </a>
+                                            </li>
+
+                                            <li>
+                                                <a class="nav-link text-dark"
+                                                   asp-controller="Ordenes"
+                                                   asp-action="Index">
+                                                    <i class="fas fa-tasks me-2"></i> Órdenes
+                                                </a>
+                                            </li>
+
+                                            @* Solo Admin y Data Entry ven Presupuestos e Infraestructura *@
+                                            @if (isAdmin || isDataEntry)
+                                            {
+                                                <li>
+                                                    <a class="nav-link text-dark"
+                                                       asp-controller="Presupuestos"
+                                                       asp-action="Index">
+                                                        <i class="fas fa-clipboard-list me-2"></i> Presupuestos
+                                                    </a>
+                                                </li>
+
+                                                <li><hr class="dropdown-divider" /></li>
+
+                                                <li class="dropdown-submenu dropend">
+                                                    <a class="nav-link dropdown-toggle text-dark"
+                                                       href="#"
+                                                       id="infraestructuraDropdown"
+                                                       role="button"
+                                                       data-bs-toggle="dropdown"
+                                                       aria-expanded="false">
+                                                        <i class="fas fa-sitemap me-2"></i> Infraestructura
+                                                    </a>
+
+                                                    <ul class="dropdown-menu" aria-labelledby="infraestructuraDropdown">
+                                                        <li>
+                                                            <a class="nav-link text-dark"
+                                                               asp-controller="Plantas"
+                                                               asp-action="Index">
+                                                                <i class="fas fa-industry me-2"></i> Plantas
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="nav-link text-dark"
+                                                               asp-controller="Areas"
+                                                               asp-action="Index">
+                                                                <i class="fas fa-tools me-2"></i> Áreas
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </li>
+                                            }
+                                        </ul>
+                                    </li>
+                            }
+
+                            @* --- Maestro de Materiales (solo Admin y Data Entry) --- *@
+                            @if (isAdmin || isDataEntry)
+                            {
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle text-dark" href="#" id="maestroMaterialesDropdown1" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fas fa-boxes me-1"></i> Maestro Materiales
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="maestroMaterialesDropdown1">
+                                        <li><a class="nav-link text-dark" asp-controller="Familias" asp-action="Index"><i class="fas fa-group-arrows-rotate me-2"></i> Familias</a></li>
+                                        <li><a class="nav-link text-dark" asp-controller="Clases" asp-action="Index"><i class="fas fa-toolbox me-2"></i> Clases</a></li>
+                                        <li><a class="nav-link text-dark" asp-controller="Tipos" asp-action="Index"><i class="fas fa-tags me-2"></i> Tipo</a></li>
+                                        <li><a class="nav-link text-dark" asp-controller="UnidadesMedidas" asp-action="Index"><i class="fas fa-ruler-combined me-2"></i> Unidades de Medida</a></li>
+                                        <li><a class="nav-link text-dark" asp-controller="Materiales" asp-action="Index"><i class="fas fa-hard-hat me-2"></i> Materiales</a></li>
+                                    </ul>
+                                </li>
+
+                                <!-- Datos Geográficos -->
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle text-dark" href="#" id="geografiaDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fas fa-globe-americas me-1"></i> Datos Geográficos
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="geografiaDropdown">
+                                        <li><a class="nav-link text-dark" asp-controller="Paises" asp-action="Index"><i class="fas fa-flag me-2"></i> Países</a></li>
+                                        <li><a class="nav-link text-dark" asp-controller="Provincias" asp-action="Index"><i class="fas fa-map me-2"></i> Provincias</a></li>
+                                        <li><a class="nav-link text-dark" asp-controller="Ciudades" asp-action="Index"><i class="fas fa-city me-2"></i> Ciudades</a></li>
+                                    </ul>
+                                </li>
+                            }
+
+                            @* --- Áreas Técnicas solo Admin --- *@
+                            @if (isAdmin)
+                            {
+                                <li class="nav-item"><a class="nav-link text-dark" asp-controller="AreasTecnicas" asp-action="Index"><i class="fas fa-tools me-2"></i> Áreas Técnicas</a></li>
+                            }
+
+                            @* --- Viáticos/Transportes --- *@
+                            @if (isAdmin || isDataEntry || isEmpleado)
+                            {
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle text-dark" href="#" id="viaticosMainDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fas fa-money-check-alt me-2"></i> Viáticos / Transportes
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="viaticosMainDropdown">
+                                        @if (isEmpleado)
+                                        {
+                                            <li>
+                                                <a class="dropdown-item" asp-controller="RegistrosViaticos" asp-action="Index">
+                                                    <i class="fas fa-file-invoice-dollar me-2"></i> Registro de Viáticos
+                                                </a>
+                                            </li>
+                                            <li><hr class="dropdown-divider" /></li>
+                                            <li>
+                                                <a class="dropdown-item" asp-controller="RegistrosMovilidad" asp-action="Index">
+                                                    <i class="fas fa-car-side me-2"></i> Registro de Movilidad
+                                                </a>
+                                            </li>
+                                            <li><hr class="dropdown-divider" /></li>
+                                            <li>
+                                                <a class="dropdown-item" asp-controller="RegistrosAsistencias" asp-action="Index">
+                                                    <i class="fas fa-clock me-2"></i>  Registro de Horas
+                                                </a>
+                                            </li>
+                                        }
+                                        else
+                                        {
+                                            <li>
+                                                <a class="dropdown-item" asp-controller="TipoViaticos" asp-action="Index">
+                                                    <i class="fas fa-list-alt me-2"></i> Tipos de Viáticos
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item" asp-controller="ValoresViaticos" asp-action="Index">
+                                                    <i class="fas fa-money-bill-wave me-2"></i> Valores de Viáticos
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item" asp-controller="RegistrosViaticos" asp-action="Index">
+                                                    <i class="fas fa-file-invoice-dollar me-2"></i> Registro de Viáticos
+                                                </a>
+                                            </li>
+                                            <li><hr class="dropdown-divider" /></li>
+                                            <li>
+                                                <a class="dropdown-item" asp-controller="TiposMovilidad" asp-action="Index">
+                                                    <i class="fas fa-car-side me-2"></i> Tipos de Transporte
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item" asp-controller="ValoresMovilidad" asp-action="Index">
+                                                    <i class="fas fa-dollar-sign me-2"></i> Valores de Transporte
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item" asp-controller="RegistrosMovilidad" asp-action="Index">
+                                                    <i class="fas fa-file-invoice-dollar me-2"></i> Registro de Movilidad
+                                                </a>
+                                            </li>
+                                            <li><hr class="dropdown-divider" /></li>
+                                            <li>
+                                                <a class="dropdown-item" asp-controller="RegistrosAsistencias" asp-action="Index">
+                                                    <i class="fas fa-clock me-2"></i> Registro de Horas
+                                                </a>
+                                            </li>
+                                        }
+                                    </ul>
+                                </li>
+                            }
+
+                            @* --- Perfiles solo Admin --- *@
+                            @if (isAdmin)
+                            {
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle text-dark" href="#" id="gestionUsuariosDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fas fa-users-cog me-1"></i> Perfiles
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="gestionUsuariosDropdown">
+                                        <li><a class="nav-link text-dark" asp-controller="Clientes" asp-action="Index"><i class="fas fa-user-tie me-2"></i> Clientes</a></li>
+                                        <li><a class="nav-link text-dark" asp-controller="Usuarios" asp-action="Index"><i class="fas fa-user me-2"></i> Usuarios</a></li>
+                                        <li><a class="nav-link text-dark" asp-controller="Roles" asp-action="Index"><i class="fas fa-user-shield me-2"></i> Roles</a></li>
+                                        <li><a class="nav-link text-dark" asp-controller="Puestos" asp-action="Index"><i class="fas fa-user-cog me-2"></i> Puestos</a></li>
+                                    </ul>
+                                </li>
+                            }
+                        </ul>
+                    }
+                </div>
+
+                <!-- USUARIO A LA DERECHA -->
+                    <!-- USUARIO A LA DERECHA -->
+                    <ul class="navbar-nav ms-auto">
+                        @if (User.Identity?.IsAuthenticated ?? false)
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle d-flex align-items-center gap-2 text-dark"
+                                   href="#"
+                                   id="userDropdown"
+                                   role="button"
+                                   data-bs-toggle="dropdown"
+                                   aria-expanded="false">
+
+                                    <span>Bienvenido: @firstName</span>
+
+
+                                    <span class="role-badge">
+                                        @rol
+                                    </span>
+                                    <img src="@profileImageUrl"
+                                         alt="Foto perfil"
+                                         class="rounded-circle user-profile-img" />
+                                </a>
+
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                    <li>
+                                        <a class="dropdown-item d-flex justify-content-between align-items-center"
+                                           asp-controller="Home"
+                                           asp-action="EditarPerfil">
+                                            <span>Editar mis datos</span>
+                                            <i class="fas fa-user-edit ms-3"></i>
+                                        </a>
+                                    </li>
+
+                                    <li>
+                                        <a class="dropdown-item d-flex justify-content-between align-items-center"
+                                           asp-controller="Home"
+                                           asp-action="Logout">
+                                            <span>Salir</span>
+                                            <i class="fas fa-sign-out-alt"></i>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        }
+                    </ul>
+            </div>
+        </nav>
+        </div>
+    </header>
+
+    <div class="container-fluid" style="background-color: transparent;">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted" style="background: rgba(0, 0, 0, 0.6); padding: 10px 0;">
+        <div class="container text-center">
+            <span style="color: #ffffff; font-weight: bold;">&copy; 2025 - WebIngesol</span> |
+            <a asp-controller="Home" asp-action="Privacy" style="color: #dddddd; text-decoration: none;">
+                Política de Privacidad
+            </a>
+            <br>
+            <small style="color: #bbbbbb; font-style: italic;">
+                Desarrollo y diseño: Carlos M. Espíndola
+            </small>
+        </div>
+    </footer>
+ 
+    <!-- Scroll Top -->
+    <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center">
+        <i class="bi bi-arrow-up-short"></i>
+    </a>
+
+    <!-- 🔥 ACTIVE NAV FUNCIONANDO (CLICK + RUTA ACTUAL + DROPDOWN) -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const currentUrl = window.location.pathname.toLowerCase();
+
+            // limpiar active previo
+            document.querySelectorAll("#header .nav-link, #header .dropdown-item")
+                .forEach(el => el.classList.remove("active"));
+
+            // marcar activo por URL
+            document.querySelectorAll("#header a[href]").forEach(link => {
+                const href = link.getAttribute("href");
+                if (!href || href === "#" || href.startsWith("javascript")) return;
+
+                if (currentUrl === href.toLowerCase()) {
+                    link.classList.add("active");
+
+                    // si está dentro de dropdown, activar el padre
+                    const dropdown = link.closest(".dropdown");
+                    if (dropdown) {
+                        const parentLink = dropdown.querySelector(".nav-link.dropdown-toggle");
+                        if (parentLink) parentLink.classList.add("active");
+                    }
+                }
+            });
+
+            // marcar activo al click (UX inmediata)
+            document.querySelectorAll("#header .nav-link, #header .dropdown-item")
+                .forEach(link => {
+                    link.addEventListener("click", function () {
+
+                        document.querySelectorAll("#header .nav-link, #header .dropdown-item")
+                            .forEach(l => l.classList.remove("active"));
+
+                        this.classList.add("active");
+
+                        const dropdown = this.closest(".dropdown");
+                        if (dropdown) {
+                            const parentLink = dropdown.querySelector(".nav-link.dropdown-toggle");
+                            if (parentLink) parentLink.classList.add("active");
+                        }
+                    });
+                });
+        });
+    </script>
+
+    <!-- jQuery (SIEMPRE primero) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Plugins que dependen de jQuery -->
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <!-- Otros plugins -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.5/dist/sweetalert2.all.min.js"></script>
+
+    <!-- Vendor JS Landing -->
+    <script src="~/assets/vendor/aos/aos.js"></script>
+    <script src="~/assets/vendor/swiper/swiper-bundle.min.js"></script>
+    <script src="~/assets/vendor/glightbox/js/glightbox.min.js"></script>
+    <script src="~/assets/vendor/purecounter/purecounter_vanilla.js"></script>
+
+    <!-- Main JS Landing -->
+    <script src="~/assets/js/main.js" asp-append-version="true"></script>
+
+    <!-- Variables globales -->
+    <script>window._backendOrigin = '@backendOrigin';</script>
+    <script>window._userRole = '@rol';</script>
+
+    <!-- Scripts de vistas -->
+    @await RenderSectionAsync("Scripts", required: false)
+
+    <!-- Script propio (SIEMPRE al final) -->
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+
+</body>
+</html>

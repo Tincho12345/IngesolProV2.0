@@ -1,0 +1,32 @@
+﻿@{
+    ViewData["Title"] = "Acceso restringido";
+}
+
+<style>
+    .acceso-restringido-bg {
+        min-height: 100vh;
+        background: url('/images/ituzaingo.jpg') no-repeat center center fixed;
+        background-size: cover;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .acceso-card {
+        background: rgba(255, 255, 255, 0.9);
+        padding: 30px 40px;
+        border-radius: 12px;
+        max-width: 500px;
+        width: 100%;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+</style>
+
+<div class="acceso-restringido-bg">
+    <div class="acceso-card text-center">
+        <h4 class="text-warning mb-3">⚠️ Empresa no autorizada</h4>
+        <p class="mb-0">
+            Esta empresa no posee acceso al sistema <strong>INGESOL</strong>.
+        </p>
+    </div>
+</div>

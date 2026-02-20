@@ -1,4 +1,5 @@
-﻿using ApiIngesol.Repository.IRepository;
+﻿using ApiIngesol.Repository;
+using ApiIngesol.Repository.IRepository;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq.Expressions;
@@ -19,6 +20,7 @@ public abstract class GenericController<TEntity, TDto, TReadto>(IService<TEntity
 {
     protected readonly IService<TEntity> _service = service;
     protected readonly IMapper _mapper = mapper;
+    protected virtual string? Includes => null;
 
     /// <summary>
     /// 📄 Obtiene todos los registros.
@@ -26,8 +28,18 @@ public abstract class GenericController<TEntity, TDto, TReadto>(IService<TEntity
     [HttpGet]
     public virtual async Task<IActionResult> GetAll([FromQuery] string? filter)
     {
-        var list = await _service.GetAllAsync(filter: filter ?? "");
-        return Ok(list);
+        var entities = await _service.GetAllAsync(
+            Includes ?? "",
+            filter ?? ""
+        );
+
+        var dtos = await MapperHelper.MapToDtoListAsync<TEntity, TReadto>(
+            _mapper,
+            entities,
+            filter
+        );
+
+        return Ok(dtos);
     }
 
     /// <summary>

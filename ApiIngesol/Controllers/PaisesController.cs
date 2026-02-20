@@ -11,13 +11,5 @@ namespace ApiIngesol.Controllers;
 public class PaisesController(IService<Pais> service, IMapper mapper)
     : GenericController<Pais, PaisDto, PaisDto>(service, mapper)
 {
-    [HttpGet]
-    public override async Task<IActionResult> GetAll([FromQuery] string? filter)
-    {
-        var entities = await _service.GetAllAsync();
-        var dtos = await MapperHelper.MapToDtoListAsync<Pais, PaisDto>(_mapper, entities, filter);
-        return Ok(dtos);
-    }
-
     protected override Guid GetEntityId(Pais entity) => entity.Id;
 }

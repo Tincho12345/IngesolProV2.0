@@ -1,5 +1,6 @@
 ﻿using ApiIngesol.Controllers.Base;
 using ApiIngesol.Models.Viatico;
+using ApiIngesol.Repository;
 using ApiIngesol.Repository.IRepository;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
@@ -26,7 +27,8 @@ public class RegistrosViaticosController(
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
         if (userRole == "👤 Empleados" && userId != null)
-            entities = entities.Where(x => x.UserId.ToString() == userId).ToList();
+            entities = entities
+                .Where(x => x.UserId.ToString() == userId);
 
         var dtos = await MapperHelper.MapToDtoListAsync<RegistroViatico, RegistroViaticoReadDto>(
             _mapper,

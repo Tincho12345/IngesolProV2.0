@@ -5,6 +5,7 @@ using AutoMapper;
 using ApiIngesol.Models;
 using ApiIngesol.Models.Users;
 using Microsoft.AspNetCore.Identity;
+using ApiIngesol.Repository;
 
 namespace ApiIngesol.Controllers
 {
@@ -39,9 +40,7 @@ namespace ApiIngesol.Controllers
             }
 
             // 🔥 ORDENAR POR NumeroOrden DESC
-            dtos = dtos
-                .OrderByDescending(d => d.NumeroOrden)
-                .ToList();
+            dtos = dtos.OrderByDescending(d => d.NumeroOrden);
 
             return Ok(dtos);
         }

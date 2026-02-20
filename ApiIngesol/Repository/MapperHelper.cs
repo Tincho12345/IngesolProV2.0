@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-
+namespace ApiIngesol.Repository;
 public static class MapperHelper
 {
     // 🔹 Mapeo genérico + filtro (para entidades simples)

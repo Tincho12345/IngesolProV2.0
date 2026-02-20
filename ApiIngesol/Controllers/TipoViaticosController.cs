@@ -1,5 +1,6 @@
 ﻿using ApiIngesol.Controllers.Base;
 using ApiIngesol.Models.Viatico;
+using ApiIngesol.Repository;
 using ApiIngesol.Repository.IRepository;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;

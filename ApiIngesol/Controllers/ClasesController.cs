@@ -3,6 +3,7 @@ using ApiIngesol.Controllers.Base;
 using Microsoft.AspNetCore.Mvc;
 using ApiIngesol.Models.Materiales;
 using AutoMapper;
+using ApiIngesol.Repository;
 
 namespace ApiIngesol.Controllers;
 

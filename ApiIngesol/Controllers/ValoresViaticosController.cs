@@ -3,6 +3,7 @@ using ApiIngesol.Controllers.Base;
 using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
 using ApiIngesol.Models.Viatico;
+using ApiIngesol.Repository;
 
 namespace ApiIngesol.Controllers;
 

@@ -292,20 +292,35 @@ export async function cargarDataTable(
                     });
 
                     if (!response.ok) throw new Error();
+
+                    const table = $('#tblList').DataTable();
+                    const row = table.row($(star).closest('tr'));
+
+                    if (row.any()) {
+                        const rowData = row.data();
+
+                        // 🔹 Actualizar propiedad correcta
+                        rowData.isFavorite = nuevoValor;
+
+                        // 🔹 Refrescar fila sin redibujar toda la tabla
+                        row.data(rowData).draw(false);
+                    }
+
                     Swal.fire({
                         toast: true,
                         position: 'top-end',
                         icon: 'success',
-                        title: nuevoValor ? 'Marcado como favorito ⭐' : 'Quitado de favoritos',
+                        title: nuevoValor
+                            ? 'Marcado como favorito ⭐'
+                            : 'Quitado de favoritos',
                         showConfirmButton: false,
                         timer: 1500,
                         timerProgressBar: true,
-                        didClose: () => {
-                            desbloquearTabla();
-                        }
+                        didClose: desbloquearTabla
                     });
 
-                } catch {
+                } 
+                 catch {
                     star.classList.toggle('text-warning', valorActual);
                     star.classList.toggle('text-secondary', !valorActual);
                     star.dataset.value = valorActual;

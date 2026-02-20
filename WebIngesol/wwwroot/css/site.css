@@ -1,4 +1,14 @@
-﻿html {
+﻿/* 🔥 FIX AUTOFILL CHROME */
+input.glass-input:-webkit-autofill,
+input.glass-input:-webkit-autofill:hover,
+input.glass-input:-webkit-autofill:focus,
+input.glass-input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 1000px rgba(255, 255, 255, 0.08) inset !important;
+    box-shadow: 0 0 0 1000px rgba(255, 255, 255, 0.08) inset !important;
+    -webkit-text-fill-color: #ffffff !important;
+    caret-color: #ffffff;
+    transition: background-color 5000s ease-in-out 0s;
+}html {
     font-size: 14px;
     position: relative;
     min-height: 100%;

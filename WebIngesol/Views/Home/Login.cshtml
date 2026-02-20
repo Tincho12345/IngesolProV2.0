@@ -63,7 +63,7 @@
             font-weight: 500;
         }
 
-        input {
+        input:not(.glass-input) {
             width: 100%;
             padding: 0.75rem;
             border: 1px solid #ccc;
@@ -139,16 +139,6 @@
             color: #ccc;
         }
 
-        #togglePassword {
-            position: absolute;
-            top: 55%;
-            right: 15px;
-            transform: translateY(-50%);
-            cursor: pointer;
-            color: #888;
-            margin-top: 11px;
-        }
-
         .btn-group-login {
             display: flex;
             justify-content: space-between;
@@ -172,6 +162,91 @@
                 text-decoration: underline;
                 color: #457b9d;
             }
+
+        /* CONTENEDOR GENERAL DEL FORM */
+        .login-container {
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            background: rgba(0, 0, 0, 0.35);
+            padding: 40px;
+            border-radius: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* INPUT ESTILO BOTÓN */
+        .glass-input {
+            width: 100%;
+            padding: 14px 50px 14px 20px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1.5px solid rgba(255, 255, 255, 0.6);
+            border-radius: 50px;
+            color: #fff;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+            /* Placeholder */
+            .glass-input::placeholder {
+                color: rgba(255, 255, 255, 0.6);
+            }
+
+            /* Hover */
+            .glass-input:hover {
+                background: rgba(255, 255, 255, 0.12);
+            }
+
+            /* Focus (igual que botones activos) */
+            .glass-input:focus {
+                outline: none;
+                background: rgba(255, 255, 255, 0.18);
+                border: 1.5px solid #ffffff;
+                box-shadow: 0 0 20px rgba(255, 255, 255, 0.25);
+            }
+
+        /* ICONO OJO */
+        .glass-input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 20px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+        }
+
+            .toggle-password:hover {
+                color: #fff;
+            }
+
+        .glass-input:focus {
+            transform: scale(1.02);
+        }
+
+        .form-control.glass-input {
+            background: rgba(255, 255, 255, 0.08);
+            background-color: rgba(255, 255, 255, 0.08);
+            border: 1.5px solid rgba(255, 255, 255, 0.6);
+            color: #fff;
+        }
+
+            .form-control.glass-input:not(:focus) {
+                background: rgba(255, 255, 255, 0.08);
+            }
+        /* 🔥 FIX AUTOFILL CHROME */
+        input.glass-input:-webkit-autofill,
+        input.glass-input:-webkit-autofill:hover,
+        input.glass-input:-webkit-autofill:focus,
+        input.glass-input:-webkit-autofill:active {
+            -webkit-box-shadow: 0 0 0 1000px rgba(255, 255, 255, 0.08) inset !important;
+            box-shadow: 0 0 0 1000px rgba(255, 255, 255, 0.08) inset !important;
+            -webkit-text-fill-color: #ffffff !important;
+            caret-color: #ffffff;
+            transition: background-color 5000s ease-in-out 0s;
+        }
     </style>
 </head>
 <body>
@@ -183,15 +258,30 @@
         }
 
         <div class="form-group">
-            <label asp-for="NombreUsuario"></label>
-            <input asp-for="NombreUsuario" class="form-control" autocomplete="username" />
+            <label asp-for="NombreUsuario" class="text-white">Usuario</label>
+            <div class="glass-input-wrapper">
+                <input asp-for="NombreUsuario"
+                       class="form-control glass-input"
+                       autocomplete="username"
+                       placeholder="Usuario" />
+            </div>
             <span asp-validation-for="NombreUsuario" class="text-danger"></span>
         </div>
 
         <div class="form-group">
-            <label asp-for="Password"></label>
-            <input asp-for="Password" class="form-control" type="password" id="passwordInput" placeholder="Password" autocomplete="current-password" />
-            <i class="fas fa-eye" id="togglePassword" title="Mostrar/Ocultar contraseña"></i>
+            <label asp-for="Password" class="text-white"></label>
+            <div class="glass-input-wrapper">
+                <input asp-for="Password"
+                       class="form-control glass-input"
+                       type="password"
+                       id="passwordInput"
+                       placeholder="Password"
+                       autocomplete="current-password" />
+
+                <i class="fas fa-eye toggle-password"
+                   id="togglePassword"
+                   title="Mostrar/Ocultar contraseña"></i>
+            </div>
             <span asp-validation-for="Password" class="text-danger"></span>
         </div>
 

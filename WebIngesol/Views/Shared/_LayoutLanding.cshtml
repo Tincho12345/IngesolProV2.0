@@ -34,54 +34,48 @@
 
     <!-- HEADER -->
     <header id="header" class="header fixed-top">
-        <div class="container-fluid container-xl">
+        <div class="container-xl d-flex align-items-center justify-content-between">
 
-            <div class="d-flex align-items-center justify-content-between">
+            <!-- LOGO -->
+            <a class="navbar-brand d-flex align-items-center"
+               asp-area=""
+               asp-controller="Home"
+               asp-action="Index">
+                <img src="/LogoIngesol.png"
+                     alt="Logo Ingesol"
+                     class="logo-hover-effect"
+                     style="width:200px;height:40px;">
+            </a>
 
-                <!-- IZQUIERDA: LOGO -->
-                <div class="d-flex align-items-center">
-                    <a class="navbar-brand"
-                       asp-area=""
-                       asp-controller="Home"
-                       asp-action="Index">
-                        <img src="/LogoIngesol.png"
-                             alt="Logo"
-                             class="logo-hover-effect"
-                             style="width: 200px; height: 40px; margin-left: 15px;" />
-                    </a>
+            <!-- NAV DESKTOP -->
+            <nav id="navmenu"
+                 class="navmenu d-none d-xl-flex flex-grow-1 justify-content-center">
+                <ul class="d-flex mb-0">
+                    <li><a href="#hero" class="active">Home</a></li>
+                    <li><a href="#about">Empresa</a></li>
+                    <li><a href="#features">Servicios</a></li>
+                    <li><a href="#portfolio">Proyectos</a></li>
+                    <li><a href="#contact">Contacto</a></li>
+                </ul>
+            </nav>
+
+            <!-- DERECHA DESKTOP -->
+            <div class="d-none d-xl-flex align-items-center gap-3">
+                <div class="social-links d-flex gap-3">
+                    <a href="#"><i class="bi bi-facebook"></i></a>
+                    <a href="#"><i class="bi bi-twitter-x"></i></a>
+                    <a href="#"><i class="bi bi-instagram"></i></a>
                 </div>
 
-                <!-- CENTRO: NAV -->
-                <nav id="navmenu"
-                     class="navmenu d-flex justify-content-center flex-grow-1">
-                    <ul class="d-flex mb-0">
-                        <li><a href="#hero" class="active">Home</a></li>
-                        <li><a href="#about">Empresa</a></li>
-                        <li><a href="#features">Servicios</a></li>
-                        <li><a href="#portfolio">Proyectos</a></li>
-                        <li><a href="#contact">Contacto</a></li>
-                    </ul>
-
-                    <!-- MOBILE -->
-                    <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
-                </nav>
-
-                <!-- DERECHA: REDES + LOGIN -->
-                <div class="d-flex align-items-center gap-4">
-                    <div class="social-links d-flex gap-3">
-                        <a href="#"><i class="bi bi-facebook"></i></a>
-                        <a href="#"><i class="bi bi-twitter"></i></a>
-                        <a href="#"><i class="bi bi-instagram"></i></a>
-                    </div>
-
-                    <a asp-controller="Home"
-                       asp-action="Login"
-                       class="btn btn-outline-light btn-sm">
-                        Ingresar
-                    </a>
-                </div>
-
+                <a asp-controller="Home"
+                   asp-action="Login"
+                   class="btn btn-outline-light btn-sm">
+                    Ingresar
+                </a>
             </div>
+
+            <!-- MOBILE TOGGLE -->
+            <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
 
         </div>
     </header>

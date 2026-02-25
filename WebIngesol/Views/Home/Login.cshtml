@@ -72,7 +72,7 @@
             background-color: #fff;
         }
 
-            input:focus {
+            input:not(.glass-input):focus {
                 border-color: #457b9d;
                 outline: none;
             }
@@ -249,8 +249,14 @@
         }
     </style>
 </head>
+
 <body>
-    <form asp-controller="Home" asp-action="Login" method="post" class="login-container" novalidate>
+    <form asp-controller="Home"
+          asp-action="Login"
+          method="post"
+          class="login-container"
+          autocomplete="off"
+          novalidate>
         <h2>Iniciar Sesión</h2>
         @if (TempData["error"] != null)
         {
@@ -275,8 +281,8 @@
                        class="form-control glass-input"
                        type="password"
                        id="passwordInput"
-                       placeholder="Password"
-                       autocomplete="current-password" />
+                       autocomplete="current-password"
+                       placeholder="Password" />
 
                 <i class="fas fa-eye toggle-password"
                    id="togglePassword"

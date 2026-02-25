@@ -87,7 +87,7 @@
                 </button>
 
                 <!-- MENÚ CENTRAL -->
-                <div class="collapse navbar-collapse justify-content-center" id="mainNavbar">
+                <div class="collapse navbar-collapse justify-content-between" id="mainNavbar">
                     @if (User.Identity?.IsAuthenticated ?? false)
                     {
                         <ul class="navbar-nav">
@@ -311,46 +311,40 @@
                             }
                         </ul>
                     }
-                </div>
-
-                <!-- USUARIO A LA DERECHA -->
+                
                     <!-- USUARIO A LA DERECHA -->
                     <ul class="navbar-nav ms-auto">
                         @if (User.Identity?.IsAuthenticated ?? false)
                         {
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle d-flex align-items-center gap-2 text-dark"
-                                   href="#"
-                                   id="userDropdown"
-                                   role="button"
-                                   data-bs-toggle="dropdown"
-                                   aria-expanded="false">
-
+                                    href="#"
+                                    id="userDropdown"
+                                    role="button"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false">
                                     <span>Bienvenido: @firstName</span>
-
-
                                     <span class="role-badge">
                                         @rol
                                     </span>
                                     <img src="@profileImageUrl"
-                                         alt="Foto perfil"
-                                         class="rounded-circle user-profile-img" />
+                                            alt="Foto perfil"
+                                            class="rounded-circle user-profile-img" />
                                 </a>
 
                                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                                     <li>
                                         <a class="dropdown-item d-flex justify-content-between align-items-center"
-                                           asp-controller="Home"
-                                           asp-action="EditarPerfil">
+                                            asp-controller="Home"
+                                            asp-action="EditarPerfil">
                                             <span>Editar mis datos</span>
                                             <i class="fas fa-user-edit ms-3"></i>
                                         </a>
                                     </li>
-
                                     <li>
                                         <a class="dropdown-item d-flex justify-content-between align-items-center"
-                                           asp-controller="Home"
-                                           asp-action="Logout">
+                                            asp-controller="Home"
+                                            asp-action="Logout">
                                             <span>Salir</span>
                                             <i class="fas fa-sign-out-alt"></i>
                                         </a>
@@ -359,6 +353,7 @@
                             </li>
                         }
                     </ul>
+            </div>
             </div>
         </nav>
         </div>

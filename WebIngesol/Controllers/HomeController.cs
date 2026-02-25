@@ -46,27 +46,31 @@ public class HomeController : Controller
     [HttpGet]
     public IActionResult Login()
     {
-        return View(new LoginRequest());
+        ModelState.Clear(); // opcional pero prolijo
+        return View();
     }
 
     [HttpPost]
     public async Task<IActionResult> Login(LoginRequest model)
     {
         if (!ModelState.IsValid)
-            return View(model);
+        {
+            TempData["error"] = "Datos inválidos.";
+            return RedirectToAction("Login");
+        }
 
         var respuesta = await _accRepo.LoginAsync(CT.User + "/login", model);
 
         if (respuesta == null || string.IsNullOrWhiteSpace(respuesta.Token))
         {
-            TempData["error"] = respuesta?.Error ?? "Ocurrió un error inesperado.";
-            return View(model);
+            TempData["error"] = respuesta?.Error ?? "Usuario o contraseña incorrectos.";
+            return RedirectToAction("Login");
         }
 
         if (respuesta.CompanyId == null)
         {
             TempData["error"] = "El usuario no tiene una empresa asignada.";
-            return View(model);
+            return RedirectToAction("Login");
         }
 
         // =========================
@@ -76,30 +80,27 @@ public class HomeController : Controller
         HttpContext.Session.SetString("Usuario", respuesta.UserName ?? string.Empty);
         HttpContext.Session.SetString("User", respuesta.UserName ?? string.Empty);
         HttpContext.Session.SetString("ImagePath", respuesta.ImagePath ?? string.Empty);
-        HttpContext.Session.SetString("JWToken", respuesta.Token);
-        HttpContext.Session.SetString("CompanyId", respuesta.CompanyId.ToString());
+        HttpContext.Session.SetString("JWToken", respuesta.Token ?? string.Empty);
+        HttpContext.Session.SetString("CompanyId", respuesta.CompanyId?.ToString() ?? string.Empty);
 
-        if (respuesta.Roles != null && respuesta.Roles.Any())
+        if (respuesta.Roles?.Count > 0)
         {
-            HttpContext.Session.SetString("Role", respuesta.Roles.First());
+            HttpContext.Session.SetString("Role", respuesta.Roles[0]);
         }
 
-        // =========================
-        // CLAIMS
-        // =========================
         var claims = new List<Claim>
     {
-        new Claim(ClaimTypes.NameIdentifier, respuesta.Id),
-        new Claim(ClaimTypes.Name, respuesta.UserName ?? model.NombreUsuario),
-        new Claim("JWT", respuesta.Token),
-        new Claim("CompanyId", respuesta.CompanyId.ToString())
+        new(ClaimTypes.NameIdentifier, respuesta.Id ?? string.Empty),
+        new(ClaimTypes.Name, respuesta.UserName ?? model.NombreUsuario ?? string.Empty),
+        new("JWT", respuesta.Token ?? string.Empty),
+        new("CompanyId", respuesta.CompanyId?.ToString() ?? string.Empty)
     };
 
-        if (respuesta.Roles != null)
+        if (respuesta.Roles?.Count > 0)
         {
             foreach (var rol in respuesta.Roles)
             {
-                claims.Add(new Claim(ClaimTypes.Role, rol));
+                claims.Add(new(ClaimTypes.Role, rol));
             }
         }
 
@@ -113,9 +114,6 @@ public class HomeController : Controller
             new ClaimsPrincipal(identity)
         );
 
-        // =========================
-        // REDIRECCIÓN (GUID REAL)
-        // =========================
         return RedirectToAction(
             "Index",
             "Home",
@@ -208,7 +206,7 @@ public class HomeController : Controller
             ImagePath = profileImageUrl
         };
 
-        return View(model);
+        return RedirectToAction("Login");
     }
 
     // =========================

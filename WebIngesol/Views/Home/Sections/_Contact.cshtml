@@ -1,0 +1,73 @@
+﻿<!-- CONTACT -->
+<section id="contact" class="hero section dark-background">
+    <div class="hero-content">
+        <div class="container position-relative">
+
+            <div class="row justify-content-center text-center mb-5">
+                <div class="col-lg-8">
+                    <div class="hero-glass-card" data-aos="fade-up">
+                        <span class="subtitle">Contacto</span>
+                        <h2>Hablemos de tu Proyecto</h2>
+                        <p>
+                            Contactanos para recibir asesoramiento
+                            o solicitar una propuesta técnica.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="glass-card">
+                        <form id="contactForm" method="post">
+                            @Html.AntiForgeryToken()
+
+                            <!-- CAMPOS VISIBLES -->
+                            <input type="text"
+                                   name="Nombre"
+                                   class="form-control mb-3"
+                                   placeholder="Nombre Proyecto"
+                                   required />
+
+                            <input type="email"
+                                   name="Email"
+                                   class="form-control mb-3"
+                                   placeholder="Email"
+                                   required />
+
+                            <input type="text"
+                                   name="Telefono"
+                                   class="form-control mb-3"
+                                   placeholder="Teléfono (opcional)" />
+
+                            <input type="text"
+                                   name="Ubicacion"
+                                   class="form-control mb-3"
+                                   placeholder="Ubicación (opcional)" />
+
+                            <textarea name="Mensaje"
+                                      class="form-control mb-3"
+                                      rows="4"
+                                      placeholder="Mensaje"
+                                      required></textarea>
+
+                            <!-- CAMPOS OCULTOS → MVC -->
+                            <input type="hidden" name="EtapaProyecto" value="Consulta inicial" />
+                            <input type="hidden" name="TipoProyecto" value="Profesional" />
+                            <input type="hidden" name="Estado" value="Nuevo" />
+
+                            <!-- CAMPOS OCULTOS → EMAILJS -->
+                            <input type="hidden" name="name" />
+                            <input type="hidden" name="email" />
+                            <textarea name="message" hidden></textarea>
+
+                            <button type="submit" class="btn btn-outline-warning w-100">
+                                Enviar Consulta
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>

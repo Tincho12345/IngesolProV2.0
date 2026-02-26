@@ -32,27 +32,6 @@ namespace ApiIngesol.Repository
                 .ToListAsync();
         }
 
-        //// =========================================================
-        //// 🔎 GET ALL WITH INCLUDES (INTERFAZ)
-        //// =========================================================
-        //public async Task<IEnumerable<T>> GetAllWithIncludesAsync(params string[] includeProperties)
-        //{
-        //    var includes = string.Join(",", includeProperties);
-        //    return await BuildQuery(includes, null)
-        //        .ToListAsync();
-        //}
-
-        // =========================================================
-        // 🔎 GET ALL CON FILTRO (USADO POR SERVICE)
-        // =========================================================
-        //public async Task<IEnumerable<T>> GetAllFilteredAsync(
-        //    string includeProperties,
-        //    string filter)
-        //{
-        //    return await BuildQuery(includeProperties, filter)
-        //        .ToListAsync();
-        //}
-
         // =========================================================
         // 🔎 GET BY ID
         // =========================================================

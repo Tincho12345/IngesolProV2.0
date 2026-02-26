@@ -6,6 +6,9 @@
 
     <title>INGESOL</title>
 
+    <!-- Estilos propios -->
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+
     <!-- Favicons -->
     <link rel="icon" href="~/assets/img/favicon.ico" />
     <link rel="apple-touch-icon" href="~/assets/img/apple-touch-icon.png" />
@@ -24,59 +27,121 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-
-
-    <!-- Main CSS -->
+    <!-- Main CSS Landing -->
     <link rel="stylesheet" href="~/assets/css/main.css" asp-append-version="true" />
 </head>
 
 <body class="index-page">
-
     <!-- HEADER -->
     <header id="header" class="header fixed-top">
-        <div class="container-xl d-flex align-items-center justify-content-between">
+        <div class="nav-wrap">
+            <nav class="navbar navbar-expand-md navbar-dark">
 
-            <!-- LOGO -->
-            <a class="navbar-brand d-flex align-items-center"
-               asp-area=""
-               asp-controller="Home"
-               asp-action="Index">
-                <img src="/LogoIngesol.png"
-                     alt="Logo Ingesol"
-                     class="logo-hover-effect"
-                     style="width:200px;height:40px;">
-            </a>
+                <div class="container-fluid d-flex align-items-center justify-content-between" style="background-color: transparent;">
 
-            <!-- NAV DESKTOP -->
-            <nav id="navmenu"
-                 class="navmenu d-none d-xl-flex flex-grow-1 justify-content-center">
-                <ul class="d-flex mb-0">
-                    <li><a href="#hero" class="active">Home</a></li>
-                    <li><a href="#about">Empresa</a></li>
-                    <li><a href="#features">Servicios</a></li>
-                    <li><a href="#portfolio">Proyectos</a></li>
-                    <li><a href="#contact">Contacto</a></li>
-                </ul>
-            </nav>
+                    <!-- LOGO -->
+                    <div class="d-flex align-items-center">
+                        <a class="navbar-brand"
+                           asp-area=""
+                           asp-controller="Home"
+                           asp-action="Index">
+                            <img src="/LogoIngesol.png"
+                                 alt="Logo"
+                                 class="logo-hover-effect"
+                                 style="width: 200px; height: 40px; margin-left: 15px;" />
+                        </a>
+                    </div>
 
-            <!-- DERECHA DESKTOP -->
-            <div class="d-none d-xl-flex align-items-center gap-3">
-                <div class="social-links d-flex gap-3">
-                    <a href="#"><i class="bi bi-facebook"></i></a>
-                    <a href="#"><i class="bi bi-twitter-x"></i></a>
-                    <a href="#"><i class="bi bi-instagram"></i></a>
+                    <!-- HAMBURGUESA -->
+                    <button class="navbar-toggler"
+                            type="button"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#mainNavbar"
+                            aria-controls="mainNavbar"
+                            aria-expanded="false"
+                            aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+
+                    <!-- MENÚ -->
+                    <div class="collapse navbar-collapse justify-content-between" id="mainNavbar">
+
+                        <ul class="navbar-nav mx-auto">
+
+                            <li class="nav-item">
+                                <a class="nav-link text-dark active" href="#hero">Home</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" href="#about">Empresa</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" href="#clients">Clientes</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" href="#features">Servicios</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" href="#features-cards">Tarjeta de Servicios</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" href="#portfolio">Proyectos</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" href="#cta-testimonials">Testimonios</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" href="#services">Servicios Extra</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" href="#pricing">Planes</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" href="#faq">Que Hacemos?</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" href="#portfolio">Portfolio</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" href="#team">Equipo</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" href="#contact">Contacto</a>
+                            </li>
+
+                        </ul>
+
+                        <!-- DERECHA -->
+                        <div class="d-flex align-items-center gap-3 ms-xl-3">
+
+                            <div class="d-flex gap-3">
+                                <a href="#"><i class="bi bi-facebook"></i></a>
+                                <a href="#"><i class="bi bi-twitter-x"></i></a>
+                                <a href="#"><i class="bi bi-instagram"></i></a>
+                            </div>
+
+                            <a asp-controller="Home"
+                               asp-action="Login"
+                               class="btn btn-outline-light btn-sm">
+                                Ingresar
+                            </a>
+
+                        </div>
+
+                    </div>
                 </div>
-
-                <a asp-controller="Home"
-                   asp-action="Login"
-                   class="btn btn-outline-light btn-sm">
-                    Ingresar
-                </a>
-            </div>
-
-            <!-- MOBILE TOGGLE -->
-            <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
-
+            </nav>
         </div>
     </header>
 
@@ -86,49 +151,18 @@
     </main>
 
     <!-- FOOTER -->
-    <footer id="footer" class="footer dark-background">
-        <div class="container position-relative">
-
-            <div class="row gy-5">
-
-                <div class="col-lg-4">
-                    <div class="hero-glass-card">
-                        <h4>INGESOL</h4>
-                        <p>
-                            Soluciones integrales de ingeniería industrial,
-                            enfocadas en seguridad, eficiencia y cumplimiento normativo.
-                        </p>
-                    </div>
-                </div>
-
-                <div class="col-lg-4">
-                    <div class="hero-glass-card">
-                        <h4>Contacto</h4>
-                        <p>
-                            Buenos Aires, Argentina<br />
-                            +54 11 5555-1234<br />
-                            contacto@ingesol.com
-                        </p>
-                    </div>
-                </div>
-
-                <div class="col-lg-4">
-                    <div class="hero-glass-card">
-                        <h4>Seguinos</h4>
-                        <div class="social-links d-flex gap-3">
-                            <a href="#"><i class="bi bi-linkedin"></i></a>
-                            <a href="#"><i class="bi bi-instagram"></i></a>
-                            <a href="#"><i class="bi bi-facebook"></i></a>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-
-            <div class="text-center mt-4">
-                <p class="mb-0">© INGESOL — Todos los derechos reservados</p>
-            </div>
-
+    <footer class="border-top footer text-muted" style="background: rgba(0, 0, 0, 0.6); padding: 10px 0;">
+        <div class="container text-center">
+            <span style="color: #ffffff; font-weight: bold;">&copy; 2025 - WebIngesol</span> |
+            <a asp-controller="Home"
+               asp-action="Privacy"
+               style="color: #dddddd; text-decoration: none;">
+                Política de Privacidad
+            </a>
+            <br>
+            <small style="color: #bbbbbb; font-style: italic;">
+                Desarrollo y diseño: Carlos M. Espíndola
+            </small>
         </div>
     </footer>
 
@@ -146,11 +180,55 @@
 
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-    <!-- Main JS -->
-    <script src="~/assets/js/main.js" asp-append-version="true"></script>
-
     @RenderSection("Scripts", required: false)
+
+    <!-- Main JS Landing -->
+    <script src="~/assets/js/main.js" asp-append-version="true"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const links = document.querySelectorAll("#header .nav-link");
+            const navbarCollapse = document.getElementById("mainNavbar");
+
+            function setActiveLink() {
+                const currentHash = window.location.hash || "#hero";
+
+                links.forEach(link => {
+                    link.classList.remove("active");
+
+                    if (link.getAttribute("href") === currentHash) {
+                        link.classList.add("active");
+                    }
+                });
+            }
+
+            // al cargar
+            setActiveLink();
+
+            links.forEach(link => {
+                link.addEventListener("click", function () {
+
+                    // Active
+                    links.forEach(l => l.classList.remove("active"));
+                    this.classList.add("active");
+
+                    // 👇 CERRAR MENÚ SI ESTÁ ABIERTO
+                    if (navbarCollapse.classList.contains("show")) {
+                        const bsCollapse = bootstrap.Collapse.getInstance(navbarCollapse)
+                            || new bootstrap.Collapse(navbarCollapse);
+
+                        bsCollapse.hide();
+                    }
+                });
+            });
+
+            window.addEventListener("hashchange", setActiveLink);
+
+        });
+    </script>
+
+    <!-- Script propio (SIEMPRE al final) -->
+    <script src="~/js/site.js" asp-append-version="true"></script>
 
 </body>
 </html>

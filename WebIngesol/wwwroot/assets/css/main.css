@@ -1002,8 +1002,7 @@ section,
     position: relative;
     display: flex;
     align-items: center;
-    min-height: 100vh;
-    padding: 40px 0 60px;
+    padding: 5px 0 5px;
     overflow: hidden;
 }
 
@@ -1097,35 +1096,49 @@ section,
         }
 
 
+/* ============================= */
+/* HERO RESPONSIVE REFACTORIZADO */
+/* ============================= */
+
+/* Tablets */
 @media (max-width: 992px) {
-    .hero {
-        min-height: 80vh;
-        padding: 80px 0;
-    }
-
+    .hero,
     .hero-content {
-        min-height: 80vh;
+        min-height: auto;
+        padding: 40px 0;
     }
 }
 
+/* Móviles */
 @media (max-width: 768px) {
-    .hero h1 {
-        font-size: 2.5rem;
+    .hero,
+    .hero-content {
+        padding: 30px 0;
     }
 
-    .hero p {
-        font-size: 1.1rem;
-        margin-bottom: 2rem;
-    }
+        .hero h1 {
+            font-size: 2.3rem;
+        }
+
+        .hero p {
+            font-size: 1.05rem;
+            margin-bottom: 1.5rem;
+        }
 }
 
+/* Móviles pequeños */
 @media (max-width: 576px) {
-    .hero h1 {
-        font-size: 2rem;
+    .hero,
+    .hero-content {
+        padding: 20px 0;
     }
+
+        .hero h1 {
+            font-size: 1.9rem;
+        }
 
     .hero-buttons .btn {
-        padding: 0.75rem 1.5rem;
+        padding: 0.65rem 1.3rem;
         font-size: 0.9rem;
     }
 }
@@ -4487,7 +4500,6 @@ section,
 }
 /* HERO BASE */
 .hero {
-    min-height: 100vh;
     position: relative;
     display: flex;
     flex-direction: column;
@@ -4523,7 +4535,7 @@ section,
 .hero-content {
     position: relative;
     z-index: 3;
-    padding: 3rem 0 3rem;
+    padding: 5px 0 5px;
 }
 
 /* HERO GLASS CARD */
@@ -4584,7 +4596,7 @@ section,
 .glass-cards-section {
     position: relative;
     z-index: 3;
-    padding: 4rem 1.5rem 5rem;
+    padding: 5px 0 5px;
 }
 
 .glass-card {
@@ -4727,4 +4739,182 @@ body.index-page {
         flex-direction: column;
         gap: 15px;
     }
+}
+
+/* =================================
+   BTN REGISTER — PREMIUM FINAL
+================================= */
+.btn-register {
+    display: inline-block;
+    width: 100%;
+    margin-top: 1.5rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-align: center;
+    text-decoration: none;
+    color: #ffffff;
+    position: relative;
+    transition: color 0.3s ease;
+}
+
+    /* Línea animada elegante */
+    .btn-register::after {
+        content: "";
+        position: absolute;
+        left: 50%;
+        bottom: -4px;
+        width: 0%;
+        height: 2px;
+        background-color: #457b9d;
+        transition: all 0.3s ease;
+        transform: translateX(-50%);
+    }
+
+    /* Hover premium */
+    .btn-register:hover {
+        color: #457b9d;
+    }
+
+        .btn-register:hover::after {
+            width: 100%;
+        }
+
+/* Ajuste cuando está dentro de flex (header/redes) */
+.d-flex .btn-register {
+    width: auto;
+    margin-top: 0;
+}
+
+/* ========================= */
+/* CLIENTS SECTION COMPACTA */
+/* ========================= */
+
+#clients.hero.section {
+    padding: 40px 0; /* antes enorme */
+    min-height: auto;
+}
+
+#clients .hero-content {
+    padding: 0;
+}
+
+#clients .container {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+/* Reduce espacio del título */
+#clients .row.mb-5 {
+    margin-bottom: 1.5rem !important;
+}
+
+/* Ajuste mobile */
+@media (max-width: 768px) {
+    #clients.hero.section {
+        padding: 30px 0;
+    }
+
+    #clients .row.mb-5 {
+        margin-bottom: 1rem !important;
+    }
+}
+
+/* Contenedor general de la sección */
+#contact .hero-content {
+    padding-top: 20px; /* antes podía ser mucho más */
+    padding-bottom: 20px;
+}
+
+/* Tarjeta superior con título */
+#contact .hero-glass-card {
+    margin-bottom: 15px; /* reduce el espacio debajo del título */
+    padding: 15px 20px; /* reduce padding interno */
+}
+
+    #contact .hero-glass-card h2 {
+        margin-top: 5px; /* reduce espacio arriba del título */
+        margin-bottom: 10px; /* reduce espacio debajo del título */
+    }
+
+    #contact .hero-glass-card p {
+        margin-top: 5px;
+        margin-bottom: 0;
+    }
+
+/* Formulario */
+#contact .glass-card {
+    padding: 15px 20px; /* menos padding interno */
+    margin-bottom: 15px;
+}
+
+/* Campos del formulario */
+#contact input.form-control,
+#contact textarea.form-control {
+    margin-bottom: 10px; /* reduce espacio entre campos */
+    padding: 8px 12px; /* campos más compactos */
+}
+
+/* Botón enviar */
+#contact button.btn {
+    padding: 8px 0; /* más compacto verticalmente */
+}
+
+/* ===============================
+   BOTÓN PREMIUM GLOBAL (Glass Pill) con Glow en Hover
+================================= */
+
+/* Base para todos los botones tipo glass-pill */
+.btn-glass {
+    border-radius: 25px; /* forma pill */
+    padding: 0.6rem 1.8rem; /* tamaño cómodo */
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    transition: all 0.35s ease;
+    backdrop-filter: blur(4px); /* efecto vidrio */
+    cursor: pointer;
+    display: inline-block;
+    text-align: center;
+    outline: none;
+}
+
+/* Variante: Outline claro */
+.btn-glass-outline {
+    background: transparent;
+    color: #ffffff;
+    border: 2px solid rgba(255, 255, 255, 0.45);
+    position: relative;
+    z-index: 0;
+}
+
+    .btn-glass-outline:hover {
+        background: #ffffff; /* fondo blanco */
+        color: #000000; /* texto negro */
+        border-color: #ffffff;
+        transform: translateY(-2px);
+        /* Glow premium */
+        box-shadow: 0 4px 20px rgba(255, 255, 255, 0.5), 0 0 10px rgba(255, 255, 255, 0.3) inset;
+    }
+
+/* Variante: Fondo oscuro semi-transparente */
+.btn-glass-dark {
+    background: rgba(0, 0, 0, 0.50);
+    color: #fff;
+    border: 2px solid rgba(0, 0, 0, 0.8);
+}
+
+    .btn-glass-dark:hover {
+        background: #000;
+        color: #fff;
+        border-color: #000;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 20px rgba(255, 255, 255, 0.2), 0 0 10px rgba(255, 255, 255, 0.1) inset;
+    }
+
+.modal-glass {
+    background: rgba(255, 255, 255, 0.25); /* claro y transparente */
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,.35);
 }

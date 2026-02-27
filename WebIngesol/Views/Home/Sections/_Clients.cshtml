@@ -1,6 +1,6 @@
-﻿<!-- Clients Section -->
+﻿@model WebIngesol.Models.VisibleClientsViewModel
+
 <section id="clients" class="hero section dark-background">
-    <!-- CONTENT -->
     <div class="hero-content">
         <div class="container position-relative">
 
@@ -14,34 +14,156 @@
                             Trabajamos junto a organizaciones de distintos sectores,
                             brindando soluciones de ingeniería confiables, seguras y eficientes.
                         </p>
+
+                        <button class="btn-glass btn-glass-outline px-4 mt-3"
+                                data-bs-toggle="modal"
+                                data-bs-target="#uploadClienteModal">
+                            Agregar Cliente
+                        </button>
                     </div>
                 </div>
             </div>
 
-            <!-- Clients Logos -->
+            <!-- Clients Logos Dinámicos -->
             <div class="row justify-content-center gy-4">
+                @if (Model.PuedeVer && Model.Images.Length > 0)
+                {
+                    int delayBase = 100;
+                    int delayIncrement = 50;
 
-                <div class="col-xl-2 col-lg-3 col-md-4 col-6" data-aos="zoom-in" data-aos-delay="100">
-                    <div class="glass-card h-100 d-flex align-items-center justify-content-center p-3">
-                        <img src="~/assets/img/clients/Captura.webp" class="img-fluid" alt="Cliente 1">
-                    </div>
-                </div>
+                    for (int i = 0; i < Model.Images.Length; i++)
+                    {
+                        var file = Model.Images[i];
+                        var ext = System.IO.Path.GetExtension(file)?.ToLower();
 
-                <div class="col-xl-2 col-lg-3 col-md-4 col-6" data-aos="zoom-in" data-aos-delay="150">
-                    <div class="glass-card h-100 d-flex align-items-center justify-content-center p-3">
-                        <img src="~/assets/img/clients/clients-2.webp" class="img-fluid" alt="Cliente 2">
-                    </div>
-                </div>
-
-                <div class="col-xl-2 col-lg-3 col-md-4 col-6" data-aos="zoom-in" data-aos-delay="200">
-                    <div class="glass-card h-100 d-flex align-items-center justify-content-center p-3">
-                        <img src="~/assets/img/clients/clients-3.webp" class="img-fluid" alt="Cliente 3">
-                    </div>
-                </div>
-
+                        if (ext == ".jpg" || ext == ".jpeg" || ext == ".png" || ext == ".webp" || ext == ".gif")
+                        {
+                            var delay = delayBase + i * delayIncrement;
+                            <div class="col-xl-2 col-lg-3 col-md-4 col-6"
+                                 data-aos="zoom-in"
+                                 data-aos-delay="@delay">
+                                <div class="glass-card h-100 d-flex align-items-center justify-content-center p-3">
+                                    <img src="~/@Model.ImageFolder/@file"
+                                         class="img-fluid"
+                                         alt="@file" />
+                                </div>
+                            </div>
+                        }
+                    }
+                }
+                else
+                {
+                    <p class="text-center text-white-50 mt-4">
+                        No hay clientes para mostrar.
+                    </p>
+                }
             </div>
 
         </div>
     </div>
-
 </section>
+
+<!-- =========================
+     MODAL AGREGAR CLIENTE
+========================= -->
+<div class="modal fade"
+     id="uploadClienteModal"
+     tabindex="-1"
+     aria-labelledby="uploadClienteModalLabel"
+     aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content modal-glass position-relative">
+
+            <span class="modal-close"
+                  data-bs-dismiss="modal"
+                  style="position:absolute; top:10px; right:10px; font-size:30px; color:white; cursor:pointer;">
+                &times;
+            </span>
+
+            <div class="modal-header text-center border-0">
+                <h5 class="modal-title w-100 fw-bold text-white"
+                    id="uploadClienteModalLabel">
+                    Agregar Nuevo Cliente
+                </h5>
+            </div>
+
+            <div class="modal-body">
+                <form asp-controller="VisibleClients"
+                      asp-action="Upload"
+                      method="post"
+                      enctype="multipart/form-data">
+
+                    @Html.AntiForgeryToken()
+
+                    <input type="text"
+                           name="nombre"
+                           class="form-control mb-3"
+                           placeholder="Nombre de la empresa"
+                           required />
+
+                    <input type="file"
+                           name="imageFile"
+                           class="form-control mb-3"
+                           accept="image/*"
+                           required />
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-white">
+                            Links de redes sociales (opcional)
+                        </label>
+
+                        <div class="d-flex flex-column gap-2">
+
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-facebook"></i>
+                                </span>
+                                <input type="url"
+                                       name="facebook"
+                                       class="form-control"
+                                       placeholder="Facebook URL" />
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-twitter-x"></i>
+                                </span>
+                                <input type="url"
+                                       name="twitter"
+                                       class="form-control"
+                                       placeholder="X / Twitter URL" />
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-instagram"></i>
+                                </span>
+                                <input type="url"
+                                       name="instagram"
+                                       class="form-control"
+                                       placeholder="Instagram URL" />
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-telegram"></i>
+                                </span>
+                                <input type="url"
+                                       name="telegram"
+                                       class="form-control"
+                                       placeholder="Telegram URL" />
+                            </div>
+
+                        </div>
+                    </div>
+                    <button type="submit"
+                            class="btn-glass btn-glass-outline px-4 w-100 mt-3">
+                        Subir Cliente
+                    </button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>

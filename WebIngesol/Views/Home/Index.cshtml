@@ -1,14 +1,36 @@
-﻿@{
+﻿@using WebIngesol.Models
+@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment Env
+
+@{
     Layout = User.Identity?.IsAuthenticated == true
         ? "~/Views/Shared/_Layout.cshtml"
         : "~/Views/Shared/_LayoutLanding.cshtml";
 
     ViewData["Title"] = "Home";
+
+    const string ClientsFolder = "clients";
+
+    // Usamos System.IO.Path.Combine explícito
+    var clientsPath = System.IO.Path.Combine(Env.WebRootPath, ClientsFolder);
+
+    var images = Directory.Exists(clientsPath)
+        ? Directory.GetFiles(clientsPath)
+        : Array.Empty<string>();
+
+    var clientsModel = new VisibleClientsViewModel
+    {
+        ImageFolder = ClientsFolder,
+        Images = images
+            .Select(img => System.IO.Path.GetFileName(img)) // También explícito
+            .Where(name => !string.IsNullOrEmpty(name))
+            .ToArray(),
+        PuedeVer = images.Length > 0
+    };
 }
 
 <partial name="Sections/_HeroSection" />
 <partial name="Sections/_About" />
-<partial name="Sections/_Clients" />
+<partial name="Sections/_Clients" model="clientsModel" />
 <partial name="Sections/_Features" />
 <partial name="Sections/_Features-Cards" />
 <partial name="Sections/_Cta-Testimonials" />

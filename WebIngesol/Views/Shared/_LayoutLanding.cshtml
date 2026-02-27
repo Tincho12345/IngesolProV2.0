@@ -24,8 +24,6 @@
     <link rel="stylesheet" href="~/assets/vendor/aos/aos.css" />
     <link rel="stylesheet" href="~/assets/vendor/swiper/swiper-bundle.min.css" />
     <link rel="stylesheet" href="~/assets/vendor/glightbox/css/glightbox.min.css" />
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     <!-- Main CSS Landing -->
     <link rel="stylesheet" href="~/assets/css/main.css" asp-append-version="true" />
@@ -126,9 +124,15 @@
                         <div class="d-flex align-items-center gap-3 ms-xl-3">
 
                             <div class="d-flex gap-3">
-                                <a href="#"><i class="bi bi-facebook"></i></a>
-                                <a href="#"><i class="bi bi-twitter-x"></i></a>
-                                <a href="#"><i class="bi bi-instagram"></i></a>
+                                <a href="#" class="btn-register">
+                                    <i class="bi bi-facebook"></i>
+                                </a>
+                                <a href="#" class="btn-register">
+                                    <i class="bi bi-twitter-x"></i>
+                                </a>
+                                <a href="#" class="btn-register">
+                                    <i class="bi bi-instagram"></i>
+                                </a>
                             </div>
 
                             <a asp-controller="Home"
@@ -136,9 +140,7 @@
                                class="btn btn-outline-light btn-sm">
                                 Ingresar
                             </a>
-
                         </div>
-
                     </div>
                 </div>
             </nav>
@@ -180,10 +182,15 @@
 
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     @RenderSection("Scripts", required: false)
+
+    <!-- JS específico del Home -->
+    <script src="~/js/functionsIndexV2.js" asp-append-version="true"></script>
 
     <!-- Main JS Landing -->
     <script src="~/assets/js/main.js" asp-append-version="true"></script>
+
     <script>
         document.addEventListener("DOMContentLoaded", function () {
 
@@ -212,7 +219,7 @@
                     links.forEach(l => l.classList.remove("active"));
                     this.classList.add("active");
 
-                    // 👇 CERRAR MENÚ SI ESTÁ ABIERTO
+                    // CERRAR MENÚ SI ESTÁ ABIERTO
                     if (navbarCollapse.classList.contains("show")) {
                         const bsCollapse = bootstrap.Collapse.getInstance(navbarCollapse)
                             || new bootstrap.Collapse(navbarCollapse);

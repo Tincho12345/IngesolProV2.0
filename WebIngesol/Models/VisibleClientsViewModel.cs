@@ -2,7 +2,9 @@
 
 public class VisibleClientsViewModel
 {
-    public bool PuedeVer { get; set; } = true;
-    public string ImageFolder { get; set; } = "clients";
-    public string[] Images { get; set; } = Array.Empty<string>();
+    public string ImageFolder { get; set; } = string.Empty;
+
+    public string[] Images { get; set; } = [];
+
+    public bool PuedeVer => Images.Length > 0;
 }

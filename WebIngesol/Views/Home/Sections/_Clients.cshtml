@@ -34,39 +34,116 @@
             </div>
 
             <!-- Clients Logos Dinámicos -->
-            <div class="row justify-content-center gy-4">
-                @if (clientes?.Any() == true)
+            <div class="row justify-content-center">
+
+                @if (clientes.Any())
                 {
                     int delayBase = 100;
                     int delayIncrement = 50;
 
-                    @for (int i = 0; i < clientes.Count; i++)
+                    for (int i = 0; i < clientes.Count; i++)
                     {
                         var c = clientes[i];
-                        var delay = delayBase + i * delayIncrement;
+                        var delay = delayBase + (i * delayIncrement);
                         var fileName = GetFileName(c.Imagen);
-                        var filePath = Url.Content(c.Imagen);
+                        var filePath = Url.Content(c.Imagen ?? string.Empty);
 
-                        <div class="col-xl-2 col-lg-3 col-md-4 col-6"
+                        <div class="col-md-3 mb-4"
                              data-aos="zoom-in"
                              data-aos-delay="@delay">
 
-                            <div class="glass-card h-100 d-flex align-items-center justify-content-center p-3">
-                                <img src="@filePath"
-                                     class="img-fluid"
-                                     alt="@fileName" />
-                            </div>
+                            <div class="glass-card h-100">
 
+                                <div class="glass-card-body p-3 text-center d-flex flex-column justify-content-between h-100">
+
+                                    <!-- Imagen -->
+                                    <img src="@filePath"
+                                         class="img-fluid mb-3"
+                                         alt="@fileName"
+                                         style="max-height:150px;" />
+
+                                    <!-- Nombre -->
+                                    @if (!string.IsNullOrWhiteSpace(c.Nombre))
+                                    {
+                                        <h6 class="fw-bold text-white mb-3">
+                                            @c.Nombre
+                                        </h6>
+                                    }
+
+                                    <!-- Redes Sociales -->
+                                    @if (!string.IsNullOrWhiteSpace(c.Facebook) ||
+                                                                !string.IsNullOrWhiteSpace(c.Twitter) ||
+                                                                !string.IsNullOrWhiteSpace(c.Instagram) ||
+                                                                !string.IsNullOrWhiteSpace(c.Telegram))
+                                    {
+                                        <div class="d-flex justify-content-center gap-3 mb-3">
+
+                                            @if (!string.IsNullOrWhiteSpace(c.Facebook))
+                                            {
+                                                <a href="@c.Facebook"
+                                                   target="_blank"
+                                                   class="btn-register">
+                                                    <i class="bi bi-facebook"></i>
+                                                </a>
+                                            }
+
+                                            @if (!string.IsNullOrWhiteSpace(c.Twitter))
+                                            {
+                                                <a href="@c.Twitter"
+                                                   target="_blank"
+                                                   class="btn-register">
+                                                    <i class="bi bi-twitter-x"></i>
+                                                </a>
+                                            }
+
+                                            @if (!string.IsNullOrWhiteSpace(c.Instagram))
+                                            {
+                                                <a href="@c.Instagram"
+                                                   target="_blank"
+                                                   class="btn-register">
+                                                    <i class="bi bi-instagram"></i>
+                                                </a>
+                                            }
+
+                                            @if (!string.IsNullOrWhiteSpace(c.Telegram))
+                                            {
+                                                <a href="@c.Telegram"
+                                                   target="_blank"
+                                                   class="btn-register">
+                                                    <i class="bi bi-telegram"></i>
+                                                </a>
+                                            }
+
+                                        </div>
+                                    }
+
+                                    <!-- Botón Eliminar -->
+                                    <form asp-controller="VisibleClients"
+                                          asp-action="Delete"
+                                          method="post"
+                                          class="delete-client-form">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="fileName" value="@fileName" />
+                                        <button type="submit" class="btn btn-outline-light btn-sm mt-2">
+                                            Eliminar
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
                     }
                 }
                 else
                 {
-                    <p class="text-center text-white-50 mt-4">
-                        No hay clientes para mostrar.
-                    </p>
+                    <div class="col-12">
+                        <p class="text-center text-white-50 mt-4">
+                            No hay clientes para mostrar.
+                        </p>
+                    </div>
                 }
+
             </div>
+        
         </div>
     </div>
 </section>
@@ -165,6 +242,7 @@
                         Subir Cliente
                     </button>
                 </form>
+            
             </div>
         </div>
     </div>

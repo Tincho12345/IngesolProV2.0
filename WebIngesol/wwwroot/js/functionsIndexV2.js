@@ -114,15 +114,13 @@
     // ============================
     async function recargarClientes() {
         try {
-            const response = await fetch("/Home/ClientesPartial"); // <-- nuevo endpoint
+            const response = await fetch("/Home/ClientesPartial");
             if (!response.ok) return;
 
             const html = await response.text();
-            const container = document.querySelector("#clients .hero-content .container");
+            const container = document.getElementById("clients-container");
             if (container) {
                 container.innerHTML = html;
-
-                // Re-inicializar AOS (si lo usas)
                 if (AOS) AOS.refresh();
             }
         } catch (err) {

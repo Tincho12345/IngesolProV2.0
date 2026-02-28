@@ -1,10 +1,9 @@
 ﻿@model List<WebIngesol.Models.VisibleClient>
-
 @{
     string GetFileName(string path) => System.IO.Path.GetFileName(path)?.Split('?')[0] ?? string.Empty;
 }
 
-<div class="row justify-content-center" id="clients-list-inner">
+<div class="row justify-content-center" id="clients-logos">
     @if (Model != null && Model.Any())
     {
         int delayBase = 100;
@@ -20,7 +19,6 @@
             <div class="col-6 col-md-3 mb-4" data-aos="zoom-in" data-aos-delay="@delay">
                 <div class="glass-card" title="@c.Nombre" style="width: 180px; height: 220px; margin: 0 auto;">
                     <div class="glass-card-body p-2 text-center d-flex flex-column justify-content-between h-100">
-
                         <img src="@filePath"
                              class="img-fluid mb-2"
                              alt="@fileName"
@@ -59,7 +57,6 @@
                                 Eliminar
                             </button>
                         </form>
-
                     </div>
                 </div>
             </div>

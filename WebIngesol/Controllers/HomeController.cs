@@ -181,6 +181,13 @@ public class HomeController(
     }
 
     [HttpGet]
+    public IActionResult ClientesPartial()
+    {
+        var clientes = CargarClientes();
+        return PartialView("Sections/_ClientesPartial", clientes);
+    }
+
+    [HttpGet]
     public IActionResult AccessDenied(string returnUrl)
     {
         ViewData["ReturnUrl"] = returnUrl;

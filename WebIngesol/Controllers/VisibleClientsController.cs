@@ -14,19 +14,20 @@ public class VisibleClientsController(IWebHostEnvironment env) : Controller
     };
 
     private static readonly string[] _allowedExtensions =
-        [".jpg", ".jpeg", ".png", ".webp"];
+        [".jpg", ".jpeg", ".png", ".webp", ".jfif"];
 
     // =============================
     // POST: Subir cliente
     // =============================
     [HttpPost]
     public async Task<IActionResult> Upload(
-        IFormFile imageFile,
-        string nombre,
-        string? facebook,
-        string? twitter,
-        string? instagram,
-        string? telegram)
+    IFormFile imageFile,
+    string nombre,
+    string? facebook,
+    string? twitter,
+    string? instagram,
+    string? telegram,
+    string? website) // nuevo parámetro
     {
         if (imageFile == null || imageFile.Length == 0)
             return Redirect(Request.GetTypedHeaders().Referer?.ToString() ?? "/");
@@ -54,7 +55,8 @@ public class VisibleClientsController(IWebHostEnvironment env) : Controller
             Facebook = facebook?.Trim(),
             Twitter = twitter?.Trim(),
             Instagram = instagram?.Trim(),
-            Telegram = telegram?.Trim()
+            Telegram = telegram?.Trim(),
+            Website = website?.Trim() // asignación del nuevo campo
         };
 
         var jsonPath = Path.Combine(folderPath, Path.ChangeExtension(fileName, ".json"));

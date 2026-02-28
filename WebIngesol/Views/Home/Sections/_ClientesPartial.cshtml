@@ -1,0 +1,76 @@
+﻿@model List<WebIngesol.Models.VisibleClient>
+
+@{
+    string GetFileName(string path) => System.IO.Path.GetFileName(path)?.Split('?')[0] ?? string.Empty;
+}
+
+<div class="row justify-content-center" id="clients-list-inner">
+    @if (Model != null && Model.Any())
+    {
+        int delayBase = 100;
+        int delayIncrement = 50;
+
+        for (int i = 0; i < Model.Count; i++)
+        {
+            var c = Model[i];
+            var delay = delayBase + (i * delayIncrement);
+            var fileName = GetFileName(c.Imagen);
+            var filePath = Url.Content(c.Imagen ?? string.Empty);
+
+            <div class="col-6 col-md-3 mb-4" data-aos="zoom-in" data-aos-delay="@delay">
+                <div class="glass-card" title="@c.Nombre" style="width: 180px; height: 220px; margin: 0 auto;">
+                    <div class="glass-card-body p-2 text-center d-flex flex-column justify-content-between h-100">
+
+                        <img src="@filePath"
+                             class="img-fluid mb-2"
+                             alt="@fileName"
+                             style="max-height:120px; max-width:160px; object-fit:contain; margin:0 auto;" />
+
+                        <div class="d-flex justify-content-center gap-2 mb-2">
+                            @if (!string.IsNullOrWhiteSpace(c.Facebook))
+                            {
+                                <a href="@c.Facebook" target="_blank" class="btn-register"><i class="bi bi-facebook"></i></a>
+                            }
+                            @if (!string.IsNullOrWhiteSpace(c.Twitter))
+                            {
+                                <a href="@c.Twitter" target="_blank" class="btn-register"><i class="bi bi-twitter-x"></i></a>
+                            }
+                            @if (!string.IsNullOrWhiteSpace(c.Instagram))
+                            {
+                                <a href="@c.Instagram" target="_blank" class="btn-register"><i class="bi bi-instagram"></i></a>
+                            }
+                            @if (!string.IsNullOrWhiteSpace(c.Telegram))
+                            {
+                                <a href="@c.Telegram" target="_blank" class="btn-register"><i class="bi bi-telegram"></i></a>
+                            }
+                            @if (!string.IsNullOrWhiteSpace(c.Website))
+                            {
+                                <a href="@c.Website" target="_blank" class="btn-register"><i class="bi bi-globe"></i></a>
+                            }
+                        </div>
+
+                        <form asp-controller="VisibleClients"
+                              asp-action="Delete"
+                              method="post"
+                              class="delete-client-form">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="fileName" value="@fileName" />
+                            <button type="submit" class="btn-glass btn-glass-outline px-3 mt-2">
+                                Eliminar
+                            </button>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="col-12">
+            <p class="text-center text-white-50 mt-4">
+                No hay clientes para mostrar.
+            </p>
+        </div>
+    }
+</div>

@@ -8,5 +8,7 @@ public class VisibleClient
     public string? Twitter { get; set; }
     public string? Instagram { get; set; }
     public string? Telegram { get; set; }
-    public string? Website { get; set; } 
+    public string? Website { get; set; }
+    public string? LinkedIn { get; set; }
+    public string? WhatsApp { get; set; }
 }

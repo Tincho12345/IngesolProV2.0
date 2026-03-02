@@ -3,8 +3,8 @@
 
 @{
     var rol = httpAcc.HttpContext?.Session.GetString("Role") ?? "";
+    var isAdmin = rol.Trim() == "🛡️ Admin";
     var clientes = Model?.Where(x => !string.IsNullOrWhiteSpace(x?.Imagen)).ToList();
-    string GetFileName(string path) => System.IO.Path.GetFileName(path)?.Split('?')[0] ?? string.Empty;
 }
 
 <section id="clients" class="hero section dark-background">
@@ -19,16 +19,21 @@
                             Trabajamos junto a organizaciones de distintos sectores,
                             brindando soluciones de ingeniería confiables, seguras y eficientes.
                         </p>
-                        <button class="btn-glass btn-glass-outline px-4 mt-3"
-                                data-bs-toggle="modal"
-                                data-bs-target="#uploadClienteModal">
-                            Agregar Cliente
-                        </button>
+
+                        <!-- BOTÓN INTACTO -->
+                        @if (isAdmin)
+                        {
+                            <button class="btn-glass btn-glass-outline px-4 mt-3"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#uploadClienteModal">
+                                Agregar Cliente
+                            </button>
+                        }
                     </div>
                 </div>
             </div>
 
-            <!-- Aquí se carga el partial -->
+            <!-- PARTIAL -->
             <div id="clients-container">
                 @await Html.PartialAsync("Sections/_ClientesPartial", Model)
             </div>
@@ -36,12 +41,15 @@
     </div>
 </section>
 
-<!-- ========================= MODAL AGREGAR CLIENTE ========================= -->
-<div class="modal fade" id="uploadClienteModal" tabindex="-1" aria-labelledby="uploadClienteModalLabel" aria-hidden="true">
+@if (isAdmin)
+{
+    <!-- ========================= MODAL AGREGAR CLIENTE ========================= -->
+    <div class="modal fade" id="uploadClienteModal" tabindex="-1" aria-labelledby="uploadClienteModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content modal-glass position-relative">
 
-            <span class="modal-close" data-bs-dismiss="modal"
+            <span class="modal-close"
+                  data-bs-dismiss="modal"
                   style="position:absolute; top:10px; right:10px; font-size:30px; color:white; cursor:pointer;">
                 &times;
             </span>
@@ -53,35 +61,70 @@
             </div>
 
             <div class="modal-body">
-                <form asp-controller="VisibleClients" asp-action="Upload" method="post" enctype="multipart/form-data">
+                <form asp-controller="VisibleClients"
+                      asp-action="Upload"
+                      method="post"
+                      enctype="multipart/form-data">
+
                     @Html.AntiForgeryToken()
 
-                    <input type="text" name="nombre" class="form-control mb-3" placeholder="Nombre de la empresa" required />
-                    <input type="file" name="imageFile" class="form-control mb-3" accept="image/*" required />
+                    <input type="text"
+                           name="nombre"
+                           class="form-control mb-3"
+                           placeholder="Nombre de la empresa"
+                           required />
+
+                    <input type="file"
+                           name="imageFile"
+                           class="form-control mb-3"
+                           accept="image/*"
+                           required />
 
                     <div class="mb-3">
-                        <label class="form-label fw-bold text-white">Links de redes sociales (opcional)</label>
+                        <label class="form-label fw-bold text-white">
+                            Links de redes sociales (opcional)
+                        </label>
+
                         <div class="d-flex flex-column gap-2">
+
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bi bi-facebook"></i></span>
                                 <input type="url" name="facebook" class="form-control" placeholder="Facebook URL" />
                             </div>
+
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bi bi-twitter-x"></i></span>
                                 <input type="url" name="twitter" class="form-control" placeholder="X / Twitter URL" />
                             </div>
+
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bi bi-instagram"></i></span>
                                 <input type="url" name="instagram" class="form-control" placeholder="Instagram URL" />
                             </div>
+
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bi bi-telegram"></i></span>
                                 <input type="url" name="telegram" class="form-control" placeholder="Telegram URL" />
                             </div>
+
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-linkedin"></i></span>
+                                <input type="url" name="linkedin" class="form-control" placeholder="LinkedIn URL" />
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-whatsapp"></i></span>
+                                <input type="text"
+                                       name="whatsapp"
+                                       class="form-control"
+                                       placeholder="WhatsApp (ej: 5493764123456)" />
+                            </div>
+
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bi bi-globe"></i></span>
                                 <input type="url" name="website" class="form-control" placeholder="Página web del cliente" />
                             </div>
+
                         </div>
                     </div>
 
@@ -90,7 +133,145 @@
                     </button>
                 </form>
             </div>
-
         </div>
     </div>
 </div>
+
+    <!-- ========================= MODAL EDITAR CLIENTE ========================= -->
+    <div class="modal fade" id="editClienteModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content modal-glass position-relative">
+
+                <span class="modal-close"
+                      data-bs-dismiss="modal"
+                      style="position:absolute; top:10px; right:10px; font-size:30px; color:white; cursor:pointer;">
+                    &times;
+                </span>
+
+                <div class="modal-header text-center border-0">
+                    <h5 class="modal-title w-100 fw-bold text-white">
+                        Editar Cliente
+                    </h5>
+                </div>
+
+                <div class="modal-body">
+                    <form asp-controller="VisibleClients"
+                          asp-action="Edit"
+                          method="post"
+                          enctype="multipart/form-data">
+
+                        @Html.AntiForgeryToken()
+
+                        <!-- ESTE ES EL IMPORTANTE -->
+                        <input type="hidden" name="fileName" id="edit-filename" />
+
+                        <input type="text"
+                               name="nombre"
+                               id="edit-nombre"
+                               class="form-control mb-3"
+                               placeholder="Nombre de la empresa"
+                               required />
+
+                        <input type="file"
+                               name="imageFile"
+                               class="form-control mb-3"
+                               accept="image/*" />
+                        <div class="mb-3">
+                            <label class="form-label fw-bold text-white">
+                                Links de redes sociales (opcional)
+                            </label>
+
+                            <div class="d-flex flex-column gap-2">
+
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="bi bi-facebook"></i>
+                                    </span>
+                                    <input type="url"
+                                           name="facebook"
+                                           id="edit-facebook"
+                                           class="form-control"
+                                           placeholder="Facebook URL" />
+                                </div>
+
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="bi bi-twitter-x"></i>
+                                    </span>
+                                    <input type="url"
+                                           name="twitter"
+                                           id="edit-twitter"
+                                           class="form-control"
+                                           placeholder="X / Twitter URL" />
+                                </div>
+
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="bi bi-instagram"></i>
+                                    </span>
+                                    <input type="url"
+                                           name="instagram"
+                                           id="edit-instagram"
+                                           class="form-control"
+                                           placeholder="Instagram URL" />
+                                </div>
+
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="bi bi-telegram"></i>
+                                    </span>
+                                    <input type="url"
+                                           name="telegram"
+                                           id="edit-telegram"
+                                           class="form-control"
+                                           placeholder="Telegram URL" />
+                                </div>
+
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="bi bi-linkedin"></i>
+                                    </span>
+                                    <input type="url"
+                                           name="linkedin"
+                                           id="edit-linkedin"
+                                           class="form-control"
+                                           placeholder="LinkedIn URL" />
+                                </div>
+
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="bi bi-whatsapp"></i>
+                                    </span>
+                                    <input type="text"
+                                           name="whatsapp"
+                                           id="edit-whatsapp"
+                                           class="form-control"
+                                           placeholder="WhatsApp (ej: 5493764123456)" />
+                                </div>
+
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="bi bi-globe"></i>
+                                    </span>
+                                    <input type="url"
+                                           name="website"
+                                           id="edit-website"
+                                           class="form-control"
+                                           placeholder="Página web del cliente" />
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <button type="submit"
+                                class="btn-glass btn-glass-outline px-4 w-100 mt-3">
+                            Guardar Cambios
+                        </button>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}

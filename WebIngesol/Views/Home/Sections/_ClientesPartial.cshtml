@@ -1,6 +1,26 @@
 ﻿@model List<WebIngesol.Models.VisibleClient>
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor httpAcc
+
 @{
-    string GetFileName(string path) => System.IO.Path.GetFileName(path)?.Split('?')[0] ?? string.Empty;
+    var rol = httpAcc.HttpContext?.Session.GetString("Role") ?? "";
+    var isAdmin = rol.Trim() == "🛡️ Admin";
+
+    string GetFileName(string? path)
+        => System.IO.Path.GetFileName(path ?? "")?.Split('?')[0] ?? string.Empty;
+
+    string GetImagePath(string? image)
+        => string.IsNullOrWhiteSpace(image)
+            ? ""
+            : Url.Content($"~/clients/{GetFileName(image)}");
+
+    string FormatWhatsApp(string? number)
+    {
+        if (string.IsNullOrWhiteSpace(number))
+            return string.Empty;
+
+        var cleaned = new string(number.Where(char.IsDigit).ToArray());
+        return $"https://wa.me/{cleaned}";
+    }
 }
 
 <div class="row justify-content-center" id="clients-logos">
@@ -12,51 +32,125 @@
         for (int i = 0; i < Model.Count; i++)
         {
             var c = Model[i];
+            if (string.IsNullOrWhiteSpace(c?.Imagen))
+                continue;
+
             var delay = delayBase + (i * delayIncrement);
             var fileName = GetFileName(c.Imagen);
-            var filePath = Url.Content(c.Imagen ?? string.Empty);
+            var filePath = GetImagePath(c.Imagen);
+            var whatsappLink = FormatWhatsApp(c.WhatsApp);
 
-            <div class="col-6 col-md-3 mb-4" data-aos="zoom-in" data-aos-delay="@delay">
-                <div class="glass-card" title="@c.Nombre" style="width: 180px; height: 220px; margin: 0 auto;">
-                    <div class="glass-card-body p-2 text-center d-flex flex-column justify-content-between h-100">
-                        <img src="@filePath"
-                             class="img-fluid mb-2"
-                             alt="@fileName"
-                             style="max-height:120px; max-width:160px; object-fit:contain; margin:0 auto;" />
+            <div class="col-6 col-md-3 mb-4"
+                 data-aos="zoom-in"
+                 data-aos-delay="@delay">
 
-                        <div class="d-flex justify-content-center gap-2 mb-2">
-                            @if (!string.IsNullOrWhiteSpace(c.Facebook))
-                            {
-                                <a href="@c.Facebook" target="_blank" class="btn-register"><i class="bi bi-facebook"></i></a>
-                            }
-                            @if (!string.IsNullOrWhiteSpace(c.Twitter))
-                            {
-                                <a href="@c.Twitter" target="_blank" class="btn-register"><i class="bi bi-twitter-x"></i></a>
-                            }
-                            @if (!string.IsNullOrWhiteSpace(c.Instagram))
-                            {
-                                <a href="@c.Instagram" target="_blank" class="btn-register"><i class="bi bi-instagram"></i></a>
-                            }
-                            @if (!string.IsNullOrWhiteSpace(c.Telegram))
-                            {
-                                <a href="@c.Telegram" target="_blank" class="btn-register"><i class="bi bi-telegram"></i></a>
-                            }
-                            @if (!string.IsNullOrWhiteSpace(c.Website))
-                            {
-                                <a href="@c.Website" target="_blank" class="btn-register"><i class="bi bi-globe"></i></a>
-                            }
+                <div class="glass-card"
+                     title="@c.Nombre"
+                     style="width: 180px; height: 220px; margin: 0 auto;">
+
+                    <div class="glass-card-body p-2 d-flex flex-column h-100">
+
+                        <!-- Imagen -->
+                        <div class="d-flex align-items-center justify-content-center flex-grow-1">
+                            <img src="@filePath"
+                                 class="img-fluid"
+                                 alt="@c.Nombre"
+                                 style="max-height:120px; max-width:160px; object-fit:contain;" />
                         </div>
 
-                        <form asp-controller="VisibleClients"
-                              asp-action="Delete"
-                              method="post"
-                              class="delete-client-form">
-                            @Html.AntiForgeryToken()
-                            <input type="hidden" name="fileName" value="@fileName" />
-                            <button type="submit" class="btn-glass btn-glass-outline px-3 mt-2">
-                                Eliminar
-                            </button>
-                        </form>
+                        <!-- Redes -->
+                        <div class="d-flex justify-content-center gap-2 mb-1 flex-wrap">
+
+                            @if (!string.IsNullOrWhiteSpace(c.Facebook))
+                            {
+                                <a href="@c.Facebook" target="_blank" rel="noopener" class="btn-register">
+                                    <i class="bi bi-facebook"></i>
+                                </a>
+                            }
+
+                            @if (!string.IsNullOrWhiteSpace(c.Twitter))
+                            {
+                                <a href="@c.Twitter" target="_blank" rel="noopener" class="btn-register">
+                                    <i class="bi bi-twitter-x"></i>
+                                </a>
+                            }
+
+                            @if (!string.IsNullOrWhiteSpace(c.Instagram))
+                            {
+                                <a href="@c.Instagram" target="_blank" rel="noopener" class="btn-register">
+                                    <i class="bi bi-instagram"></i>
+                                </a>
+                            }
+
+                            @if (!string.IsNullOrWhiteSpace(c.Telegram))
+                            {
+                                <a href="@c.Telegram" target="_blank" rel="noopener" class="btn-register">
+                                    <i class="bi bi-telegram"></i>
+                                </a>
+                            }
+
+                            @if (!string.IsNullOrWhiteSpace(c.LinkedIn))
+                            {
+                                <a href="@c.LinkedIn" target="_blank" rel="noopener" class="btn-register">
+                                    <i class="bi bi-linkedin"></i>
+                                </a>
+                            }
+
+                            @if (!string.IsNullOrWhiteSpace(c.Website))
+                            {
+                                <a href="@c.Website" target="_blank" rel="noopener" class="btn-register">
+                                    <i class="bi bi-globe"></i>
+                                </a>
+                            }
+
+                            @if (!string.IsNullOrWhiteSpace(whatsappLink))
+                            {
+                                <a href="@whatsappLink" target="_blank" rel="noopener" class="btn-register">
+                                    <i class="bi bi-whatsapp"></i>
+                                </a>
+                            }
+
+                        </div>
+
+                        @if (isAdmin)
+                        {
+                            <div class="mt-auto d-flex gap-2">
+
+                                <!-- EDITAR -->
+                                <button type="button"
+                                        class="btn-glass btn-glass-outline px-2 w-50 edit-client-btn"
+                                        data-filename="@fileName"
+                                        data-nombre="@c.Nombre"
+                                        data-facebook="@c.Facebook"
+                                        data-twitter="@c.Twitter"
+                                        data-instagram="@c.Instagram"
+                                        data-telegram="@c.Telegram"
+                                        data-linkedin="@c.LinkedIn"
+                                        data-whatsapp="@c.WhatsApp"
+                                        data-website="@c.Website"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#editClienteModal">
+                                    Editar
+                                </button>
+
+                                <!-- ELIMINAR -->
+                                <form asp-controller="VisibleClients"
+                                      asp-action="Delete"
+                                      method="post"
+                                      class="delete-client-form w-50">
+
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="fileName" value="@fileName" />
+
+                                    <button type="submit"
+                                            class="btn-glass btn-glass-outline px-2 w-100">
+                                        Eliminar
+                                    </button>
+                                </form>
+
+                            </div>
+                        }
+
                     </div>
                 </div>
             </div>

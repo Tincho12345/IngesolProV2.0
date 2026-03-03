@@ -21,7 +21,7 @@
     },
     "resourceName": {
       "type": "string",
-      "defaultValue": "IngesolV2",
+      "defaultValue": "WebIngesolV2",
       "metadata": {
         "description": "Name of the main resource to be created by this template."
       }

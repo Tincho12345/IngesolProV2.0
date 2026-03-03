@@ -1,1 +1,30 @@
-[]
+[
+  {
+    "Id": "7750f740-6497-4027-ae66-56f2f1b9c540",
+    "Nombre": "CEBESE",
+    "Imagen": "7750f740-6497-4027-ae66-56f2f1b9c540.png",
+    "Facebook": "https://www.facebook.com/share/1BzFnyzGLm/",
+    "Twitter": null,
+    "Instagram": null,
+    "Telegram": null,
+    "Website": "https://www.cbse.com.ar/",
+    "LinkedIn": null,
+    "WhatsApp": null,
+    "Activo": true,
+    "Orden": 0
+  },
+  {
+    "Id": "19699134-dc55-4d85-80b0-37395375a9ce",
+    "Nombre": "Iguaz\u00FA Grand Hotel",
+    "Imagen": "19699134-dc55-4d85-80b0-37395375a9ce.png",
+    "Facebook": null,
+    "Twitter": null,
+    "Instagram": null,
+    "Telegram": null,
+    "Website": "https://www.iguazugrand.com/?_gl=1*11o1y7z*_up*MQ..*_ga*MTQ1MzAxMDUxMi4xNzcyMjMxMjAw*_ga_3R5SJEDWK4*czE3NzIyMzEyMDAkbzEkZzAkdDE3NzIyMzEyODAkajYwJGwwJGgw*_ga_VTHBZNJ8BE*czE3NzIyMzEyMDAkbzEkZzAkdDE3NzIyMzEyODAkajYwJGwwJGgw",
+    "LinkedIn": null,
+    "WhatsApp": null,
+    "Activo": true,
+    "Orden": 0
+  }
+]

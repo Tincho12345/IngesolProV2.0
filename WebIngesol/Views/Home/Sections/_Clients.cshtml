@@ -162,8 +162,8 @@
 
                         @Html.AntiForgeryToken()
 
-                        <!-- ESTE ES EL IMPORTANTE -->
-                        <input type="hidden" name="fileName" id="edit-filename" />
+                        <!-- AHORA SE USA ID -->
+                        <input type="hidden" name="id" id="edit-id" />
 
                         <input type="text"
                                name="nombre"
@@ -176,6 +176,7 @@
                                name="imageFile"
                                class="form-control mb-3"
                                accept="image/*" />
+
                         <div class="mb-3">
                             <label class="form-label fw-bold text-white">
                                 Links de redes sociales (opcional)
@@ -187,77 +188,49 @@
                                     <span class="input-group-text">
                                         <i class="bi bi-facebook"></i>
                                     </span>
-                                    <input type="url"
-                                           name="facebook"
-                                           id="edit-facebook"
-                                           class="form-control"
-                                           placeholder="Facebook URL" />
+                                    <input type="url" name="facebook" id="edit-facebook" class="form-control" placeholder="Facebook URL" />
                                 </div>
 
                                 <div class="input-group">
                                     <span class="input-group-text">
                                         <i class="bi bi-twitter-x"></i>
                                     </span>
-                                    <input type="url"
-                                           name="twitter"
-                                           id="edit-twitter"
-                                           class="form-control"
-                                           placeholder="X / Twitter URL" />
+                                    <input type="url" name="twitter" id="edit-twitter" class="form-control" placeholder="X / Twitter URL" />
                                 </div>
 
                                 <div class="input-group">
                                     <span class="input-group-text">
                                         <i class="bi bi-instagram"></i>
                                     </span>
-                                    <input type="url"
-                                           name="instagram"
-                                           id="edit-instagram"
-                                           class="form-control"
-                                           placeholder="Instagram URL" />
+                                    <input type="url" name="instagram" id="edit-instagram" class="form-control" placeholder="Instagram URL" />
                                 </div>
 
                                 <div class="input-group">
                                     <span class="input-group-text">
                                         <i class="bi bi-telegram"></i>
                                     </span>
-                                    <input type="url"
-                                           name="telegram"
-                                           id="edit-telegram"
-                                           class="form-control"
-                                           placeholder="Telegram URL" />
+                                    <input type="url" name="telegram" id="edit-telegram" class="form-control" placeholder="Telegram URL" />
                                 </div>
 
                                 <div class="input-group">
                                     <span class="input-group-text">
                                         <i class="bi bi-linkedin"></i>
                                     </span>
-                                    <input type="url"
-                                           name="linkedin"
-                                           id="edit-linkedin"
-                                           class="form-control"
-                                           placeholder="LinkedIn URL" />
+                                    <input type="url" name="linkedin" id="edit-linkedin" class="form-control" placeholder="LinkedIn URL" />
                                 </div>
 
                                 <div class="input-group">
                                     <span class="input-group-text">
                                         <i class="bi bi-whatsapp"></i>
                                     </span>
-                                    <input type="text"
-                                           name="whatsapp"
-                                           id="edit-whatsapp"
-                                           class="form-control"
-                                           placeholder="WhatsApp (ej: 5493764123456)" />
+                                    <input type="text" name="whatsapp" id="edit-whatsapp" class="form-control" placeholder="WhatsApp (ej: 5493764123456)" />
                                 </div>
 
                                 <div class="input-group">
                                     <span class="input-group-text">
                                         <i class="bi bi-globe"></i>
                                     </span>
-                                    <input type="url"
-                                           name="website"
-                                           id="edit-website"
-                                           class="form-control"
-                                           placeholder="Página web del cliente" />
+                                    <input type="url" name="website" id="edit-website" class="form-control" placeholder="Página web del cliente" />
                                 </div>
 
                             </div>
@@ -273,5 +246,4 @@
             </div>
         </div>
     </div>
-
 }

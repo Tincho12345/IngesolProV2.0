@@ -5,121 +5,87 @@
     var rol = httpAcc.HttpContext?.Session.GetString("Role") ?? "";
     var isAdmin = rol.Trim() == "🛡️ Admin";
 
-    string GetFileName(string? path)
-        => System.IO.Path.GetFileName(path ?? "")?.Split('?')[0] ?? string.Empty;
-
-    string GetImagePath(string? image)
-        => string.IsNullOrWhiteSpace(image)
-            ? ""
-            : Url.Content($"~/clients/{GetFileName(image)}");
+    string GetImagePath(string? image) =>
+        string.IsNullOrWhiteSpace(image) ? "" : Url.Content($"~/clients/{image}");
 
     string FormatWhatsApp(string? number)
     {
-        if (string.IsNullOrWhiteSpace(number))
-            return string.Empty;
-
+        if (string.IsNullOrWhiteSpace(number)) return string.Empty;
         var cleaned = new string(number.Where(char.IsDigit).ToArray());
         return $"https://wa.me/{cleaned}";
     }
+
+    var clientes = Model?.Where(c => c.Activo && !string.IsNullOrWhiteSpace(c.Imagen)).ToList() ?? new();
 }
 
 <div class="row justify-content-center" id="clients-logos">
-    @if (Model != null && Model.Any())
+@if (clientes.Any())
+{
+    int delayBase = 100;
+    int delayIncrement = 50;
+
+    for (int i = 0; i < clientes.Count; i++)
     {
-        int delayBase = 100;
-        int delayIncrement = 50;
+        var c = clientes[i];
+        var delay = delayBase + (i * delayIncrement);
+        var filePath = GetImagePath(c.Imagen);
+        var whatsappLink = FormatWhatsApp(c.WhatsApp);
+            <div class="col-6 col-md-3 mb-4" data-aos="zoom-in" data-aos-delay="@delay">
+                <div class="glass-card" title="@c.Nombre" style="width: 190px; height: 250px; margin: 0 auto;">
 
-        for (int i = 0; i < Model.Count; i++)
-        {
-            var c = Model[i];
-            if (string.IsNullOrWhiteSpace(c?.Imagen))
-                continue;
+                    <div class="glass-card-body p-3 d-flex flex-column h-100">
 
-            var delay = delayBase + (i * delayIncrement);
-            var fileName = GetFileName(c.Imagen);
-            var filePath = GetImagePath(c.Imagen);
-            var whatsappLink = FormatWhatsApp(c.WhatsApp);
+                        <!-- 🔹 NOMBRE DEL CLIENTE -->
+                        <div class="client-name text-center mb-3">
+                            @c.Nombre
+                        </div>
 
-            <div class="col-6 col-md-3 mb-4"
-                 data-aos="zoom-in"
-                 data-aos-delay="@delay">
-
-                <div class="glass-card"
-                     title="@c.Nombre"
-                     style="width: 180px; height: 220px; margin: 0 auto;">
-
-                    <div class="glass-card-body p-2 d-flex flex-column h-100">
-
-                        <!-- Imagen -->
-                        <div class="d-flex align-items-center justify-content-center flex-grow-1">
+                        <!-- 🔹 IMAGEN -->
+                        <div class="d-flex align-items-center justify-content-center flex-grow-1 mb-2">
                             <img src="@filePath"
                                  class="img-fluid"
                                  alt="@c.Nombre"
-                                 style="max-height:120px; max-width:160px; object-fit:contain;" />
+                                 style="max-height:110px; max-width:160px; object-fit:contain;" />
                         </div>
 
-                        <!-- Redes -->
-                        <div class="d-flex justify-content-center gap-2 mb-1 flex-wrap">
-
+                        <!-- 🔹 REDES -->
+                        <div class="d-flex justify-content-center gap-2 mb-2 flex-wrap">
                             @if (!string.IsNullOrWhiteSpace(c.Facebook))
                             {
-                                <a href="@c.Facebook" target="_blank" rel="noopener" class="btn-register">
-                                    <i class="bi bi-facebook"></i>
-                                </a>
+                                <a href="@c.Facebook" target="_blank" class="btn-register"><i class="bi bi-facebook"></i></a>
                             }
-
                             @if (!string.IsNullOrWhiteSpace(c.Twitter))
                             {
-                                <a href="@c.Twitter" target="_blank" rel="noopener" class="btn-register">
-                                    <i class="bi bi-twitter-x"></i>
-                                </a>
+                                <a href="@c.Twitter" target="_blank" class="btn-register"><i class="bi bi-twitter-x"></i></a>
                             }
-
                             @if (!string.IsNullOrWhiteSpace(c.Instagram))
                             {
-                                <a href="@c.Instagram" target="_blank" rel="noopener" class="btn-register">
-                                    <i class="bi bi-instagram"></i>
-                                </a>
+                                <a href="@c.Instagram" target="_blank" class="btn-register"><i class="bi bi-instagram"></i></a>
                             }
-
                             @if (!string.IsNullOrWhiteSpace(c.Telegram))
                             {
-                                <a href="@c.Telegram" target="_blank" rel="noopener" class="btn-register">
-                                    <i class="bi bi-telegram"></i>
-                                </a>
+                                <a href="@c.Telegram" target="_blank" class="btn-register"><i class="bi bi-telegram"></i></a>
                             }
-
                             @if (!string.IsNullOrWhiteSpace(c.LinkedIn))
                             {
-                                <a href="@c.LinkedIn" target="_blank" rel="noopener" class="btn-register">
-                                    <i class="bi bi-linkedin"></i>
-                                </a>
+                                <a href="@c.LinkedIn" target="_blank" class="btn-register"><i class="bi bi-linkedin"></i></a>
                             }
-
                             @if (!string.IsNullOrWhiteSpace(c.Website))
                             {
-                                <a href="@c.Website" target="_blank" rel="noopener" class="btn-register">
-                                    <i class="bi bi-globe"></i>
-                                </a>
+                                <a href="@c.Website" target="_blank" class="btn-register"><i class="btn-register bi bi-globe"></i></a>
                             }
-
                             @if (!string.IsNullOrWhiteSpace(whatsappLink))
                             {
-                                <a href="@whatsappLink" target="_blank" rel="noopener" class="btn-register">
-                                    <i class="bi bi-whatsapp"></i>
-                                </a>
+                                <a href="@whatsappLink" target="_blank" class="btn-register"><i class="bi bi-whatsapp"></i></a>
                             }
-
                         </div>
 
                         @if (isAdmin)
                         {
                             <div class="mt-auto d-flex gap-2">
-
-                                <!-- EDITAR -->
                                 <button type="button"
                                         class="btn-glass btn-glass-outline px-2 w-50 edit-client-btn"
-                                        data-filename="@fileName"
+                                        data-id="@c.Id"
                                         data-nombre="@c.Nombre"
                                         data-facebook="@c.Facebook"
                                         data-twitter="@c.Twitter"
@@ -133,35 +99,28 @@
                                     Editar
                                 </button>
 
-                                <!-- ELIMINAR -->
                                 <form asp-controller="VisibleClients"
                                       asp-action="Delete"
                                       method="post"
                                       class="delete-client-form w-50">
-
                                     @Html.AntiForgeryToken()
-                                    <input type="hidden" name="fileName" value="@fileName" />
-
-                                    <button type="submit"
-                                            class="btn-glass btn-glass-outline px-2 w-100">
+                                    <input type="hidden" name="id" value="@c.Id" />
+                                    <button type="submit" class="btn-glass btn-glass-outline px-2 w-100">
                                         Eliminar
                                     </button>
                                 </form>
-
                             </div>
                         }
 
                     </div>
                 </div>
             </div>
-        }
     }
-    else
-    {
-        <div class="col-12">
-            <p class="text-center text-white-50 mt-4">
-                No hay clientes para mostrar.
-            </p>
-        </div>
-    }
+}
+else
+{
+    <div class="col-12">
+        <p class="text-center text-white-50 mt-4">No hay clientes para mostrar.</p>
+    </div>
+}
 </div>

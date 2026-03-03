@@ -38,35 +38,20 @@ public class HomeController(
     // =========================
     private List<VisibleClient> CargarClientes()
     {
-        var folderPath = Path.Combine(_env.WebRootPath, "clients");
-        var clientes = new List<VisibleClient>();
+        var masterJsonPath = Path.Combine(_env.WebRootPath, "clients", "clientes.json");
 
-        if (!Directory.Exists(folderPath))
-            return clientes;
+        if (!System.IO.File.Exists(masterJsonPath))
+            return new();
 
-        var jsonFiles = Directory.GetFiles(folderPath, "*.json");
-
-        foreach (var jsonFile in jsonFiles)
+        try
         {
-            try
-            {
-                var json = System.IO.File.ReadAllText(jsonFile);
-                var cliente = JsonSerializer.Deserialize<VisibleClient>(json);
-
-                if (cliente is not null && !string.IsNullOrWhiteSpace(cliente.Imagen))
-                {
-                    // Ajustar ruta pública
-                    cliente.Imagen = "/clients/" + cliente.Imagen;
-                    clientes.Add(cliente);
-                }
-            }
-            catch
-            {
-                continue; // Ignorar JSON corruptos
-            }
+            var json = System.IO.File.ReadAllText(masterJsonPath);
+            return JsonSerializer.Deserialize<List<VisibleClient>>(json) ?? new();
         }
-
-        return clientes;
+        catch
+        {
+            return new();
+        }
     }
 
     // =========================

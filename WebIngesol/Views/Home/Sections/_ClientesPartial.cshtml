@@ -15,17 +15,22 @@
         return $"https://wa.me/{cleaned}";
     }
 
-    var clientes = Model?.Where(c => c.Activo && !string.IsNullOrWhiteSpace(c.Imagen)).ToList() ?? new();
+    var clientes = Model?
+        .Where(c => c.Activo && !string.IsNullOrWhiteSpace(c.Imagen))
+        .ToList() ?? new();
+
+    int delayBase = 100;
+    int delayIncrement = 50;
 }
 
 <style>
     #visible-clients-partial .client-name {
-        font-size: 0.95rem;
+        font-size: 0.9rem;
         font-weight: 600;
-        color: #ffffff;
-        padding: 6px 10px;
-        border-radius: 12px;
-        background: rgba(255, 255, 255, 0.08);
+        color: #fff;
+        padding: 6px 8px;
+        border-radius: 10px;
+        background: rgba(255,255,255,0.08);
         backdrop-filter: blur(6px);
         -webkit-backdrop-filter: blur(6px);
         white-space: nowrap;
@@ -35,10 +40,7 @@
 
     #visible-clients-partial .glass-card {
         width: 100%;
-        max-width: 200px;
-        height: 100%;
-        min-height: 260px;
-        margin: 0 auto;
+        min-height: 240px;
         display: flex;
         flex-direction: column;
     }
@@ -49,118 +51,134 @@
         flex-direction: column;
     }
 
+    #visible-clients-partial .client-logo {
+        max-height: 100px;
+        max-width: 150px;
+        object-fit: contain;
+    }
+
     @@media (max-width: 576px) {
         #visible-clients-partial .glass-card {
-            min-height: 230px;
+            min-height: 210px;
         }
     }
 </style>
 
 <div id="visible-clients-partial">
-    <div class="row justify-content-center">
-@if (clientes.Any())
-{
-    int delayBase = 100;
-    int delayIncrement = 50;
+    <!-- 👇 g-3 controla la separación sin romper tu lógica -->
+    <div class="row g-3">
 
-    for (int i = 0; i < clientes.Count; i++)
-    {
-        var c = clientes[i];
-        var delay = delayBase + (i * delayIncrement);
-        var filePath = GetImagePath(c.Imagen);
-        var whatsappLink = FormatWhatsApp(c.WhatsApp);
-            <div class="col-6 col-md-3 mb-4 d-flex" data-aos="zoom-in" data-aos-delay="@delay">
-                <div class="glass-card" title="@c.Nombre">
+        @if (clientes.Any())
+        {
+            @for (int i = 0; i < clientes.Count; i++)
+            {
+                var c = clientes[i];
+                var delay = delayBase + (i * delayIncrement);
+                var filePath = GetImagePath(c.Imagen);
+                var whatsappLink = FormatWhatsApp(c.WhatsApp);
 
-                    <div class="glass-card-body p-3 d-flex flex-column h-100">
+                <div class="col-6 col-sm-4 col-md-3 col-lg-2 d-flex"
+                     data-aos="zoom-in"
+                     data-aos-delay="@delay">
 
-                        <!-- 🔹 NOMBRE DEL CLIENTE -->
-                        <div class="client-name text-center mb-3">
-                            @c.Nombre
-                        </div>
+                    <div class="glass-card w-100" title="@c.Nombre">
+                        <div class="glass-card-body p-2 d-flex flex-column">
 
-                        <!-- 🔹 IMAGEN -->
-                        <div class="d-flex align-items-center justify-content-center flex-grow-1 mb-2">
-                            <img src="@filePath"
-                                 class="img-fluid"
-                                 alt="@c.Nombre"
-                                 style="max-height:110px; max-width:160px; object-fit:contain;" />
-                        </div>
-
-                        <!-- 🔹 REDES -->
-                        <div class="d-flex justify-content-center gap-2 mb-2 flex-wrap">
-                            @if (!string.IsNullOrWhiteSpace(c.Facebook))
-                            {
-                                <a href="@c.Facebook" target="_blank" class="btn-register"><i class="bi bi-facebook"></i></a>
-                            }
-                            @if (!string.IsNullOrWhiteSpace(c.Twitter))
-                            {
-                                <a href="@c.Twitter" target="_blank" class="btn-register"><i class="bi bi-twitter-x"></i></a>
-                            }
-                            @if (!string.IsNullOrWhiteSpace(c.Instagram))
-                            {
-                                <a href="@c.Instagram" target="_blank" class="btn-register"><i class="bi bi-instagram"></i></a>
-                            }
-                            @if (!string.IsNullOrWhiteSpace(c.Telegram))
-                            {
-                                <a href="@c.Telegram" target="_blank" class="btn-register"><i class="bi bi-telegram"></i></a>
-                            }
-                            @if (!string.IsNullOrWhiteSpace(c.LinkedIn))
-                            {
-                                <a href="@c.LinkedIn" target="_blank" class="btn-register"><i class="bi bi-linkedin"></i></a>
-                            }
-                            @if (!string.IsNullOrWhiteSpace(c.Website))
-                            {
-                                <a href="@c.Website" target="_blank" class="btn-register"><i class="btn-register bi bi-globe"></i></a>
-                            }
-                            @if (!string.IsNullOrWhiteSpace(whatsappLink))
-                            {
-                                <a href="@whatsappLink" target="_blank" class="btn-register"><i class="bi bi-whatsapp"></i></a>
-                            }
-                        </div>
-
-                        @if (isAdmin)
-                        {
-                            <div class="mt-auto d-flex gap-2">
-                                <button type="button"
-                                        class="btn-glass btn-glass-outline px-2 w-50 edit-client-btn"
-                                        data-id="@c.Id"
-                                        data-nombre="@c.Nombre"
-                                        data-facebook="@c.Facebook"
-                                        data-twitter="@c.Twitter"
-                                        data-instagram="@c.Instagram"
-                                        data-telegram="@c.Telegram"
-                                        data-linkedin="@c.LinkedIn"
-                                        data-whatsapp="@c.WhatsApp"
-                                        data-website="@c.Website"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#editClienteModal">
-                                    Editar
-                                </button>
-
-                                <form asp-controller="VisibleClients"
-                                      asp-action="Delete"
-                                      method="post"
-                                      class="delete-client-form w-50">
-                                    @Html.AntiForgeryToken()
-                                    <input type="hidden" name="id" value="@c.Id" />
-                                    <button type="submit" class="btn-glass btn-glass-outline px-2 w-100">
-                                        Eliminar
-                                    </button>
-                                </form>
+                            <!-- Nombre -->
+                            <div class="client-name text-center mb-2">
+                                @c.Nombre
                             </div>
-                        }
 
+                            <!-- Imagen -->
+                            <div class="d-flex align-items-center justify-content-center flex-grow-1 mb-2">
+                                <img src="@filePath"
+                                     class="img-fluid client-logo"
+                                     alt="@c.Nombre" />
+                            </div>
+
+                            <!-- Redes (misma lógica original) -->
+                            <div class="d-flex justify-content-center gap-2 mb-2 flex-wrap">
+                                @if (!string.IsNullOrWhiteSpace(c.Facebook))
+                                {
+                                    <a href="@c.Facebook" target="_blank" class="btn-register"><i class="bi bi-facebook"></i></a>
+                                }
+                                @if (!string.IsNullOrWhiteSpace(c.Twitter))
+                                {
+                                    <a href="@c.Twitter" target="_blank" class="btn-register"><i class="bi bi-twitter-x"></i></a>
+                                }
+                                @if (!string.IsNullOrWhiteSpace(c.Instagram))
+                                {
+                                    <a href="@c.Instagram" target="_blank" class="btn-register"><i class="bi bi-instagram"></i></a>
+                                }
+                                @if (!string.IsNullOrWhiteSpace(c.Telegram))
+                                {
+                                    <a href="@c.Telegram" target="_blank" class="btn-register"><i class="bi bi-telegram"></i></a>
+                                }
+                                @if (!string.IsNullOrWhiteSpace(c.LinkedIn))
+                                {
+                                    <a href="@c.LinkedIn" target="_blank" class="btn-register"><i class="bi bi-linkedin"></i></a>
+                                }
+                                @if (!string.IsNullOrWhiteSpace(c.Website))
+                                {
+                                    <a href="@c.Website" target="_blank" class="btn-register"><i class="bi bi-globe"></i></a>
+                                }
+                                @if (!string.IsNullOrWhiteSpace(whatsappLink))
+                                {
+                                    <a href="@whatsappLink" target="_blank" class="btn-register"><i class="bi bi-whatsapp"></i></a>
+                                }
+                            </div>
+
+                            @if (isAdmin)
+                            {
+                                <div class="mt-auto d-flex gap-2">
+
+                                    <button type="button"
+                                            class="btn-glass btn-glass-outline px-2 w-50 edit-client-btn"
+                                            data-id="@c.Id"
+                                            data-nombre="@c.Nombre"
+                                            data-facebook="@c.Facebook"
+                                            data-twitter="@c.Twitter"
+                                            data-instagram="@c.Instagram"
+                                            data-telegram="@c.Telegram"
+                                            data-linkedin="@c.LinkedIn"
+                                            data-whatsapp="@c.WhatsApp"
+                                            data-website="@c.Website"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#editClienteModal">
+                                        Editar
+                                    </button>
+
+                                    <!-- 👇 IMPORTANTE: mantenemos delete-client-form -->
+                                    <form asp-controller="VisibleClients"
+                                          asp-action="Delete"
+                                          method="post"
+                                          class="delete-client-form w-50">
+
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@c.Id" />
+
+                                        <button type="submit"
+                                                class="btn-glass btn-glass-outline px-2 w-100">
+                                            Eliminar
+                                        </button>
+                                    </form>
+
+                                </div>
+                            }
+
+                        </div>
                     </div>
                 </div>
+            }
+        }
+        else
+        {
+            <div class="col-12">
+                <p class="text-center text-white-50 mt-4">
+                    No hay clientes para mostrar.
+                </p>
             </div>
-    }
-}
-else
-{
-    <div class="col-12">
-        <p class="text-center text-white-50 mt-4">No hay clientes para mostrar.</p>
+        }
+
     </div>
-}
-</div>
 </div>

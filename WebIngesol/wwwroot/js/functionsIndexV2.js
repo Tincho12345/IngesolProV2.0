@@ -1,143 +1,246 @@
 ﻿document.addEventListener("DOMContentLoaded", () => {
 
-    const mostrarExitoConProgreso = (mensaje) => {
-        return Swal.fire({
+    // =====================================================
+    // CONFIGURACIÓN GLOBAL
+    // =====================================================
+
+    const swalTheme = {
+        background: '#1e1e2f',
+        color: '#ffffff'
+    };
+
+    const MIN_LOADING_TIME = 700;
+    const delay = (ms) => new Promise(res => setTimeout(res, ms));
+
+    // =====================================================
+    // UTILIDADES SWEETALERT
+    // =====================================================
+
+    const mostrarCargando = (mensaje = "Procesando...") => {
+        Swal.fire({
             title: mensaje,
-            icon: 'success',
-            timer: 1500,
-            timerProgressBar: true,
-            showConfirmButton: false,
-            background: '#1e1e2f',
-            color: '#ffffff'
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            didOpen: () => Swal.showLoading(),
+            ...swalTheme
         });
     };
 
+    const mostrarExito = (mensaje) => {
+        return Swal.fire({
+            title: mensaje,
+            icon: "success",
+            timer: 1500,
+            timerProgressBar: true,
+            showConfirmButton: false,
+            ...swalTheme
+        });
+    };
+
+    const mostrarError = (mensaje = "Ocurrió un error") => {
+        return Swal.fire({
+            title: mensaje,
+            icon: "error",
+            ...swalTheme
+        });
+    };
+
+    const confirmar = (titulo, texto = "", icon = "question") => {
+        return Swal.fire({
+            title: titulo,
+            text: texto,
+            icon,
+            showCancelButton: true,
+            confirmButtonText: "Confirmar",
+            cancelButtonText: "Cancelar",
+            reverseButtons: true,
+            ...swalTheme
+        });
+    };
+
+    // =====================================================
+    // FETCH CON LOADER GARANTIZADO
+    // =====================================================
+
+    const fetchConLoader = async (url, options, mensajeExito) => {
+        try {
+            mostrarCargando();
+
+            const fetchPromise = fetch(url, options);
+
+            const [response] = await Promise.all([
+                fetchPromise,
+                delay(MIN_LOADING_TIME)
+            ]);
+
+            if (!response.ok) throw new Error("Error en la operación");
+
+            Swal.close();
+            await mostrarExito(mensajeExito);
+
+            return true;
+
+        } catch (error) {
+            Swal.close();
+            await mostrarError(error.message);
+            return false;
+        }
+    };
+
+    // =====================================================
+    // ANTI CACHE EN IMÁGENES
+    // =====================================================
+
+    const actualizarImagenesSinCache = () => {
+        const timestamp = new Date().getTime();
+
+        document.querySelectorAll("#clients-container img").forEach(img => {
+            if (!img.src) return;
+
+            const baseSrc = img.src.split("?")[0];
+            img.src = `${baseSrc}?v=${timestamp}`;
+        });
+    };
+
+    // =====================================================
+    // RECARGAR CLIENTES (SIN CACHE)
+    // =====================================================
+
     const recargarClientes = async () => {
         try {
-            const response = await fetch("/Home/ClientesPartial");
-            if (!response.ok) return;
+            const response = await fetch(`/Home/ClientesPartial?v=${Date.now()}`, {
+                cache: "no-store"
+            });
+
+            if (!response.ok) throw new Error();
 
             const html = await response.text();
             const container = document.getElementById("clients-container");
+
             if (container) {
                 container.innerHTML = html;
+
+                // Forzar refresco de imágenes
+                actualizarImagenesSinCache();
+
                 if (typeof AOS !== "undefined") AOS.refresh();
             }
-        } catch (error) { console.error("Error recargando clientes:", error); }
+
+        } catch (error) {
+            console.error("Error recargando clientes:", error);
+        }
     };
 
-    // EDITAR CLIENTE (cargar modal)
+    // =====================================================
+    // CARGAR DATOS EN MODAL EDITAR
+    // =====================================================
+
     document.addEventListener("click", (e) => {
         const btn = e.target.closest(".edit-client-btn");
         if (!btn) return;
 
-        document.getElementById("edit-id").value = btn.dataset.id || "";
-        document.getElementById("edit-nombre").value = btn.dataset.nombre || "";
-        document.getElementById("edit-facebook").value = btn.dataset.facebook || "";
-        document.getElementById("edit-twitter").value = btn.dataset.twitter || "";
-        document.getElementById("edit-instagram").value = btn.dataset.instagram || "";
-        document.getElementById("edit-telegram").value = btn.dataset.telegram || "";
-        document.getElementById("edit-linkedin").value = btn.dataset.linkedin || "";
-        document.getElementById("edit-whatsapp").value = btn.dataset.whatsapp || "";
-        document.getElementById("edit-website").value = btn.dataset.website || "";
+        const campos = [
+            "id", "nombre", "facebook", "twitter",
+            "instagram", "telegram", "linkedin",
+            "whatsapp", "website"
+        ];
+
+        campos.forEach(campo => {
+            const input = document.getElementById(`edit-${campo}`);
+            if (input) input.value = btn.dataset[campo] || "";
+        });
     });
 
-    // SUBIR CLIENTE (AJAX)
+    // =====================================================
+    // SUBMIT GENÉRICO AJAX
+    // =====================================================
+
+    const manejarSubmitAjax = (form, mensajeConfirmacion, mensajeExito, modal = null) => {
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const confirmacion = await confirmar(mensajeConfirmacion);
+            if (!confirmacion.isConfirmed) return;
+
+            const ok = await fetchConLoader(
+                form.action,
+                { method: "POST", body: new FormData(form) },
+                mensajeExito
+            );
+
+            if (!ok) return;
+
+            if (modal) {
+                bootstrap.Modal.getInstance(modal)?.hide();
+                form.reset();
+            }
+
+            await recargarClientes();
+        });
+    };
+
+    // =====================================================
+    // UPLOAD CLIENTE
+    // =====================================================
+
     const uploadModal = document.getElementById("uploadClienteModal");
     if (uploadModal) {
         const uploadForm = uploadModal.querySelector("form");
         if (uploadForm) {
-            uploadForm.addEventListener("submit", async (e) => {
-                e.preventDefault();
-                const confirm = await Swal.fire({
-                    title: '¿Deseas subir este cliente?',
-                    icon: 'question',
-                    showCancelButton: true,
-                    confirmButtonText: 'Sí, subir',
-                    cancelButtonText: 'Cancelar',
-                    reverseButtons: true,
-                    background: '#1e1e2f',
-                    color: '#ffffff'
-                });
-                if (!confirm.isConfirmed) return;
-
-                const formData = new FormData(uploadForm);
-                try {
-                    const response = await fetch(uploadForm.action, { method: 'POST', body: formData });
-                    if (!response.ok) throw new Error();
-                    await mostrarExitoConProgreso('Cliente subido');
-                    bootstrap.Modal.getInstance(uploadModal)?.hide();
-                    await recargarClientes();
-                } catch {
-                    Swal.fire({ title: 'Error al subir', icon: 'error', background: '#1e1e2f', color: '#ffffff' });
-                }
-            });
+            manejarSubmitAjax(
+                uploadForm,
+                "¿Deseas subir este cliente?",
+                "Cliente subido correctamente",
+                uploadModal
+            );
         }
-
-        uploadModal.addEventListener('hidden.bs.modal', () => uploadForm?.reset());
     }
 
-    // ELIMINAR CLIENTE (AJAX)
+    // =====================================================
+    // EDITAR CLIENTE
+    // =====================================================
+
+    const editModal = document.getElementById("editClienteModal");
+    if (editModal) {
+        const editForm = editModal.querySelector("form");
+        if (editForm) {
+            manejarSubmitAjax(
+                editForm,
+                "¿Guardar cambios?",
+                "Cliente actualizado correctamente",
+                editModal
+            );
+        }
+    }
+
+    // =====================================================
+    // ELIMINAR CLIENTE
+    // =====================================================
+
     document.addEventListener("click", async (e) => {
         const deleteBtn = e.target.closest(".delete-client-form button");
         if (!deleteBtn) return;
 
         e.preventDefault();
-        const form = deleteBtn.closest("form");
-        const confirm = await Swal.fire({
-            title: '¿Estás seguro que deseas eliminar este cliente?',
-            text: 'Esta acción no se puede deshacer.',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Sí, eliminar',
-            cancelButtonText: 'Cancelar',
-            reverseButtons: true,
-            background: '#1e1e2f',
-            color: '#ffffff'
-        });
-        if (!confirm.isConfirmed) return;
 
-        const formData = new FormData(form);
-        try {
-            const response = await fetch(form.action, { method: 'POST', body: formData });
-            if (!response.ok) throw new Error();
-            await mostrarExitoConProgreso('Cliente eliminado');
-            await recargarClientes();
-        } catch {
-            Swal.fire({ title: 'Error al eliminar', icon: 'error', background: '#1e1e2f', color: '#ffffff' });
-        }
+        const form = deleteBtn.closest("form");
+        if (!form) return;
+
+        const confirmacion = await confirmar(
+            "¿Eliminar cliente?",
+            "Esta acción no se puede deshacer.",
+            "warning"
+        );
+
+        if (!confirmacion.isConfirmed) return;
+
+        const ok = await fetchConLoader(
+            form.action,
+            { method: "POST", body: new FormData(form) },
+            "Cliente eliminado correctamente"
+        );
+
+        if (ok) await recargarClientes();
     });
 
-    // EDITAR CLIENTE (AJAX)
-    const editModal = document.getElementById("editClienteModal");
-    if (editModal) {
-        const editForm = editModal.querySelector("form");
-        if (editForm) {
-            editForm.addEventListener("submit", async (e) => {
-                e.preventDefault();
-                const confirm = await Swal.fire({
-                    title: '¿Guardar cambios?',
-                    icon: 'question',
-                    showCancelButton: true,
-                    confirmButtonText: 'Sí, guardar',
-                    cancelButtonText: 'Cancelar',
-                    reverseButtons: true,
-                    background: '#1e1e2f',
-                    color: '#ffffff'
-                });
-                if (!confirm.isConfirmed) return;
-
-                const formData = new FormData(editForm);
-                try {
-                    const response = await fetch(editForm.action, { method: 'POST', body: formData });
-                    if (!response.ok) throw new Error();
-                    await mostrarExitoConProgreso('Cliente actualizado');
-                    bootstrap.Modal.getInstance(editModal)?.hide();
-                    await recargarClientes();
-                } catch {
-                    Swal.fire({ title: 'Error al actualizar', icon: 'error', background: '#1e1e2f', color: '#ffffff' });
-                }
-            });
-        }
-    }
 });

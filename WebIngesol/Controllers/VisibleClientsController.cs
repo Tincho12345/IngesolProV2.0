@@ -14,7 +14,7 @@ public class VisibleClientsController(IWebHostEnvironment env) : Controller
     };
 
     private static readonly string[] _allowedExtensions =
-        new[] { ".jpg", ".jpeg", ".png", ".webp", ".jfif" };
+        [".jpg", ".jpeg", ".png", ".webp", ".jfif"];
 
     private string GetMasterJsonPath() => Path.Combine(_env.WebRootPath, "clients", "clientes.json");
 
@@ -50,10 +50,11 @@ public class VisibleClientsController(IWebHostEnvironment env) : Controller
         IFormFile? imageFile)
     {
         if (string.IsNullOrWhiteSpace(nombre) || imageFile == null || imageFile.Length == 0)
-            return Redirect(Request.GetTypedHeaders().Referer?.ToString() ?? "/");
+            return BadRequest(new { message = "Datos inválidos." });
 
         var folderPath = Path.Combine(_env.WebRootPath, "clients");
-        if (!Directory.Exists(folderPath)) Directory.CreateDirectory(folderPath);
+        if (!Directory.Exists(folderPath))
+            Directory.CreateDirectory(folderPath);
 
         var client = new VisibleClient
         {
@@ -64,17 +65,18 @@ public class VisibleClientsController(IWebHostEnvironment env) : Controller
             Telegram = telegram?.Trim(),
             Website = website?.Trim(),
             LinkedIn = linkedin?.Trim(),
-            WhatsApp = !string.IsNullOrWhiteSpace(whatsapp) ? new string(whatsapp.Where(char.IsDigit).ToArray()) : null,
+            WhatsApp = !string.IsNullOrWhiteSpace(whatsapp)
+                ? new string(whatsapp.Where(char.IsDigit).ToArray())
+                : null,
             Activo = true,
             Orden = 0
         };
 
-        // Guardar imagen
         var extension = Path.GetExtension(imageFile.FileName).ToLowerInvariant();
         if (!_allowedExtensions.Contains(extension))
-            return Redirect(Request.GetTypedHeaders().Referer?.ToString() ?? "/");
+            return BadRequest(new { message = "Extensión no permitida." });
 
-        client.Imagen = $"{client.Id}{extension}"; // solo nombre + extensión
+        client.Imagen = $"{client.Id}{extension}";
         var imagePath = Path.Combine(folderPath, client.Imagen);
 
         await using (var stream = new FileStream(imagePath, FileMode.Create))
@@ -82,12 +84,11 @@ public class VisibleClientsController(IWebHostEnvironment env) : Controller
             await imageFile.CopyToAsync(stream);
         }
 
-        // Actualizar clientes.json
         var allClients = await ReadClientsAsync();
         allClients.Add(client);
         await SaveClientsAsync(allClients);
 
-        return Redirect(Request.GetTypedHeaders().Referer?.ToString() ?? "/");
+        return Ok(new { success = true });
     }
 
     // =============================
@@ -108,12 +109,13 @@ public class VisibleClientsController(IWebHostEnvironment env) : Controller
         IFormFile? imageFile)
     {
         if (!Guid.TryParse(id, out var clientId))
-            return Redirect(Request.GetTypedHeaders().Referer?.ToString() ?? "/");
+            return BadRequest(new { message = "Id inválido." });
 
         var allClients = await ReadClientsAsync();
         var client = allClients.FirstOrDefault(c => c.Id == clientId);
+
         if (client == null)
-            return Redirect(Request.GetTypedHeaders().Referer?.ToString() ?? "/");
+            return NotFound(new { message = "Cliente no encontrado." });
 
         client.Nombre = nombre?.Trim() ?? string.Empty;
         client.Facebook = facebook?.Trim();
@@ -122,7 +124,9 @@ public class VisibleClientsController(IWebHostEnvironment env) : Controller
         client.Telegram = telegram?.Trim();
         client.Website = website?.Trim();
         client.LinkedIn = linkedin?.Trim();
-        client.WhatsApp = !string.IsNullOrWhiteSpace(whatsapp) ? new string(whatsapp.Where(char.IsDigit).ToArray()) : null;
+        client.WhatsApp = !string.IsNullOrWhiteSpace(whatsapp)
+            ? new string(whatsapp.Where(char.IsDigit).ToArray())
+            : null;
 
         var folderPath = Path.Combine(_env.WebRootPath, "clients");
 
@@ -133,7 +137,6 @@ public class VisibleClientsController(IWebHostEnvironment env) : Controller
             {
                 var newImagePath = Path.Combine(folderPath, $"{client.Id}{extension}");
 
-                // Eliminar imagen vieja si cambia extensión
                 if (!string.Equals(client.Imagen, $"{client.Id}{extension}", StringComparison.OrdinalIgnoreCase))
                 {
                     var oldImagePath = Path.Combine(folderPath, client.Imagen);
@@ -149,7 +152,8 @@ public class VisibleClientsController(IWebHostEnvironment env) : Controller
         }
 
         await SaveClientsAsync(allClients);
-        return Redirect(Request.GetTypedHeaders().Referer?.ToString() ?? "/");
+
+        return Ok(new { success = true });
     }
 
     // =============================
@@ -160,22 +164,21 @@ public class VisibleClientsController(IWebHostEnvironment env) : Controller
     public async Task<IActionResult> Delete(string id)
     {
         if (!Guid.TryParse(id, out var clientId))
-            return Redirect(Request.GetTypedHeaders().Referer?.ToString() ?? "/");
+            return BadRequest(new { message = "Id inválido." });
 
         var allClients = await ReadClientsAsync();
         var client = allClients.FirstOrDefault(c => c.Id == clientId);
-        if (client == null)
-            return Redirect(Request.GetTypedHeaders().Referer?.ToString() ?? "/");
 
-        // Eliminar imagen física si existe
+        if (client == null)
+            return NotFound(new { message = "Cliente no encontrado." });
+
         var imagePath = Path.Combine(_env.WebRootPath, "clients", client.Imagen ?? "");
         if (!string.IsNullOrWhiteSpace(client.Imagen) && System.IO.File.Exists(imagePath))
             System.IO.File.Delete(imagePath);
 
-        // REMOVER DEL JSON
         allClients.Remove(client);
-
         await SaveClientsAsync(allClients);
-        return Redirect(Request.GetTypedHeaders().Referer?.ToString() ?? "/");
+
+        return Ok(new { success = true });
     }
 }

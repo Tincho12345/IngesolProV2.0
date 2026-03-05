@@ -1,73 +1,296 @@
-﻿<!-- CONTACT -->
-<section id="contact" class="hero section dark-background">
-    <div class="hero-content">
-        <div class="container position-relative">
+﻿@* <!-- CONTACT -->
+<section id="contact" class="hero section dark-background py-5">
+    <div class="container">
 
-            <div class="row justify-content-center text-center mb-5">
-                <div class="col-lg-8">
-                    <div class="hero-glass-card" data-aos="fade-up">
-                        <span class="subtitle">Contacto</span>
-                        <h2>Hablemos de tu Proyecto</h2>
-                        <p>
-                            Contactanos para recibir asesoramiento
-                            o solicitar una propuesta técnica.
-                        </p>
+        <!-- TARJETA PRINCIPAL -->
+        <div class="glass-card contact-card p-4 p-lg-5">
+
+            <!-- TÍTULO CENTRADO (MEJORADO Y MÁS GRANDE) -->
+            <div class="text-center mb-5">
+                <h2 class="fw-bold text-white mb-3 display-5">
+                    ¡Contáctanos!
+                </h2>
+                <p class="text-light fs-5 mb-0">
+                    Déjanos tu consulta y te responderemos cuanto antes
+                </p>
+            </div>
+
+            <div class="row g-4 align-items-stretch">
+
+                <!-- MAPA RESPONSIVE CORREGIDO -->
+                <div class="col-lg-6">
+                    <div class="map-wrapper rounded overflow-hidden">
+                        <iframe src="https://www.google.com/maps?q=IngeSol+de+Ing.+Carlos+Marcelo+Bischoff,+Barrio+Retiro,+N3384+Montecarlo,+Misiones,+Argentina&output=embed"
+                                allowfullscreen
+                                loading="lazy">
+                        </iframe>
                     </div>
                 </div>
-            </div>
-            <div class="row justify-content-center">
-                <div class="col-lg-8">
-                    <div class="glass-card">
-                        <form id="contactForm" method="post">
-                            @Html.AntiForgeryToken()
 
-                            <!-- CAMPOS VISIBLES -->
-                            <input type="text"
-                                   name="Nombre"
-                                   class="form-control mb-3"
-                                   placeholder="Nombre Proyecto"
-                                   required />
+                <!-- DERECHA -->
+                <div class="col-lg-6 d-flex flex-column justify-content-between">
 
-                            <input type="email"
-                                   name="Email"
-                                   class="form-control mb-3"
-                                   placeholder="Email"
-                                   required />
+                    <!-- FORM ORIGINAL COMPLETO -->
+                    <form id="contactForm" method="post">
+                        @Html.AntiForgeryToken()
 
-                            <input type="text"
-                                   name="Telefono"
-                                   class="form-control mb-3"
-                                   placeholder="Teléfono (opcional)" />
+                        <input type="text"
+                               name="Nombre"
+                               class="form-control mb-3"
+                               placeholder="Nombre Proyecto"
+                               required />
 
-                            <input type="text"
-                                   name="Ubicacion"
-                                   class="form-control mb-3"
-                                   placeholder="Ubicación (opcional)" />
+                        <input type="email"
+                               name="Email"
+                               class="form-control mb-3"
+                               placeholder="Email"
+                               required />
 
-                            <textarea name="Mensaje"
-                                      class="form-control mb-3"
-                                      rows="4"
-                                      placeholder="Mensaje"
-                                      required></textarea>
+                        <input type="text"
+                               name="Telefono"
+                               class="form-control mb-3"
+                               placeholder="Teléfono (opcional)" />
 
-                            <!-- CAMPOS OCULTOS → MVC -->
-                            <input type="hidden" name="EtapaProyecto" value="Consulta inicial" />
-                            <input type="hidden" name="TipoProyecto" value="Profesional" />
-                            <input type="hidden" name="Estado" value="Nuevo" />
+                        <input type="text"
+                               name="Ubicacion"
+                               class="form-control mb-3"
+                               placeholder="Ubicación (opcional)" />
 
-                            <!-- CAMPOS OCULTOS → EMAILJS -->
-                            <input type="hidden" name="name" />
-                            <input type="hidden" name="email" />
-                            <textarea name="message" hidden></textarea>
+                        <textarea name="Mensaje"
+                                  class="form-control mb-3"
+                                  rows="4"
+                                  placeholder="Mensaje"
+                                  required></textarea>
 
-                            <button type="submit" class="btn btn-outline-warning w-100">
-                                Enviar Consulta
-                            </button>
-                        </form>
+                        <!-- CAMPOS OCULTOS → MVC -->
+                        <input type="hidden" name="EtapaProyecto" value="Consulta inicial" />
+                        <input type="hidden" name="TipoProyecto" value="Profesional" />
+                        <input type="hidden" name="Estado" value="Nuevo" />
+
+                        <!-- CAMPOS OCULTOS → EMAILJS -->
+                        <input type="hidden" name="name" />
+                        <input type="hidden" name="email" />
+                        <textarea name="message" hidden></textarea>
+
+                        <button type="submit" class="btn btn-outline-warning w-100 mb-4">
+                            Enviar Consulta
+                        </button>
+                    </form>
+
+                    <!-- INFO DE CONTACTO -->
+                    <div class="row text-light small">
+
+                        <div class="col-md-6 mb-3">
+                            <h6 class="fw-bold text-white">Ubicación</h6>
+                            <p class="mb-2">
+                                Av. El Libertador altura 810<br>
+                                Pasaje Dora Ema Classen<br>
+                                Montecarlo, Misiones
+                            </p>
+
+                            <a href="https://maps.google.com/?q=IngeSol+de+Ing.+Carlos+Marcelo+Bischoff,+Montecarlo,+Misiones,+Argentina"
+                               target="_blank"
+                               class="text-warning text-decoration-none">
+                                Ver en Google Maps
+                            </a>
+
+                            <div class="mt-3">
+                                <a href="tel:+543751412801"
+                                   class="d-block text-light text-decoration-none contact-link">
+                                    📞 +54 3751 412801
+                                </a>
+
+                                <a href="tel:+543751600987"
+                                   class="d-block text-light text-decoration-none contact-link">
+                                    📞 +54 3751 600987
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <h6 class="fw-bold text-white">Horarios</h6>
+                            <p class="mb-3">
+                                Lunes a Viernes<br>
+                                07:30 – 12:00<br>
+                                14:00 – 18:00<br><br>
+                                Sábados 07:30 – 10:00
+                            </p>
+
+                            <a href="https://wa.me/543751412801"
+                               target="_blank"
+                               class="d-block text-light text-decoration-none contact-link">
+                                💬 WhatsApp 412801
+                            </a>
+
+                            <a href="https://wa.me/543751600987"
+                               target="_blank"
+                               class="d-block text-light text-decoration-none contact-link">
+                                💬 WhatsApp 600987
+                            </a>
+                        </div>
+
                     </div>
+
                 </div>
             </div>
 
         </div>
     </div>
 </section>
+ *@
+<!-- CONTACT -->
+<section id="contact" class="hero section dark-background py-5">
+    <div class="container">
+
+        <!-- TARJETA PRINCIPAL -->
+        <div class="glass-card contact-card p-4 p-lg-5">
+
+            <!-- TÍTULO -->
+            <div class="text-center mb-5">
+                <h2 class="fw-bold text-white mb-3 display-5">
+                    ¡Contáctanos!
+                </h2>
+                <p class="text-light fs-5 mb-0">
+                    Déjanos tu consulta y te responderemos cuanto antes
+                </p>
+            </div>
+
+            <div class="row g-4 align-items-stretch">
+
+                <!-- MAPA -->
+                <div class="col-lg-6">
+                    <div class="map-wrapper rounded overflow-hidden">
+                        <iframe src="https://www.google.com/maps?q=Oficinas+Corporativas+TechSolutions,+Buenos+Aires,+Argentina&output=embed"
+                                allowfullscreen
+                                loading="lazy">
+                        </iframe>
+                    </div>
+                </div>
+
+                <!-- DERECHA -->
+                <div class="col-lg-6 d-flex flex-column justify-content-between">
+
+                    <!-- FORM ORIGINAL (SIN CAMBIOS FUNCIONALES) -->
+                    <form id="contactForm" method="post">
+                        @Html.AntiForgeryToken()
+
+                        <input type="text"
+                               name="Nombre"
+                               class="form-control mb-3"
+                               placeholder="Nombre Proyecto"
+                               required />
+
+                        <input type="email"
+                               name="Email"
+                               class="form-control mb-3"
+                               placeholder="Email"
+                               required />
+
+                        <input type="text"
+                               name="Telefono"
+                               class="form-control mb-3"
+                               placeholder="Teléfono (opcional)" />
+
+                        <input type="text"
+                               name="Ubicacion"
+                               class="form-control mb-3"
+                               placeholder="Ubicación (opcional)" />
+
+                        <textarea name="Mensaje"
+                                  class="form-control mb-3"
+                                  rows="4"
+                                  placeholder="Mensaje"
+                                  required></textarea>
+
+                        <!-- CAMPOS OCULTOS → MVC -->
+                        <input type="hidden" name="EtapaProyecto" value="Consulta inicial" />
+                        <input type="hidden" name="TipoProyecto" value="Profesional" />
+                        <input type="hidden" name="Estado" value="Nuevo" />
+
+                        <!-- CAMPOS OCULTOS → EMAILJS -->
+                        <input type="hidden" name="name" />
+                        <input type="hidden" name="email" />
+                        <textarea name="message" hidden></textarea>
+
+                        <button type="submit" class="btn btn-outline-warning w-100 mb-4">
+                            Enviar Consulta
+                        </button>
+                    </form>
+
+                    <!-- INFO DE CONTACTO -->
+                    <div class="row text-light small">
+
+                        <!-- UBICACIÓN + TEL -->
+                        <div class="col-md-6 mb-3">
+                            <h6 class="fw-bold text-white">Ubicación</h6>
+                            <p class="mb-2">
+                                Av. Corrientes 1234<br>
+                                Piso 8 - Oficina 804<br>
+                                Buenos Aires, Argentina
+                            </p>
+
+                            <a href="https://maps.google.com/?q=Av.+Corrientes+1234,+Buenos+Aires,+Argentina"
+                               target="_blank"
+                               class="text-warning text-decoration-none">
+                                Ver en Google Maps
+                            </a>
+
+                            <div class="mt-3">
+                                <a href="tel:+541145678900"
+                                   class="d-block text-light text-decoration-none contact-link">
+                                    📞 +54 11 4567 8900
+                                </a>
+
+                                <a href="tel:+541138889900"
+                                   class="d-block text-light text-decoration-none contact-link">
+                                    📞 +54 11 3888 9900
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- HORARIOS + WHATSAPP -->
+                        <div class="col-md-6 mb-3">
+                            <h6 class="fw-bold text-white">Horarios</h6>
+                            <p class="mb-3">
+                                Lunes a Viernes<br>
+                                09:00 – 13:00<br>
+                                14:00 – 18:30<br><br>
+                                Sábados 09:00 – 12:00
+                            </p>
+
+                            <a href="https://wa.me/541145678900"
+                               target="_blank"
+                               class="d-block text-light text-decoration-none contact-link">
+                                💬 WhatsApp 4567 8900
+                            </a>
+
+                            <a href="https://wa.me/541138889900"
+                               target="_blank"
+                               class="d-block text-light text-decoration-none contact-link">
+                                💬 WhatsApp 3888 9900
+                            </a>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ESTILO RESPONSIVE DEL MAPA (UNA SOLA SOLUCIÓN LIMPIA) -->
+<style>
+    .map-wrapper {
+        width: 100%;
+        height: 100%;
+        min-height: 420px;
+    }
+
+        .map-wrapper iframe {
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+</style>

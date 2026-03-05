@@ -1012,6 +1012,7 @@ section,
     width: 100%;
     display: flex;
     align-items: center;
+    margin-bottom: 4px;
 }
 
 .video-background {
@@ -1043,7 +1044,7 @@ section,
 .hero p {
     font-size: 1.25rem;
     line-height: 1.6;
-    margin-bottom: 2.5rem;
+    /*margin-bottom: 1rem;*/
     color: color-mix(in srgb, var(--default-color), transparent 30%);
 }
 
@@ -1179,7 +1180,7 @@ section,
   font-size: 1.25rem;
   font-weight: 300;
   color: color-mix(in srgb, var(--default-color), transparent 10%);
-  margin-bottom: 2.5rem;
+  margin-bottom: 1rem;
 }
 
 .about .stats-wrapper {
@@ -3660,7 +3661,7 @@ section,
   background: var(--surface-color);
   border-radius: 8px;
   padding: 2.5rem;
-  margin-bottom: 2.5rem;
+  margin-bottom: 1rem;
   border: 1px solid color-mix(in srgb, var(--default-color), transparent 93%);
   transition: all 0.3s ease;
 }
@@ -4284,7 +4285,7 @@ section,
   display: flex;
   align-items: flex-start;
   gap: 1.5rem;
-  margin-bottom: 2.5rem;
+  margin-bottom: 1rem;
 }
 
 .portfolio-details .key-features-section .features-list .feature-row:last-child {
@@ -4536,6 +4537,7 @@ section,
     position: relative;
     z-index: 3;
     padding: 5px 0 5px;
+    margin-bottom: 4px;
 }
 
 /* HERO GLASS CARD */
@@ -4544,7 +4546,7 @@ section,
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border-radius: 20px;
-    padding: 3rem 2.5rem;
+    padding: 1rem 2.5rem;
     border: 1px solid rgba(255, 255, 255, 0.15);
     box-shadow: 0 12px 48px rgba(0, 0, 0, 0.6); /* sombra más marcada */
     color: #ffffff; /* texto claramente visible */
@@ -4689,7 +4691,6 @@ body.index-page {
     background-position: center; /* centrado */
     background-attachment: fixed; /* efecto parallax */
     background-repeat: no-repeat; /* no repetir */
-    min-height: 100vh; /* cubre toda la altura */
 }
 
 .feature-img {

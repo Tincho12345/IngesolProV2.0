@@ -76,10 +76,10 @@
                                     <label class="form-label text-white fw-bold">
                                         Logo del cliente
                                     </label>
-
                                     <img id="logo-preview-upload"
-                                         src="/img/logo-placeholder.png"
+                                         src=""
                                          class="logo-preview"
+                                         style="display:none; max-width:140px; max-height:140px; object-fit:contain;"
                                          alt="Vista previa del logo">
 
                                     <input type="file"
@@ -98,21 +98,12 @@
 
                                 <!-- UBICACION -->
                                 <label class="form-label text-white fw-bold">Ubicación del cliente</label>
-                                <div class="row g-2 mb-3">
-                                    <div class="col-md-6">
-                                        <input type="text"
-                                               name="latitud"
-                                               class="form-control"
-                                               placeholder="Latitud"
-                                               readonly>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <input type="text"
-                                               name="longitud"
-                                               class="form-control"
-                                               placeholder="Longitud"
-                                               readonly>
-                                    </div>
+                                <div class="mb-3">
+                                    <input type="text"
+                                           name="ubicacion"
+                                           class="form-control"
+                                           placeholder="-38.402552934085946, -24.62956946211035">
+                                    <small class="text-white">Ingrese latitud y longitud separadas por coma.</small>
                                 </div>
 
                                 <button type="submit" class="btn-glass btn-glass-outline w-100 mt-3">
@@ -123,8 +114,11 @@
 
                         <!-- MAPA -->
                         <div class="col-lg-6">
-                            <div class="map-wrapper">
-                                <div id="map-upload" style="height: 400px; width: 100%; border-radius: 12px;"></div>
+                            <div class="map-wrapper rounded overflow-hidden">
+                                <iframe src="https://www.google.com/maps?q=Oficinas+Corporativas+TechSolutions,+Buenos+Aires,+Argentina&output=embed"
+                                        allowfullscreen
+                                        loading="lazy">
+                                </iframe>
                             </div>
                         </div>
 
@@ -192,23 +186,13 @@
 
                                 <!-- UBICACION -->
                                 <label class="form-label text-white fw-bold">Ubicación del cliente</label>
-                                <div class="row g-2 mb-3">
-                                    <div class="col-md-6">
-                                        <input type="text"
-                                               name="latitud"
-                                               id="edit-latitud"
-                                               class="form-control"
-                                               placeholder="Latitud"
-                                               readonly>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <input type="text"
-                                               name="longitud"
-                                               id="edit-longitud"
-                                               class="form-control"
-                                               placeholder="Longitud"
-                                               readonly>
-                                    </div>
+                                <div class="mb-3">
+                                    <input type="text"
+                                           name="ubicacion"
+                                           id="edit-ubicacion"
+                                           class="form-control"
+                                           placeholder="-26.402552934085946, -54.62956946211035">
+                                    <small class="text-white">Ingrese latitud y longitud separadas por coma.</small>
                                 </div>
 
                                 <button type="submit" class="btn-glass btn-glass-outline w-100 mt-3">
@@ -216,19 +200,21 @@
                                 </button>
                             </form>
                         </div>
-
                         <!-- MAPA -->
                         <div class="col-lg-6">
-                            <div class="map-wrapper">
-                                <div id="map-edit" style="height: 400px; width: 100%; border-radius: 12px;"></div>
+                            <div class="map-wrapper rounded overflow-hidden">
+                                <iframe src="https://www.google.com/maps?q=Oficinas+Corporativas+TechSolutions,+Buenos+Aires,+Argentina&output=embed"
+                                        allowfullscreen
+                                        loading="lazy">
+                                </iframe>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
 }
 
 <style>

@@ -21,9 +21,9 @@ public class VisibleClientsController(IWebHostEnvironment env) : Controller
     private async Task<List<VisibleClient>> ReadClientsAsync()
     {
         var path = GetMasterJsonPath();
-        if (!System.IO.File.Exists(path)) return new List<VisibleClient>();
+        if (!System.IO.File.Exists(path)) return [];
         var content = await System.IO.File.ReadAllTextAsync(path);
-        return JsonSerializer.Deserialize<List<VisibleClient>>(content) ?? new List<VisibleClient>();
+        return JsonSerializer.Deserialize<List<VisibleClient>>(content) ?? [];
     }
 
     private async Task SaveClientsAsync(List<VisibleClient> clients)
@@ -36,6 +36,9 @@ public class VisibleClientsController(IWebHostEnvironment env) : Controller
     // =============================
     // POST: Subir cliente
     // =============================
+    // =============================
+    // POST: Subir cliente con ubicación
+    // =============================
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Upload(
@@ -47,15 +50,19 @@ public class VisibleClientsController(IWebHostEnvironment env) : Controller
         string? website,
         string? linkedin,
         string? whatsapp,
+        double? latitud,
+        double? longitud,
         IFormFile? imageFile)
     {
         if (string.IsNullOrWhiteSpace(nombre) || imageFile == null || imageFile.Length == 0)
             return BadRequest(new { message = "Datos inválidos." });
 
+        // Crear carpeta si no existe
         var folderPath = Path.Combine(_env.WebRootPath, "clients");
         if (!Directory.Exists(folderPath))
             Directory.CreateDirectory(folderPath);
 
+        // Crear objeto cliente
         var client = new VisibleClient
         {
             Nombre = nombre.Trim(),
@@ -69,21 +76,23 @@ public class VisibleClientsController(IWebHostEnvironment env) : Controller
                 ? new string(whatsapp.Where(char.IsDigit).ToArray())
                 : null,
             Activo = true,
-            Orden = 0
+            Orden = 0,
+            Latitud = latitud,     // <-- nuevo
+            Longitud = longitud    // <-- nuevo
         };
 
+        // Validar extensión de imagen
         var extension = Path.GetExtension(imageFile.FileName).ToLowerInvariant();
         if (!_allowedExtensions.Contains(extension))
             return BadRequest(new { message = "Extensión no permitida." });
 
+        // Guardar imagen
         client.Imagen = $"{client.Id}{extension}";
         var imagePath = Path.Combine(folderPath, client.Imagen);
-
         await using (var stream = new FileStream(imagePath, FileMode.Create))
-        {
             await imageFile.CopyToAsync(stream);
-        }
 
+        // Guardar en JSON
         var allClients = await ReadClientsAsync();
         allClients.Add(client);
         await SaveClientsAsync(allClients);
@@ -91,6 +100,10 @@ public class VisibleClientsController(IWebHostEnvironment env) : Controller
         return Ok(new { success = true });
     }
 
+
+    // =============================
+    // POST: Editar cliente
+    // =============================
     // =============================
     // POST: Editar cliente
     // =============================
@@ -106,6 +119,8 @@ public class VisibleClientsController(IWebHostEnvironment env) : Controller
         string? website,
         string? linkedin,
         string? whatsapp,
+        double? latitud,
+        double? longitud,
         IFormFile? imageFile)
     {
         if (!Guid.TryParse(id, out var clientId))
@@ -127,6 +142,10 @@ public class VisibleClientsController(IWebHostEnvironment env) : Controller
         client.WhatsApp = !string.IsNullOrWhiteSpace(whatsapp)
             ? new string(whatsapp.Where(char.IsDigit).ToArray())
             : null;
+
+        // ---- NUEVO: guardar coordenadas ----
+        client.Latitud = latitud;
+        client.Longitud = longitud;
 
         var folderPath = Path.Combine(_env.WebRootPath, "clients");
 

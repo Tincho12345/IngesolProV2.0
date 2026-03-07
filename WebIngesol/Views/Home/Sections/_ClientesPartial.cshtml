@@ -126,6 +126,20 @@
                                 {
                                     <a href="@whatsappLink" target="_blank" class="btn-register"><i class="bi bi-whatsapp"></i></a>
                                 }
+
+                                @* Link a Google Maps si existen coordenadas *@
+                                @if (c.Latitud.HasValue && c.Longitud.HasValue)
+                                {
+                                    var latStr = c.Latitud.Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                                    var lngStr = c.Longitud.Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
+
+                                    <a href="https://www.google.com/maps?q=@latStr,@lngStr"
+                                       target="_blank"
+                                       class="btn-register"
+                                       title="Ubicación: @latStr, @lngStr">
+                                        <i class="bi bi-geo-alt"></i>
+                                    </a>
+                                }
                             </div>
 
                             @if (isAdmin)
@@ -144,6 +158,8 @@
                                             data-whatsapp="@c.WhatsApp"
                                             data-website="@c.Website"
                                             data-logo="@Url.Content($"~/clients/{c.Imagen}?v={DateTime.Now.Ticks}")"
+                                            data-latitud="@c.Latitud"
+                                            data-longitud="@c.Longitud"
                                             data-bs-toggle="modal"
                                             data-bs-target="#editClienteModal">
                                         Editar

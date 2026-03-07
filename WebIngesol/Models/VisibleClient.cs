@@ -14,4 +14,10 @@ public class VisibleClient
     public string? WhatsApp { get; set; }
     public bool Activo { get; set; } = true; // para soft delete
     public int Orden { get; set; } = 0; // opcional: para ordenar manualmente
+
+    // ==========================
+    // NUEVAS PROPIEDADES UBICACIÓN
+    // ==========================
+    public double? Latitud { get; set; }   // opcional
+    public double? Longitud { get; set; }  // opcional
 }

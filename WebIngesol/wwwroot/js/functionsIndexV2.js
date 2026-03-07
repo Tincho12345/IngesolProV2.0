@@ -65,7 +65,12 @@
         }
     };
 
-    window.previewLogoUpload = input => previewLogo(input, 'logo-preview-upload');
+    // ---------------- VISTA PREVIA LOGO SIMPLE ----------------
+    window.previewLogoUpload = input => {
+        const img = document.getElementById('logo-preview-upload');
+        if (input.files && input.files[0]) img.src = URL.createObjectURL(input.files[0]), img.style.display = 'block';
+        else img.style.display = 'none';
+    };
     window.previewLogo = input => previewLogo(input, 'logo-preview');
 
     // ---------------- RELLENAR FORMULARIO EDITAR ----------------
@@ -77,23 +82,103 @@
             const input = document.getElementById(`edit-${campo}`);
             if (input) input.value = btn.dataset[campo] || "";
         });
+
+        // ---------- CARGAR UBICACIÓN ----------
+        const ubicacionInput = document.getElementById("edit-ubicacion");
+        if (ubicacionInput) {
+            const lat = btn.dataset.latitud || '';
+            const lng = btn.dataset.longitud || '';
+            if (lat && lng) {
+                ubicacionInput.value = `${lat}, ${lng}`;
+            } else {
+                ubicacionInput.value = '';
+            }
+        }
+
         // Preview del logo
         const preview = document.getElementById('logo-preview');
         if (preview) preview.src = btn.dataset.logo || '/img/logo-placeholder.png';
     });
 
     // ---------------- SUBMIT GENÉRICO AJAX ----------------
+    // ---------------- SUBMIT GENÉRICO AJAX ----------------
     const manejarSubmitAjax = (form, mensajeConfirmacion, mensajeExito, modal) => {
         form.addEventListener("submit", async e => {
             e.preventDefault();
+
+            // ---------- CONFIRMACIÓN ----------
             const confirmacion = await confirmar(mensajeConfirmacion);
             if (!confirmacion.isConfirmed) return;
-            const ok = await fetchConLoader(form.action, { method: "POST", body: new FormData(form) }, mensajeExito);
+
+            // ---------- PARSEAR Y NORMALIZAR UBICACIÓN ----------
+            const ubicacionInput = form.querySelector('input[name="ubicacion"]');
+            if (ubicacionInput && ubicacionInput.value.trim()) {
+                const valor = ubicacionInput.value.trim();
+
+                let latitud, longitud;
+
+                // Determinar si usa punto o coma como decimal
+                if (valor.includes('.')) {
+                    // Formato con punto decimal: "-26.401509831730852, -54.60864114268127"
+                    const partes = valor.split(',').map(p => p.trim());
+                    if (partes.length !== 2) {
+                        await mostrarError("Ubicación inválida. Debe contener latitud y longitud separadas por coma.");
+                        return;
+                    }
+                    latitud = partes[0].replace('.', ',');   // reemplazar punto por coma para enviar
+                    longitud = partes[1].replace('.', ',');
+                } else if (valor.includes(',')) {
+                    // Formato con coma decimal: "-26,401509831730852, -54,60864114268127"
+                    // Usamos regex para extraer correctamente los dos números
+                    const match = valor.match(/([+-]?\d+,\d+)\s*,?\s*([+-]?\d+,\d+)/);
+                    if (!match) {
+                        await mostrarError("Ubicación inválida. Revisa el formato: -26,401509831730852, -54,60864114268127");
+                        return;
+                    }
+                    latitud = match[1];
+                    longitud = match[2];
+                } else {
+                    await mostrarError("Ubicación inválida. Debe contener números con coma o punto decimal.");
+                    return;
+                }
+
+                // Validar números reemplazando temporalmente la coma por punto
+                if (isNaN(parseFloat(latitud.replace(',', '.'))) || isNaN(parseFloat(longitud.replace(',', '.')))) {
+                    await mostrarError("Ubicación inválida. Revisa los números ingresados.");
+                    return;
+                }
+
+                // ---------- CREAR O ACTUALIZAR INPUTS OCULTOS ----------
+                const setHiddenInput = (name, value) => {
+                    let input = form.querySelector(`input[name="${name}"]`);
+                    if (!input) {
+                        input = document.createElement('input');
+                        input.type = 'hidden';
+                        input.name = name;
+                        form.appendChild(input);
+                    }
+                    input.value = value; // enviamos siempre con coma decimal
+                };
+
+                setHiddenInput('latitud', latitud);
+                setHiddenInput('longitud', longitud);
+            }
+
+            // ---------- ENVIAR FORMULARIO ----------
+            const ok = await fetchConLoader(
+                form.action,
+                { method: "POST", body: new FormData(form) },
+                mensajeExito
+            );
             if (!ok) return;
+
+            // ---------- CERRAR MODAL Y RESET ----------
             if (modal) {
                 bootstrap.Modal.getInstance(modal)?.hide();
                 form.reset();
             }
+
+            // ---------- RECARGAR CLIENTES ----------
             await recargarClientes();
         });
     };

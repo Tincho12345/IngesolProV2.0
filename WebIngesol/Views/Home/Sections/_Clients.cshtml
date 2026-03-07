@@ -41,16 +41,12 @@
 
 @if (isAdmin)
 {
-    @* ========================= MODAL AGREGAR CLIENTE ========================= *@
+    <!-- ========================= MODAL AGREGAR CLIENTE ========================= -->
     <div class="modal fade" id="uploadClienteModal" tabindex="-1" aria-labelledby="uploadClienteModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
             <div class="modal-content modal-glass position-relative">
 
-                <span class="modal-close"
-                      data-bs-dismiss="modal"
-                      style="position:absolute; top:10px; right:10px; font-size:30px; color:white; cursor:pointer;">
-                    &times;
-                </span>
+                <span class="modal-close" data-bs-dismiss="modal">&times;</span>
 
                 <div class="modal-header text-center border-0">
                     <h5 class="modal-title w-100 fw-bold text-white" id="uploadClienteModalLabel">
@@ -59,46 +55,91 @@
                 </div>
 
                 <div class="modal-body">
-                    <form asp-controller="VisibleClients"
-                          asp-action="Upload"
-                          method="post"
-                          enctype="multipart/form-data">
-                        @Html.AntiForgeryToken()
+                    <div class="row g-4">
 
-                        <input type="text"
-                               name="nombre"
-                               class="form-control mb-3"
-                               placeholder="Nombre de la empresa"
-                               required />
+                        <!-- FORMULARIO -->
+                        <div class="col-lg-6">
+                            <form asp-controller="VisibleClients"
+                                  asp-action="Upload"
+                                  method="post"
+                                  enctype="multipart/form-data">
+                                @Html.AntiForgeryToken()
 
-                        <input type="file"
-                               name="imageFile"
-                               class="form-control mb-3"
-                               accept="image/*"
-                               required />
+                                <input type="text"
+                                       name="nombre"
+                                       class="form-control mb-3"
+                                       placeholder="Nombre de la empresa"
+                                       required />
 
-                        @* Partial para links sociales *@
-                        @await Html.PartialAsync("Sections/_SocialLinks", new ViewDataDictionary(ViewData) { { "prefix", "" } })
+                                <!-- LOGO -->
+                                <div class="logo-upload-wrapper mb-3 text-center">
+                                    <label class="form-label text-white fw-bold">
+                                        Logo del cliente
+                                    </label>
 
-                        <button type="submit" class="btn-glass btn-glass-outline px-4 w-100 mt-3">
-                            Subir Cliente
-                        </button>
-                    </form>
+                                    <img id="logo-preview-upload"
+                                         src="/img/logo-placeholder.png"
+                                         class="logo-preview"
+                                         alt="Vista previa del logo">
+
+                                    <input type="file"
+                                           name="imageFile"
+                                           class="form-control mt-2"
+                                           accept="image/*"
+                                           onchange="previewLogoUpload(this)"
+                                           required />
+
+                                    <small class="text-light d-block mt-1">
+                                        Seleccione el logo de la empresa
+                                    </small>
+                                </div>
+
+                                @await Html.PartialAsync("Sections/_SocialLinks", null, new ViewDataDictionary(ViewData) { { "prefix", "create" } })
+
+                                <!-- UBICACION -->
+                                <label class="form-label text-white fw-bold">Ubicación del cliente</label>
+                                <div class="row g-2 mb-3">
+                                    <div class="col-md-6">
+                                        <input type="text"
+                                               name="latitud"
+                                               class="form-control"
+                                               placeholder="Latitud"
+                                               readonly>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type="text"
+                                               name="longitud"
+                                               class="form-control"
+                                               placeholder="Longitud"
+                                               readonly>
+                                    </div>
+                                </div>
+
+                                <button type="submit" class="btn-glass btn-glass-outline w-100 mt-3">
+                                    Subir Cliente
+                                </button>
+                            </form>
+                        </div>
+
+                        <!-- MAPA -->
+                        <div class="col-lg-6">
+                            <div class="map-wrapper">
+                                <div id="map-upload" style="height: 400px; width: 100%; border-radius: 12px;"></div>
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    @* ========================= MODAL EDITAR CLIENTE ========================= *@
+    <!-- ========================= MODAL EDITAR CLIENTE ========================= -->
     <div class="modal fade" id="editClienteModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
             <div class="modal-content modal-glass position-relative">
 
-                <span class="modal-close"
-                      data-bs-dismiss="modal"
-                      style="position:absolute; top:10px; right:10px; font-size:30px; color:white; cursor:pointer;">
-                    &times;
-                </span>
+                <span class="modal-close" data-bs-dismiss="modal">&times;</span>
 
                 <div class="modal-header text-center border-0">
                     <h5 class="modal-title w-100 fw-bold text-white">
@@ -107,36 +148,156 @@
                 </div>
 
                 <div class="modal-body">
-                    <form asp-controller="VisibleClients"
-                          asp-action="Edit"
-                          method="post"
-                          enctype="multipart/form-data">
-                        @Html.AntiForgeryToken()
+                    <div class="row g-4">
 
-                        <input type="hidden" name="id" id="edit-id" />
+                        <!-- FORMULARIO -->
+                        <div class="col-lg-6">
+                            <form asp-controller="VisibleClients"
+                                  asp-action="Edit"
+                                  method="post"
+                                  enctype="multipart/form-data">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" id="edit-id" />
 
-                        <input type="text"
-                               name="nombre"
-                               id="edit-nombre"
-                               class="form-control mb-3"
-                               placeholder="Nombre de la empresa"
-                               required />
+                                <input type="text"
+                                       name="nombre"
+                                       id="edit-nombre"
+                                       class="form-control mb-3"
+                                       placeholder="Nombre de la empresa"
+                                       required />
 
-                        <input type="file"
-                               name="imageFile"
-                               class="form-control mb-3"
-                               accept="image/*" />
+                                <!-- LOGO -->
+                                <div class="logo-upload-wrapper mb-3 text-center">
+                                    <label class="form-label text-white fw-bold">
+                                        Logo del cliente
+                                    </label>
 
-                        @* Partial para links sociales con prefijo "edit" *@
-                        @await Html.PartialAsync("Sections/_SocialLinks", new ViewDataDictionary(ViewData) { { "prefix", "edit" } })
+                                    <img id="logo-preview"
+                                         src="/img/logo-placeholder.png"
+                                         class="logo-preview"
+                                         alt="Vista previa del logo">
 
-                        <button type="submit"
-                                class="btn-glass btn-glass-outline px-4 w-100 mt-3">
-                            Guardar Cambios
-                        </button>
-                    </form>
+                                    <input type="file"
+                                           name="imageFile"
+                                           class="form-control mt-2"
+                                           accept="image/*"
+                                           onchange="previewLogo(this)" />
+
+                                    <small class="text-light d-block mt-1">
+                                        Cambiar logo de la empresa
+                                    </small>
+                                </div>
+
+                                @await Html.PartialAsync("Sections/_SocialLinks", null, new ViewDataDictionary(ViewData) { { "prefix", "edit" } })
+
+                                <!-- UBICACION -->
+                                <label class="form-label text-white fw-bold">Ubicación del cliente</label>
+                                <div class="row g-2 mb-3">
+                                    <div class="col-md-6">
+                                        <input type="text"
+                                               name="latitud"
+                                               id="edit-latitud"
+                                               class="form-control"
+                                               placeholder="Latitud"
+                                               readonly>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type="text"
+                                               name="longitud"
+                                               id="edit-longitud"
+                                               class="form-control"
+                                               placeholder="Longitud"
+                                               readonly>
+                                    </div>
+                                </div>
+
+                                <button type="submit" class="btn-glass btn-glass-outline w-100 mt-3">
+                                    Guardar Cambios
+                                </button>
+                            </form>
+                        </div>
+
+                        <!-- MAPA -->
+                        <div class="col-lg-6">
+                            <div class="map-wrapper">
+                                <div id="map-edit" style="height: 400px; width: 100%; border-radius: 12px;"></div>
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 }
+
+<style>
+    .modal-close {
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        font-size: 30px;
+        color: white;
+        cursor: pointer;
+    }
+
+    .map-wrapper {
+        width: 100%;
+        height: 100%;
+        min-height: 420px;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+        .map-wrapper iframe {
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+    .modal-body input.form-control {
+        border-radius: 12px;
+        padding: 12px 14px;
+        background: rgba(255,255,255,0.08);
+        border: 1px solid rgba(255,255,255,0.2);
+        color: #fff;
+    }
+
+        .modal-body input.form-control::placeholder {
+            color: rgba(255,255,255,0.7);
+        }
+
+        .modal-body input.form-control:focus {
+            border-color: #ffc107;
+            box-shadow: 0 0 0 0.2rem rgba(255,193,7,0.25);
+            background: rgba(255,255,255,0.4);
+        }
+
+    .logo-upload-wrapper {
+        background: rgba(255,255,255,0.05);
+        border: 1px dashed rgba(255,255,255,0.3);
+        border-radius: 12px;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+        .logo-upload-wrapper label {
+            margin-bottom: 10px;
+        }
+
+    .logo-preview {
+        width: 140px;
+        height: 140px;
+        object-fit: contain;
+        background: white;
+        border-radius: 12px;
+        padding: 10px;
+        margin-bottom: 10px;
+    }
+
+    .logo-upload-wrapper small {
+        margin-top: 5px;
+    }
+</style>

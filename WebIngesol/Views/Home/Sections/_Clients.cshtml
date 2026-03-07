@@ -232,6 +232,17 @@
 }
 
 <style>
+
+    /* Efecto zoom simple al hacer hover sobre los logos */
+    .logo-preview {
+        transition: transform 0.3s ease; /* suaviza el efecto */
+        cursor: pointer; /* opcional, para indicar interactividad */
+    }
+
+        .logo-preview:hover {
+            transform: scale(3); /* agranda la imagen al 300% */
+            z-index: 10; /* para que sobresalga sobre otros elementos */
+        }
     .modal-close {
         position: absolute;
         top: 10px;

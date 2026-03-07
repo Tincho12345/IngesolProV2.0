@@ -63,6 +63,7 @@
                                   asp-action="Upload"
                                   method="post"
                                   enctype="multipart/form-data">
+
                                 @Html.AntiForgeryToken()
 
                                 <input type="text"
@@ -76,6 +77,7 @@
                                     <label class="form-label text-white fw-bold">
                                         Logo del cliente
                                     </label>
+
                                     <img id="logo-preview-upload"
                                          src=""
                                          class="logo-preview"
@@ -94,144 +96,184 @@
                                     </small>
                                 </div>
 
-                                @await Html.PartialAsync("Sections/_SocialLinks", null, new ViewDataDictionary(ViewData) { { "prefix", "create" } })
+                                @await Html.PartialAsync(
+                                "Sections/_SocialLinks",
+                                                        null,
+                                                        new ViewDataDictionary(ViewData) { { "prefix", "create" } }
+                                                        )
 
-                                <!-- UBICACION -->
-                                <label class="form-label text-white fw-bold">Ubicación del cliente</label>
-                                <div class="mb-3">
-                                    <input type="text"
-                                           name="ubicacion"
-                                           class="form-control"
-                                           placeholder="-38.402552934085946, -24.62956946211035">
-                                    <small class="text-white">Ingrese latitud y longitud separadas por coma.</small>
-                                </div>
+                            <!-- UBICACION -->
+                            <label class="form-label text-white fw-bold">
+                                Ubicación del cliente
+                            </label>
 
-                                <button type="submit" class="btn-glass btn-glass-outline w-100 mt-3">
-                                    Subir Cliente
-                                </button>
-                            </form>
-                        </div>
+                            <input type="text"
+                                   id="create-search"
+                                   class="form-control mb-2"
+                                   placeholder="Buscar dirección...">
 
-                        <!-- MAPA -->
-                        <div class="col-lg-6">
-                            <div class="map-wrapper rounded overflow-hidden">
-                                <iframe src="https://www.google.com/maps?q=Oficinas+Corporativas+TechSolutions,+Buenos+Aires,+Argentina&output=embed"
-                                        allowfullscreen
-                                        loading="lazy">
-                                </iframe>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ========================= MODAL EDITAR CLIENTE ========================= -->
-    <div class="modal fade" id="editClienteModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered modal-xl">
-            <div class="modal-content modal-glass position-relative">
-
-                <span class="modal-close" data-bs-dismiss="modal">&times;</span>
-
-                <div class="modal-header text-center border-0">
-                    <h5 class="modal-title w-100 fw-bold text-white">
-                        Editar Cliente
-                    </h5>
-                </div>
-
-                <div class="modal-body">
-                    <div class="row g-4">
-
-                        <!-- FORMULARIO -->
-                        <div class="col-lg-6">
-                            <form asp-controller="VisibleClients"
-                                  asp-action="Edit"
-                                  method="post"
-                                  enctype="multipart/form-data">
-                                @Html.AntiForgeryToken()
-                                <input type="hidden" name="id" id="edit-id" />
-
+                            <div class="mb-3">
                                 <input type="text"
-                                       name="nombre"
-                                       id="edit-nombre"
-                                       class="form-control mb-3"
-                                       placeholder="Nombre de la empresa"
-                                       required />
+                                       name="ubicacion"
+                                       id="create-ubicacion"
+                                       class="form-control"
+                                       placeholder="-26.402552934085946, -54.62956946211035">
 
-                                <!-- LOGO -->
-                                <div class="logo-upload-wrapper mb-3 text-center">
-                                    <label class="form-label text-white fw-bold">
-                                        Logo del cliente
-                                    </label>
-
-                                    <img id="logo-preview"
-                                         src="/img/logo-placeholder.png"
-                                         class="logo-preview"
-                                         alt="Vista previa del logo">
-
-                                    <input type="file"
-                                           name="imageFile"
-                                           class="form-control mt-2"
-                                           accept="image/*"
-                                           onchange="previewLogo(this)" />
-
-                                    <small class="text-light d-block mt-1">
-                                        Cambiar logo de la empresa
-                                    </small>
-                                </div>
-
-                                @await Html.PartialAsync("Sections/_SocialLinks", null, new ViewDataDictionary(ViewData) { { "prefix", "edit" } })
-
-                                <!-- UBICACION -->
-                                <label class="form-label text-white fw-bold">Ubicación del cliente</label>
-                                <div class="mb-3">
-                                    <input type="text"
-                                           name="ubicacion"
-                                           id="edit-ubicacion"
-                                           class="form-control"
-                                           placeholder="-26.402552934085946, -54.62956946211035">
-                                    <small class="text-white">Ingrese latitud y longitud separadas por coma.</small>
-                                </div>
-
-                                <button type="submit" class="btn-glass btn-glass-outline w-100 mt-3">
-                                    Guardar Cambios
-                                </button>
-                            </form>
-                        </div>
-                        <!-- MAPA -->
-                        <div class="col-lg-6">
-                            <div class="map-wrapper rounded overflow-hidden">
-                                <iframe id="edit-mapa"
-                                        height="300"
-                                        style="border:0; width:100%;"
-                                        allowfullscreen
-                                        loading="lazy"
-                                        referrerpolicy="no-referrer-when-downgrade">
-                                </iframe>
+                                <small class="text-white">
+                                    Ingrese latitud y longitud separadas por coma.
+                                </small>
                             </div>
+
+                            <button type="submit"
+                                    class="btn-glass btn-glass-outline w-100 mt-3">
+                                Subir Cliente
+                            </button>
+
+                        </form>
+                    </div>
+
+                    <!-- MAPA -->
+                    <div class="col-lg-6">
+                        <div class="map-wrapper rounded overflow-hidden">
+                            <div id="create-map" class="map-container"></div>
                         </div>
                     </div>
+
                 </div>
             </div>
+
         </div>
     </div>
+</div>
 
+
+<!-- ========================= MODAL EDITAR CLIENTE ========================= -->
+<div class="modal fade" id="editClienteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content modal-glass position-relative">
+
+            <span class="modal-close" data-bs-dismiss="modal">&times;</span>
+
+            <div class="modal-header text-center border-0">
+                <h5 class="modal-title w-100 fw-bold text-white">
+                    Editar Cliente
+                </h5>
+            </div>
+
+            <div class="modal-body">
+                <div class="row g-4">
+
+                    <!-- FORMULARIO -->
+                    <div class="col-lg-6">
+                        <form asp-controller="VisibleClients"
+                              asp-action="Edit"
+                              method="post"
+                              enctype="multipart/form-data">
+
+                            @Html.AntiForgeryToken()
+
+                            <input type="hidden" name="id" id="edit-id" />
+
+                            <input type="text"
+                                   name="nombre"
+                                   id="edit-nombre"
+                                   class="form-control mb-3"
+                                   placeholder="Nombre de la empresa"
+                                   required />
+
+                            <!-- LOGO -->
+                            <div class="logo-upload-wrapper mb-3 text-center">
+                                <label class="form-label text-white fw-bold">
+                                    Logo del cliente
+                                </label>
+
+                                <img id="logo-preview"
+                                     src="/img/logo-placeholder.png"
+                                     class="logo-preview"
+                                     style="max-width:140px; max-height:140px; object-fit:contain;"
+                                     alt="Vista previa del logo">
+
+                                <input type="file"
+                                       name="imageFile"
+                                       class="form-control mt-2"
+                                       accept="image/*"
+                                       onchange="previewLogo(this)" />
+
+                                <small class="text-light d-block mt-1">
+                                    Cambiar logo de la empresa
+                                </small>
+                            </div>
+
+                            @await Html.PartialAsync(
+                                                        "Sections/_SocialLinks",
+                                                        null,
+                                                        new ViewDataDictionary(ViewData) { { "prefix", "edit" } }
+                                                        )
+
+                            <!-- UBICACION -->
+                            <label class="form-label text-white fw-bold">
+                                Ubicación del cliente
+                            </label>
+
+                            <input type="text"
+                                   id="edit-search"
+                                   class="form-control mb-2"
+                                   placeholder="Buscar dirección...">
+
+                            <div class="mb-3">
+                                <input type="text"
+                                       name="ubicacion"
+                                       id="edit-ubicacion"
+                                       class="form-control"
+                                       placeholder="-26.402552934085946, -54.62956946211035">
+
+                                <small class="text-white">
+                                    Ingrese latitud y longitud separadas por coma.
+                                </small>
+                            </div>
+
+                            <button type="submit"
+                                    class="btn-glass btn-glass-outline w-100 mt-3">
+                                Guardar Cambios
+                            </button>
+
+                        </form>
+                    </div>
+
+                    <!-- MAPA -->
+                    <div class="col-lg-6">
+                        <div class="map-wrapper rounded overflow-hidden">
+                            <div id="edit-map" class="map-container"></div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
 }
 
 <style>
 
-    /* Efecto zoom simple al hacer hover sobre los logos */
     .logo-preview {
-        transition: transform 0.3s ease; /* suaviza el efecto */
-        cursor: pointer; /* opcional, para indicar interactividad */
+        width: 140px;
+        height: 140px;
+        object-fit: contain;
+        background: white;
+        border-radius: 12px;
+        padding: 10px;
+        margin-bottom: 10px;
+        transition: transform 0.3s ease;
+        cursor: pointer;
     }
 
         .logo-preview:hover {
-            transform: scale(3); /* agranda la imagen al 300% */
-            z-index: 10; /* para que sobresalga sobre otros elementos */
+            transform: scale(3);
+            z-index: 10;
         }
+
     .modal-close {
         position: absolute;
         top: 10px;
@@ -247,9 +289,13 @@
         min-height: 420px;
         border-radius: 12px;
         overflow: hidden;
+        position: relative;
     }
 
-        .map-wrapper iframe {
+        .map-wrapper iframe,
+        .map-wrapper .map-container,
+        #create-map,
+        #edit-map {
             width: 100%;
             height: 100%;
             border: 0;
@@ -287,17 +333,8 @@
             margin-bottom: 10px;
         }
 
-    .logo-preview {
-        width: 140px;
-        height: 140px;
-        object-fit: contain;
-        background: white;
-        border-radius: 12px;
-        padding: 10px;
-        margin-bottom: 10px;
-    }
+        .logo-upload-wrapper small {
+            margin-top: 5px;
+        }
 
-    .logo-upload-wrapper small {
-        margin-top: 5px;
-    }
 </style>

@@ -86,30 +86,20 @@
 
         // ---------- CARGAR UBICACIÓN ----------
         const ubicacionInput = document.getElementById("edit-ubicacion");
-        const mapa = document.getElementById("edit-mapa");
-        if (ubicacionInput && mapa) {
+
+        if (ubicacionInput) {
             let lat = btn.dataset.latitud || '';
             let lng = btn.dataset.longitud || '';
 
             if (lat && lng) {
-                // Reemplazar coma por punto en caso de que existan
+                // Reemplazar coma por punto
                 lat = lat.replace(',', '.');
                 lng = lng.replace(',', '.');
 
-                // Coordenadas para Google Maps
-                const coordenadas = `${lat},${lng}`;
-
-                // Mostrar en el input con punto decimal
+                // Mostrar en el input
                 ubicacionInput.value = `${lat}, ${lng}`;
-
-                // Zoom más cercano
-                const zoomLevel = 18; // 1-21, mientras más alto más cerca
-
-                // Actualizar iframe con Google Maps embebido y pin
-                mapa.src = `https://maps.google.com/maps?q=${coordenadas}&hl=es&z=${zoomLevel}&output=embed`;
             } else {
                 ubicacionInput.value = '';
-                mapa.src = ""; // mapa vacío si no hay coords
             }
         }
 
@@ -117,7 +107,6 @@
         const preview = document.getElementById('logo-preview');
         if (preview) preview.src = btn.dataset.logo || '/img/logo-placeholder.png';
     });
-
 
     // ---------------- SUBMIT GENÉRICO AJAX ----------------
     const manejarSubmitAjax = (form, mensajeConfirmacion, mensajeExito, modal) => {
@@ -211,6 +200,15 @@
             uploadForm.reset();
             document.getElementById('logo-preview-upload').src = '/img/logo-placeholder.png';
         });
+
+        // INICIALIZAR MAPA AL ABRIR MODAL
+        uploadModal.addEventListener('shown.bs.modal', () => {
+            setTimeout(() => {
+                if (typeof window.initCreateMap === "function") {
+                    window.initCreateMap();
+                }
+            }, 500);
+        });
     }
 
     const editModal = document.getElementById("editClienteModal");
@@ -218,6 +216,16 @@
         const editForm = editModal.querySelector("form");
         if (editForm) manejarSubmitAjax(editForm, "¿Guardar cambios?", "Cliente actualizado correctamente", editModal);
 
+        // Cuando se abre el modal, inicializamos el mapa
+        editModal.addEventListener('shown.bs.modal', () => {
+            setTimeout(() => {
+                if (typeof window.initEditMap === "function") {
+                    window.initEditMap();
+                }
+            }, 500);
+        });
+
+        // Cuando se cierra el modal, reseteamos el form y preview
         editModal.addEventListener("hidden.bs.modal", () => {
             editForm.reset();
             document.getElementById('logo-preview').src = '/img/logo-placeholder.png';
@@ -236,48 +244,158 @@
         const ok = await fetchConLoader(form.action, { method: "POST", body: new FormData(form) }, "Cliente eliminado correctamente");
         if (ok) await recargarClientes();
     });
-
-
-
 });
 
 // ---------------- MAPA EDIT ----------------
 window.initEditMap = function () {
+
     const mapDiv = document.getElementById("edit-map");
     const ubicacionInput = document.getElementById("edit-ubicacion");
 
     if (!mapDiv) return;
 
-    const valor = ubicacionInput?.value || "-26.402552934085946,-54.62956946211035";
-    const [latStr, lngStr] = valor.split(',').map(s => s.trim());
-    const lat = parseFloat(latStr.replace(',', '.'));
-    const lng = parseFloat(lngStr.replace(',', '.'));
+    let valor = ubicacionInput?.value || "-26.402552934085946,-54.62956946211035";
+
+    const partes = valor.split(',');
+    if (partes.length !== 2) return;
+
+    const lat = parseFloat(partes[0].trim().replace(',', '.'));
+    const lng = parseFloat(partes[1].trim().replace(',', '.'));
+
+    const center = {
+        lat: isNaN(lat) ? -26.402552934085946 : lat,
+        lng: isNaN(lng) ? -54.62956946211035 : lng
+    };
+
+    // destruir mapa anterior si existe
+    if (window.editMap) {
+        window.editMap = null;
+    }
 
     window.editMap = new google.maps.Map(mapDiv, {
-        center: { lat, lng },
+        center: center,
         zoom: 18
     });
 
     window.editMarker = new google.maps.Marker({
-        position: { lat, lng },
+        position: center,
         map: window.editMap,
         draggable: true
     });
 
-    // Mover pin al hacer click en el mapa
+    const actualizarInput = (coords) => {
+        if (!ubicacionInput) return;
+        const lat = coords.lat().toFixed(8);
+        const lng = coords.lng().toFixed(8);
+        ubicacionInput.value = `${lat}, ${lng}`;
+    };
+
+    // click en mapa
     window.editMap.addListener("click", function (e) {
-        const coords = e.latLng;
-        window.editMarker.setPosition(coords);
-        if (ubicacionInput) {
-            ubicacionInput.value = `${coords.lat()}, ${coords.lng()}`;
-        }
+        window.editMarker.setPosition(e.latLng);
+        actualizarInput(e.latLng);
     });
 
-    // Mover pin al arrastrarlo
+    // mover pin
     window.editMarker.addListener("dragend", function () {
-        if (ubicacionInput) {
-            const pos = window.editMarker.getPosition();
-            ubicacionInput.value = `${pos.lat()}, ${pos.lng()}`;
-        }
+        actualizarInput(window.editMarker.getPosition());
     });
+
+    const searchInput = document.getElementById("edit-search");
+
+    if (searchInput) {
+
+        const autocomplete = new google.maps.places.Autocomplete(searchInput);
+
+        autocomplete.addListener("place_changed", function () {
+
+            const place = autocomplete.getPlace();
+
+            if (!place.geometry) return;
+
+            const location = place.geometry.location;
+
+            window.editMap.setCenter(location);
+            window.editMap.setZoom(18);
+
+            window.editMarker.setPosition(location);
+
+            if (ubicacionInput) {
+                ubicacionInput.value = `${location.lat()}, ${location.lng()}`;
+            }
+
+        });
+    }
+};
+
+
+// ---------------- MAPA CREATE ----------------
+window.initCreateMap = function () {
+
+    const mapDiv = document.getElementById("create-map");
+    const ubicacionInput = document.getElementById("create-ubicacion");
+
+    if (!mapDiv) return;
+
+    const center = { lat: -26.402552934085946, lng: -54.62956946211035 };
+
+    if (window.createMap) {
+        window.createMap = null;
+    }
+
+    window.createMap = new google.maps.Map(mapDiv, {
+        center: center,
+        zoom: 15
+    });
+
+    window.createMarker = new google.maps.Marker({
+        position: center,
+        map: window.createMap,
+        draggable: true
+    });
+
+    const actualizarInput = (coords) => {
+        if (!ubicacionInput) return;
+        const lat = coords.lat().toFixed(8);
+        const lng = coords.lng().toFixed(8);
+        ubicacionInput.value = `${lat}, ${lng}`;
+    };
+
+    // click en mapa
+    window.createMap.addListener("click", function (e) {
+        window.createMarker.setPosition(e.latLng);
+        actualizarInput(e.latLng);
+    });
+
+    // mover pin
+    window.createMarker.addListener("dragend", function () {
+        actualizarInput(window.createMarker.getPosition());
+    });
+
+    const searchInput = document.getElementById("create-search");
+
+    if (searchInput) {
+
+        const autocomplete = new google.maps.places.Autocomplete(searchInput);
+
+        autocomplete.addListener("place_changed", function () {
+
+            const place = autocomplete.getPlace();
+
+            if (!place.geometry) return;
+
+            const location = place.geometry.location;
+
+            window.createMap.setCenter(location);
+            window.createMap.setZoom(18);
+
+            window.createMarker.setPosition(location);
+
+            if (ubicacionInput) {
+                ubicacionInput.value = `${location.lat()}, ${location.lng()}`;
+            }
+
+        });
+    }
+
 };

@@ -1,8 +1,4 @@
-﻿// Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
-
-// Write your JavaScript code.
-document.addEventListener('DOMContentLoaded', function () {
+﻿document.addEventListener('DOMContentLoaded', function () {
     const dropdownSubmenus = document.querySelectorAll('.dropdown-submenu');
 
     dropdownSubmenus.forEach(function (submenu) {
@@ -22,13 +18,22 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-
-// 🔽🔽🔽 AGREGAR DESDE ACÁ (SOLO ESTO) 🔽🔽🔽
-
 window.bloquearTabla = function () {
     document.getElementById('table-blocker')?.classList.remove('d-none');
 };
 
 window.desbloquearTabla = function () {
     document.getElementById('table-blocker')?.classList.add('d-none');
+};
+
+window.initGoogleMaps = function () {
+    console.log("Google Maps cargado correctamente");
+
+    if (typeof initCreateMap === "function") {
+        initCreateMap();
+    }
+
+    if (typeof initEditMap === "function") {
+        initEditMap();
+    }
 };

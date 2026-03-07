@@ -77,6 +77,7 @@
     document.addEventListener("click", e => {
         const btn = e.target.closest(".edit-client-btn");
         if (!btn) return;
+
         const campos = ["id", "nombre", "facebook", "twitter", "instagram", "telegram", "linkedin", "whatsapp", "website"];
         campos.forEach(campo => {
             const input = document.getElementById(`edit-${campo}`);
@@ -85,22 +86,39 @@
 
         // ---------- CARGAR UBICACIÓN ----------
         const ubicacionInput = document.getElementById("edit-ubicacion");
-        if (ubicacionInput) {
-            const lat = btn.dataset.latitud || '';
-            const lng = btn.dataset.longitud || '';
+        const mapa = document.getElementById("edit-mapa");
+        if (ubicacionInput && mapa) {
+            let lat = btn.dataset.latitud || '';
+            let lng = btn.dataset.longitud || '';
+
             if (lat && lng) {
+                // Reemplazar coma por punto en caso de que existan
+                lat = lat.replace(',', '.');
+                lng = lng.replace(',', '.');
+
+                // Coordenadas para Google Maps
+                const coordenadas = `${lat},${lng}`;
+
+                // Mostrar en el input con punto decimal
                 ubicacionInput.value = `${lat}, ${lng}`;
+
+                // Zoom más cercano
+                const zoomLevel = 18; // 1-21, mientras más alto más cerca
+
+                // Actualizar iframe con Google Maps embebido y pin
+                mapa.src = `https://maps.google.com/maps?q=${coordenadas}&hl=es&z=${zoomLevel}&output=embed`;
             } else {
                 ubicacionInput.value = '';
+                mapa.src = ""; // mapa vacío si no hay coords
             }
         }
 
-        // Preview del logo
+        // ---------- PREVIEW DEL LOGO ----------
         const preview = document.getElementById('logo-preview');
         if (preview) preview.src = btn.dataset.logo || '/img/logo-placeholder.png';
     });
 
-    // ---------------- SUBMIT GENÉRICO AJAX ----------------
+
     // ---------------- SUBMIT GENÉRICO AJAX ----------------
     const manejarSubmitAjax = (form, mensajeConfirmacion, mensajeExito, modal) => {
         form.addEventListener("submit", async e => {
@@ -219,4 +237,47 @@
         if (ok) await recargarClientes();
     });
 
+
+
 });
+
+// ---------------- MAPA EDIT ----------------
+window.initEditMap = function () {
+    const mapDiv = document.getElementById("edit-map");
+    const ubicacionInput = document.getElementById("edit-ubicacion");
+
+    if (!mapDiv) return;
+
+    const valor = ubicacionInput?.value || "-26.402552934085946,-54.62956946211035";
+    const [latStr, lngStr] = valor.split(',').map(s => s.trim());
+    const lat = parseFloat(latStr.replace(',', '.'));
+    const lng = parseFloat(lngStr.replace(',', '.'));
+
+    window.editMap = new google.maps.Map(mapDiv, {
+        center: { lat, lng },
+        zoom: 18
+    });
+
+    window.editMarker = new google.maps.Marker({
+        position: { lat, lng },
+        map: window.editMap,
+        draggable: true
+    });
+
+    // Mover pin al hacer click en el mapa
+    window.editMap.addListener("click", function (e) {
+        const coords = e.latLng;
+        window.editMarker.setPosition(coords);
+        if (ubicacionInput) {
+            ubicacionInput.value = `${coords.lat()}, ${coords.lng()}`;
+        }
+    });
+
+    // Mover pin al arrastrarlo
+    window.editMarker.addListener("dragend", function () {
+        if (ubicacionInput) {
+            const pos = window.editMarker.getPosition();
+            ubicacionInput.value = `${pos.lat()}, ${pos.lng()}`;
+        }
+    });
+};

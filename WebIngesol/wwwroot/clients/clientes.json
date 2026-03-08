@@ -2,7 +2,7 @@
   {
     "Id": "7750f740-6497-4027-ae66-56f2f1b9c540",
     "Nombre": "discos",
-    "Imagen": "7750f740-6497-4027-ae66-56f2f1b9c540.jpg",
+    "Imagen": "7750f740-6497-4027-ae66-56f2f1b9c540.png",
     "Facebook": "https://www.facebook.com/share/1BzFnyzGLm/",
     "Twitter": null,
     "Instagram": null,
@@ -12,8 +12,8 @@
     "WhatsApp": null,
     "Activo": true,
     "Orden": 0,
-    "Latitud": null,
-    "Longitud": null
+    "Latitud": -26.84640483,
+    "Longitud": -65.26726009
   },
   {
     "Id": "16a5e380-ec7d-4979-ada7-5af0c1bb2616",

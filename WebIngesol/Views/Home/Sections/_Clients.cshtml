@@ -149,114 +149,115 @@
 </div>
 
 
-<!-- ========================= MODAL EDITAR CLIENTE ========================= -->
-<div class="modal fade" id="editClienteModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-xl">
-        <div class="modal-content modal-glass position-relative">
+    <!-- ========================= MODAL EDITAR CLIENTE ========================= -->
+    <div class="modal fade" id="editClienteModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
+            <div class="modal-content modal-glass position-relative">
 
-            <span class="modal-close" data-bs-dismiss="modal">&times;</span>
+                <span class="modal-close" data-bs-dismiss="modal">&times;</span>
 
-            <div class="modal-header text-center border-0">
-                <h5 class="modal-title w-100 fw-bold text-white">
-                    Editar Cliente
-                </h5>
-            </div>
-
-            <div class="modal-body">
-                <div class="row g-4">
-
-                    <!-- FORMULARIO -->
-                    <div class="col-lg-6">
-                        <form asp-controller="VisibleClients"
-                              asp-action="Edit"
-                              method="post"
-                              enctype="multipart/form-data">
-
-                            @Html.AntiForgeryToken()
-                            <input type="hidden" name="id" id="edit-id" />
-
-                            <input type="text"
-                                   name="nombre"
-                                   id="edit-nombre"
-                                   class="form-control mb-3"
-                                   placeholder="Nombre de la empresa"
-                                   required />
-
-                            <!-- LOGO -->
-                            <div class="logo-upload-wrapper mb-3 text-center">
-                                <label class="form-label text-white fw-bold">
-                                    Logo del cliente
-                                </label>
-                                <img id="logo-preview"
-                                     src="/img/logo-placeholder.png"
-                                     class="logo-preview"
-                                     style="max-width:140px; max-height:140px; object-fit:contain;"
-                                     alt="Vista previa del logo">
-                                <input type="file"
-                                       name="imageFile"
-                                       class="form-control mt-2"
-                                       accept="image/*"
-                                       onchange="previewLogo(this)" />
-                                <small class="text-light d-block mt-1">
-                                    Cambiar logo de la empresa
-                                </small>
-                            </div>
-
-                            @await Html.PartialAsync(
-                                                        "Sections/_SocialLinks",
-                                                        null,
-                                                        new ViewDataDictionary(ViewData) { { "prefix", "edit" } }
-                                                        )
-
-                            <!-- UBICACION -->
-                            <label class="form-label text-white fw-bold">
-                                Ubicación del cliente
-                            </label>
-
-                            <input type="text"
-                                   id="edit-search"
-                                   class="form-control mb-2"
-                                   placeholder="Buscar dirección...">
-
-                            <div class="mb-3 d-flex gap-2 align-items-center">
-                                <input type="text"
-                                       name="ubicacion"
-                                       id="edit-ubicacion"
-                                       class="form-control"
-                                       placeholder="-26.402552934085946, -54.62956946211035">
-
-                                <button type="button"
-                                        id="btn-edit-ubicacion-actual"
-                                        class="btn btn-outline-light"
-                                        title="Usar mi ubicación actual">
-                                    📍
-                                </button>
-                            </div>
-                            <small class="text-white d-block mb-3">
-                                Ingrese latitud y longitud separadas por coma o use su ubicación actual.
-                            </small>
-
-                            <button type="submit"
-                                    class="btn-glass btn-glass-outline w-100 mt-3">
-                                Guardar Cambios
-                            </button>
-
-                        </form>
-                    </div>
-
-                    <!-- MAPA -->
-                    <div class="col-lg-6">
-                        <div class="map-wrapper rounded overflow-hidden">
-                            <div id="edit-map" class="map-container"></div>
-                        </div>
-                    </div>
-
+                <div class="modal-header text-center border-0">
+                    <h5 class="modal-title w-100 fw-bold text-white">
+                        Editar Cliente
+                    </h5>
                 </div>
-            </div>
 
+                <div class="modal-body">
+                    <div class="row g-4">
+
+                        <!-- FORMULARIO -->
+                        <div class="col-lg-6">
+                            <form asp-controller="VisibleClients"
+                                  asp-action="Edit"
+                                  method="post"
+                                  enctype="multipart/form-data">
+
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" id="edit-id" />
+
+                                <input type="text"
+                                       name="nombre"
+                                       id="edit-nombre"
+                                       class="form-control mb-3"
+                                       placeholder="Nombre de la empresa"
+                                       required />
+
+                                <!-- LOGO -->
+                                <div class="logo-upload-wrapper mb-3 text-center">
+                                    <label class="form-label text-white fw-bold">
+                                        Logo del cliente
+                                    </label>
+                                    <img id="logo-preview"
+                                         src="/img/logo-placeholder.png"
+                                         class="logo-preview"
+                                         style="max-width:140px; max-height:140px; object-fit:contain;"
+                                         alt="Vista previa del logo">
+                                    <input type="file"
+                                           name="imageFile"
+                                           class="form-control mt-2"
+                                           accept="image/*"
+                                           onchange="previewLogo(this)" />
+                                    <small class="text-light d-block mt-1">
+                                        Cambiar logo de la empresa
+                                    </small>
+                                </div>
+
+                                @await Html.PartialAsync(
+                                                            "Sections/_SocialLinks",
+                                                            null,
+                                                            new ViewDataDictionary(ViewData) { { "prefix", "edit" } }
+                                                            )
+
+                                <!-- UBICACION -->
+                                <label class="form-label text-white fw-bold">
+                                    Ubicación del cliente
+                                </label>
+
+                                <input type="text"
+                                       id="edit-search"
+                                       class="form-control mb-2"
+                                       placeholder="Buscar dirección...">
+
+                                <div class="mb-3 d-flex gap-2 align-items-center">
+                                    <input type="text"
+                                           name="ubicacion"
+                                           id="edit-ubicacion"
+                                           class="form-control"
+                                           placeholder="-26.402552934085946, -54.62956946211035">
+
+                                    <button type="button"
+                                            id="btn-edit-ubicacion-actual"
+                                            class="btn btn-outline-light"
+                                            title="Usar mi ubicación actual">
+                                        📍
+                                    </button>
+                                </div>
+                                <small class="text-white d-block mb-3">
+                                    Ingrese latitud y longitud separadas por coma o use su ubicación actual.
+                                </small>
+
+                                <button type="submit"
+                                        class="btn-glass btn-glass-outline w-100 mt-3">
+                                    Guardar Cambios
+                                </button>
+
+                            </form>
+                        </div>
+
+                        <!-- MAPA -->
+                        <div class="col-lg-6">
+                            <div class="map-wrapper rounded overflow-hidden">
+                                <div id="edit-map" class="map-container"></div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
         </div>
     </div>
-</div>
+
 }
 
 <style>

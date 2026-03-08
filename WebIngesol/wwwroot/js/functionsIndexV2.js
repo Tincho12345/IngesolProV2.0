@@ -126,13 +126,54 @@
         input.value = value;
     }
 
-    function parseUbicacion(valor) {
-        const partes = valor.split(',').map(p => p.trim());
-        if (partes.length !== 2) { mostrarError("Ubicación inválida"); return {}; }
-        const [latitud, longitud] = partes;
-        if (isNaN(parseFloat(latitud.replace(',', '.'))) || isNaN(parseFloat(longitud.replace(',', '.')))) { mostrarError("Ubicación inválida"); return {}; }
-        return { latitud, longitud };
+function parseUbicacion(valor) {
+    valor = valor.trim();
+    if (!valor) {
+        mostrarError("Ubicación vacía");
+        return {};
     }
+
+    let latitud, longitud;
+
+    // Detectamos si los decimales usan punto
+    const tienePunto = valor.includes('.');
+
+    if (tienePunto) {
+        // Caso: decimales con punto → separar por última coma
+        const ultimaComaIndex = valor.lastIndexOf(',');
+        if (ultimaComaIndex === -1) {
+            mostrarError("Ubicación inválida");
+            return {};
+        }
+        latitud = valor.substring(0, ultimaComaIndex).trim();
+        longitud = valor.substring(ultimaComaIndex + 1).trim();
+        // Convertimos puntos a comas para enviar al backend
+        if (!latitud.includes(',')) latitud = latitud.replace('.', ',');
+        if (!longitud.includes(',')) longitud = longitud.replace('.', ',');
+    } else {
+        // Caso: decimales con coma → separar por la **coma que divide lat/lng**
+        // Suponemos que la coma separadora es la que está entre los dos números
+        // Regex: tomar primer número y segundo número
+        const match = valor.match(/^(-?\d+,\d+)\s*,\s*(-?\d+,\d+)$/);
+        if (!match) {
+            mostrarError("Ubicación inválida");
+            return {};
+        }
+        latitud = match[1].trim();
+        longitud = match[2].trim();
+    }
+
+    // Validar que sean números válidos usando parseFloat (punto como decimal)
+    const latNum = parseFloat(latitud.replace(',', '.'));
+    const lngNum = parseFloat(longitud.replace(',', '.'));
+    if (isNaN(latNum) || isNaN(lngNum)) {
+        mostrarError("Ubicación inválida");
+        return {};
+    }
+
+    // Retornamos los valores listos para enviar al backend
+    return { latitud, longitud };
+}
 
     // ---------------- ELIMINAR CLIENTE ----------------
     document.addEventListener("click", async e => {
@@ -157,11 +198,20 @@
     });
 
     // ---------------- VOZ ----------------
-    let vozTimeout, lecturaEnCurso = false;
+    let lecturaEnCurso = false;
+    let vozTimeout;
 
-    function leerTexto(texto, mostrarHora = false) {
+    function leerTexto(texto, mostrarHora = false, coords = null) {
         if (!('speechSynthesis' in window) || lecturaEnCurso) return;
         lecturaEnCurso = true;
+
+        if (coords) {
+            const lat = typeof coords.lat === 'function' ? coords.lat() : coords.lat;
+            const lng = typeof coords.lng === 'function' ? coords.lng() : coords.lng;
+            if (lat.toFixed(8) === '-26.84640483' && lng.toFixed(8) === '-65.26726009') {
+                texto += ". Por acá vive el tucumano";
+            }
+        }
 
         const utterance = new SpeechSynthesisUtterance(texto);
         utterance.lang = 'es-ES';
@@ -183,7 +233,9 @@
         vozTimeout = setTimeout(() => {
             const geocoder = new google.maps.Geocoder();
             geocoder.geocode({ location: coords }, (results, status) => {
-                if (status === 'OK' && results[0]) leerTexto(`Ubicación: ${results[0].formatted_address}`, mostrarHora);
+                if (status === 'OK' && results[0]) {
+                    leerTexto(`Ubicación: ${results[0].formatted_address}`, mostrarHora, coords);
+                }
             });
         }, 500);
     }
@@ -191,6 +243,58 @@
     // ---------------- MAPAS ----------------
     const watchIdMap = {};
 
+    function normalizarCoords(coords) {
+        return {
+            lat: typeof coords.lat === 'function' ? coords.lat() : coords.lat,
+            lng: typeof coords.lng === 'function' ? coords.lng() : coords.lng
+        };
+    }
+
+    // ---------------- FUNCIONES GEO ----------------
+    function actualizarMapaYInput(coords, input, mapObj, leerVoz = false) {
+        const { lat, lng } = normalizarCoords(coords);
+        if (input) input.value = `${lat.toFixed(8)}, ${lng.toFixed(8)}`;
+        if (mapObj) {
+            mapObj.marker.setPosition(coords);
+            mapObj.map.setCenter(coords);
+            mapObj.map.setZoom(18);
+        }
+        if (leerVoz) leerDireccion(coords, true);
+    }
+
+    function usarUbicacionActual(inputId, mapId, leerVoz = true) {
+        const input = document.getElementById(inputId);
+        const mapObj = window[mapId];
+        if (!navigator.geolocation) { mostrarError("Geolocalización no soportada"); return; }
+
+        navigator.geolocation.getCurrentPosition(
+            pos => {
+                const coords = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+                actualizarMapaYInput(coords, input, mapObj, leerVoz);
+            },
+            err => mostrarError("No se pudo obtener la ubicación actual: " + err.message),
+            { enableHighAccuracy: true }
+        );
+    }
+
+    function usarUbicacionActualTiempoReal(inputId, mapId) {
+        const input = document.getElementById(inputId);
+        const mapObj = window[mapId];
+        if (!navigator.geolocation) { mostrarError("Geolocalización no soportada"); return; }
+
+        if (watchIdMap[inputId]) navigator.geolocation.clearWatch(watchIdMap[inputId]);
+
+        watchIdMap[inputId] = navigator.geolocation.watchPosition(
+            pos => {
+                const coords = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+                actualizarMapaYInput(coords, input, mapObj, false); // NO leer voz en tiempo real
+            },
+            err => mostrarError("No se pudo obtener la ubicación en tiempo real: " + err.message),
+            { enableHighAccuracy: true, maximumAge: 1000, timeout: 5000 }
+        );
+    }
+
+    // ---------------- INICIALIZACIÓN DE MAPA ----------------
     function initMap({ mapId, searchId, inputId, defaultCenter, zoom = 18 }) {
         const mapDiv = document.getElementById(mapId);
         const ubicacionInput = document.getElementById(inputId);
@@ -203,107 +307,27 @@
         const map = new google.maps.Map(mapDiv, { center, zoom });
         const marker = new google.maps.Marker({ position: center, map, draggable: true });
 
-        const actualizar = (coords, leer = true) => {
-            if (ubicacionInput) ubicacionInput.value = `${coords.lat().toFixed(8)}, ${coords.lng().toFixed(8)}`;
-            if (leer) leerDireccion(coords); // solo leer si no es tiempo real
-        };
+        // Lectura de voz al mover el pin
+        marker.addListener("dragend", () => actualizarMapaYInput(marker.getPosition(), ubicacionInput, { map, marker }, true));
+        map.addListener("click", e => actualizarMapaYInput(e.latLng, ubicacionInput, { map, marker }, true));
 
-        map.addListener("click", e => { marker.setPosition(e.latLng); actualizar(e.latLng); });
-        marker.addListener("dragend", () => actualizar(marker.getPosition()));
-
-        const searchInput = document.getElementById(searchId);
-        if (searchInput) {
-            const autocomplete = new google.maps.places.Autocomplete(searchInput);
-            autocomplete.addListener("place_changed", () => {
-                const place = autocomplete.getPlace();
-                if (!place.geometry) return;
-                const location = place.geometry.location;
-                map.setCenter(location);
-                map.setZoom(18);
-                marker.setPosition(location);
-                actualizar(location); // leer dirección
-            });
+        if (searchId) {
+            const searchInput = document.getElementById(searchId);
+            if (searchInput) {
+                const autocomplete = new google.maps.places.Autocomplete(searchInput);
+                autocomplete.addListener("place_changed", () => {
+                    const place = autocomplete.getPlace();
+                    if (!place.geometry) return;
+                    const location = place.geometry.location;
+                    marker.setPosition(location);
+                    map.setCenter(location);
+                    map.setZoom(18);
+                    actualizarMapaYInput(location, ubicacionInput, { map, marker }, true);
+                });
+            }
         }
 
         window[mapId] = { map, marker };
-    }
-
-    // ---------------- USAR UBICACIÓN ACTUAL ----------------
-    function usarUbicacionActual(inputId, mapId) {
-        const input = document.getElementById(inputId);
-        const mapObj = window[mapId];
-        if (!navigator.geolocation) { mostrarError("Geolocalización no soportada"); return; }
-
-        navigator.geolocation.getCurrentPosition(
-            pos => {
-                const coords = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
-                if (input) input.value = `${coords.lat().toFixed(8)}, ${coords.lng().toFixed(8)}`;
-                if (mapObj) { mapObj.marker.setPosition(coords); mapObj.map.setCenter(coords); mapObj.map.setZoom(18); }
-                leerDireccion(coords, true); // leer voz solo al botón
-            },
-            err => mostrarError("No se pudo obtener la ubicación actual: " + err.message),
-            { enableHighAccuracy: true }
-        );
-    }
-
-    // ---------------- USO TIEMPO REAL ----------------
-    function usarUbicacionActualTiempoReal(inputId, mapId) {
-        const input = document.getElementById(inputId);
-        const mapObj = window[mapId];
-        if (!navigator.geolocation) { mostrarError("Geolocalización no soportada"); return; }
-
-        if (watchIdMap[inputId]) navigator.geolocation.clearWatch(watchIdMap[inputId]);
-
-        watchIdMap[inputId] = navigator.geolocation.watchPosition(
-            pos => {
-                const coords = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-                if (input) input.value = `${coords.lat.toFixed(8)}, ${coords.lng.toFixed(8)}`;
-                if (mapObj) {
-                    mapObj.marker.setPosition(coords);
-                    mapObj.map.setCenter(coords);
-                    mapObj.map.setZoom(18);
-                }
-                // NO llamar a leerDireccion aquí para evitar bucle infinito
-            },
-            err => mostrarError("No se pudo obtener la ubicación en tiempo real: " + err.message),
-            { enableHighAccuracy: true, maximumAge: 1000, timeout: 5000 }
-        );
-    }
-
-    // ---------------- USAR UBICACIÓN ACTUAL ----------------
-    function usarUbicacionActual(inputId, mapId) {
-        const input = document.getElementById(inputId);
-        const mapObj = window[mapId];
-        if (!navigator.geolocation) { mostrarError("Geolocalización no soportada"); return; }
-
-        navigator.geolocation.getCurrentPosition(
-            pos => {
-                const coords = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
-                if (input) input.value = `${coords.lat().toFixed(8)}, ${coords.lng().toFixed(8)}`;
-                if (mapObj) { mapObj.marker.setPosition(coords); mapObj.map.setCenter(coords); mapObj.map.setZoom(18); }
-                leerDireccion(coords, true); // leer voz solo al botón
-            },
-            err => mostrarError("No se pudo obtener la ubicación actual: " + err.message),
-            { enableHighAccuracy: true }
-        );
-    }
-
-    function usarUbicacionActualTiempoReal(inputId, mapId) {
-        const input = document.getElementById(inputId);
-        const mapObj = window[mapId];
-        if (!navigator.geolocation) { mostrarError("Geolocalización no soportada"); return; }
-
-        if (watchIdMap[inputId]) navigator.geolocation.clearWatch(watchIdMap[inputId]);
-
-        watchIdMap[inputId] = navigator.geolocation.watchPosition(
-            pos => {
-                const coords = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-                if (input) input.value = `${coords.lat.toFixed(8)}, ${coords.lng.toFixed(8)}`;
-                if (mapObj) { mapObj.marker.setPosition(coords); mapObj.map.setCenter(coords); mapObj.map.setZoom(18); }
-            },
-            err => mostrarError("No se pudo obtener la ubicación en tiempo real: " + err.message),
-            { enableHighAccuracy: true, maximumAge: 1000, timeout: 5000 }
-        );
     }
 
     // ---------------- INICIALIZAR MODALES ----------------

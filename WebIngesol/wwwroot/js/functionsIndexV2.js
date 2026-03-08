@@ -294,6 +294,33 @@ function parseUbicacion(valor) {
         );
     }
 
+    // Función para actualizar mapa y voz al cambiar el input manualmente
+    function escucharCambioInputUbicacion(inputId, mapId) {
+        const input = document.getElementById(inputId);
+        if (!input) return;
+
+        const actualizarDesdeInput = () => {
+            const mapObj = window[mapId]; // <- mover dentro para asegurarse que existe
+            if (!mapObj) return;           // <- si no existe, no hacemos nada
+
+            const valor = input.value.trim();
+            if (!valor) return;
+
+            const { latitud, longitud } = parseUbicacion(valor);
+            if (!latitud || !longitud) return;
+
+            const coords = new google.maps.LatLng(
+                parseFloat(latitud.replace(',', '.')),
+                parseFloat(longitud.replace(',', '.'))
+            );
+            actualizarMapaYInput(coords, input, mapObj, true);
+        };
+
+        input.addEventListener("input", actualizarDesdeInput);
+        input.addEventListener("paste", () => setTimeout(actualizarDesdeInput, 0));
+        input.addEventListener("keyup", actualizarDesdeInput);
+    }
+
     // ---------------- INICIALIZACIÓN DE MAPA ----------------
     function initMap({ mapId, searchId, inputId, defaultCenter, zoom = 18 }) {
         const mapDiv = document.getElementById(mapId);
@@ -325,6 +352,11 @@ function parseUbicacion(valor) {
                     actualizarMapaYInput(location, ubicacionInput, { map, marker }, true);
                 });
             }
+        }
+
+        // 🔥 Aquí agregamos el listener de input MANUAL
+        if (ubicacionInput) {
+            escucharCambioInputUbicacion(inputId, mapId);
         }
 
         window[mapId] = { map, marker };

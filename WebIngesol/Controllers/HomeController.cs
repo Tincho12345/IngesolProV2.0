@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using System.Security.Claims;
@@ -46,7 +45,17 @@ public class HomeController(
         try
         {
             var json = System.IO.File.ReadAllText(masterJsonPath);
-            return JsonSerializer.Deserialize<List<VisibleClient>>(json) ?? new();
+            var clientes = JsonSerializer.Deserialize<List<VisibleClient>>(json) ?? new();
+
+            // 🔹 Asegurar que el Id sea Guid (coherente con VisibleClientsController)
+            foreach (var c in clientes)
+            {
+                if (c.Id == Guid.Empty)
+                    c.Id = Guid.NewGuid();
+            }
+
+            // 🔹 Orden consistente por Orden primero, luego por Nombre
+            return clientes.OrderBy(c => c.Orden).ThenBy(c => c.Nombre).ToList();
         }
         catch
         {
@@ -55,7 +64,7 @@ public class HomeController(
     }
 
     // =========================
-    // AUTH (tu código original intacto)
+    // AUTH (sin cambios)
     // =========================
 
     [HttpGet]
@@ -151,19 +160,13 @@ public class HomeController(
     // MISC
     // =========================
 
-    public IActionResult Privacy()
-    {
-        return View();
-    }
+    public IActionResult Privacy() => View();
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public IActionResult Error()
+    public IActionResult Error() => View(new ErrorViewModel
     {
-        return View(new ErrorViewModel
-        {
-            RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
-        });
-    }
+        RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
+    });
 
     [HttpGet]
     public IActionResult ClientesPartial()

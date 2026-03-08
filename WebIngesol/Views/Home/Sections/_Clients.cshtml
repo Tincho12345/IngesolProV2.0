@@ -77,20 +77,17 @@
                                     <label class="form-label text-white fw-bold">
                                         Logo del cliente
                                     </label>
-
                                     <img id="logo-preview-upload"
                                          src=""
                                          class="logo-preview"
                                          style="display:none; max-width:140px; max-height:140px; object-fit:contain;"
                                          alt="Vista previa del logo">
-
                                     <input type="file"
                                            name="imageFile"
                                            class="form-control mt-2"
                                            accept="image/*"
                                            onchange="previewLogoUpload(this)"
                                            required />
-
                                     <small class="text-light d-block mt-1">
                                         Seleccione el logo de la empresa
                                     </small>
@@ -112,17 +109,22 @@
                                    class="form-control mb-2"
                                    placeholder="Buscar dirección...">
 
-                            <div class="mb-3">
+                            <div class="mb-3 d-flex gap-2 align-items-center">
                                 <input type="text"
                                        name="ubicacion"
                                        id="create-ubicacion"
                                        class="form-control"
                                        placeholder="-26.402552934085946, -54.62956946211035">
-
-                                <small class="text-white">
-                                    Ingrese latitud y longitud separadas por coma.
-                                </small>
+                                <button type="button"
+                                        id="btn-create-ubicacion-actual"
+                                        class="btn btn-outline-light"
+                                        title="Usar mi ubicación actual">
+                                    📍
+                                </button>
                             </div>
+                            <small class="text-white d-block mb-3">
+                                Ingrese latitud y longitud separadas por coma o use su ubicación actual.
+                            </small>
 
                             <button type="submit"
                                     class="btn-glass btn-glass-outline w-100 mt-3">
@@ -171,7 +173,6 @@
                               enctype="multipart/form-data">
 
                             @Html.AntiForgeryToken()
-
                             <input type="hidden" name="id" id="edit-id" />
 
                             <input type="text"
@@ -186,19 +187,16 @@
                                 <label class="form-label text-white fw-bold">
                                     Logo del cliente
                                 </label>
-
                                 <img id="logo-preview"
                                      src="/img/logo-placeholder.png"
                                      class="logo-preview"
                                      style="max-width:140px; max-height:140px; object-fit:contain;"
                                      alt="Vista previa del logo">
-
                                 <input type="file"
                                        name="imageFile"
                                        class="form-control mt-2"
                                        accept="image/*"
                                        onchange="previewLogo(this)" />
-
                                 <small class="text-light d-block mt-1">
                                     Cambiar logo de la empresa
                                 </small>
@@ -220,17 +218,23 @@
                                    class="form-control mb-2"
                                    placeholder="Buscar dirección...">
 
-                            <div class="mb-3">
+                            <div class="mb-3 d-flex gap-2 align-items-center">
                                 <input type="text"
                                        name="ubicacion"
                                        id="edit-ubicacion"
                                        class="form-control"
                                        placeholder="-26.402552934085946, -54.62956946211035">
 
-                                <small class="text-white">
-                                    Ingrese latitud y longitud separadas por coma.
-                                </small>
+                                <button type="button"
+                                        id="btn-edit-ubicacion-actual"
+                                        class="btn btn-outline-light"
+                                        title="Usar mi ubicación actual">
+                                    📍
+                                </button>
                             </div>
+                            <small class="text-white d-block mb-3">
+                                Ingrese latitud y longitud separadas por coma o use su ubicación actual.
+                            </small>
 
                             <button type="submit"
                                     class="btn-glass btn-glass-outline w-100 mt-3">
@@ -336,5 +340,9 @@
         .logo-upload-wrapper small {
             margin-top: 5px;
         }
+
+    .pac-container {
+        z-index: 9999 !important;
+    }
 
 </style>

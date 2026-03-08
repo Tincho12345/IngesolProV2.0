@@ -1,42 +1,51 @@
 ﻿document.addEventListener("DOMContentLoaded", () => {
 
+    // ---------------- CONFIG ----------------
     const swalTheme = { background: '#1e1e2f', color: '#ffffff' };
     const MIN_LOADING_TIME = 700;
     const delay = ms => new Promise(res => setTimeout(res, ms));
 
-    // ---------------- SWEETALERT WRAPPERS ----------------
-    const mostrarCargando = mensaje => Swal.fire({ title: mensaje || "Procesando...", allowOutsideClick: false, allowEscapeKey: false, didOpen: () => Swal.showLoading(), ...swalTheme });
-    const mostrarExito = mensaje => Swal.fire({ title: mensaje, icon: "success", timer: 1500, timerProgressBar: true, showConfirmButton: false, ...swalTheme });
-    const mostrarError = mensaje => Swal.fire({ title: mensaje || "Ocurrió un error", icon: "error", ...swalTheme });
-    const confirmar = (titulo, texto = "", icon = "question") => Swal.fire({ title: titulo, text: texto, icon, showCancelButton: true, confirmButtonText: "Confirmar", cancelButtonText: "Cancelar", reverseButtons: true, ...swalTheme });
+    // ---------------- SIGNALR ----------------
+    const connection = new signalR.HubConnectionBuilder()
+        .withUrl("/clientsHub")
+        .withAutomaticReconnect()
+        .build();
+
+    connection.on("ClientesActualizados", recargarClientes);
+    connection.start().then(() => console.log("Conectado a SignalR"))
+        .catch(err => console.error("Error conectando a SignalR:", err));
+
+    // ---------------- SWEETALERT ----------------
+    const mostrarCargando = msg => Swal.fire({ title: msg || "Procesando...", allowOutsideClick: false, allowEscapeKey: false, didOpen: () => Swal.showLoading(), ...swalTheme });
+    // Solo devuelve la promesa, no hacemos await aquí
+    const mostrarExito = msg => Swal.fire({
+        title: msg,
+        icon: "success",
+        timer: 1500,
+        timerProgressBar: true,
+        showConfirmButton: false,
+        ...swalTheme
+    });
+    const mostrarError = msg => Swal.fire({ title: msg || "Ocurrió un error", icon: "error", ...swalTheme });
+    const confirmar = (title, text = "", icon = "question") => Swal.fire({ title, text, icon, showCancelButton: true, confirmButtonText: "Confirmar", cancelButtonText: "Cancelar", reverseButtons: true, ...swalTheme });
 
     // ---------------- FETCH CON LOADER ----------------
-    const fetchConLoader = async (url, options, mensajeExito) => {
+    async function fetchConLoader(url, options) {  // quitamos mensajeExito de aquí
         try {
             mostrarCargando();
             const [response] = await Promise.all([fetch(url, options), delay(MIN_LOADING_TIME)]);
             if (!response.ok) throw new Error("Error en la operación");
-            Swal.close();
-            await mostrarExito(mensajeExito);
+            Swal.close(); // solo cerrar loader
             return true;
         } catch (error) {
             Swal.close();
             await mostrarError(error.message);
             return false;
         }
-    };
-
-    // ---------------- ANTI CACHE IMÁGENES ----------------
-    const actualizarImagenesSinCache = () => {
-        const timestamp = Date.now();
-        document.querySelectorAll("#clients-container img").forEach(img => {
-            if (!img.src) return;
-            img.src = img.src.split("?")[0] + "?v=" + timestamp;
-        });
-    };
+    }
 
     // ---------------- RECARGAR CLIENTES ----------------
-    const recargarClientes = async () => {
+    async function recargarClientes() {
         try {
             const response = await fetch(`/Home/ClientesPartial?v=${Date.now()}`, { cache: "no-store" });
             if (!response.ok) throw new Error();
@@ -44,192 +53,85 @@
             const container = document.getElementById("clients-container");
             if (container) {
                 container.innerHTML = html;
-                actualizarImagenesSinCache();
+                document.querySelectorAll("#clients-container img").forEach(img => { if (img.src) img.src = img.src.split("?")[0] + "?v=" + Date.now(); });
                 if (typeof AOS !== "undefined") AOS.refresh();
             }
         } catch (error) {
             console.error("Error recargando clientes:", error);
         }
-    };
+    }
 
-    // ---------------- VISTA PREVIA LOGO ----------------
-    const previewLogo = (input, previewId) => {
-        const preview = document.getElementById(previewId);
-        if (!preview) return;
-        if (input.files && input.files[0]) {
-            const reader = new FileReader();
-            reader.onload = e => preview.src = e.target.result;
-            reader.readAsDataURL(input.files[0]);
-        } else {
-            preview.src = '/img/logo-placeholder.png';
-        }
-    };
-
-    // ---------------- VISTA PREVIA LOGO SIMPLE ----------------
+    // ---------------- VISTAS PREVIA LOGO ----------------
     window.previewLogoUpload = input => {
         const img = document.getElementById('logo-preview-upload');
         if (input.files && input.files[0]) img.src = URL.createObjectURL(input.files[0]), img.style.display = 'block';
         else img.style.display = 'none';
     };
-    window.previewLogo = input => previewLogo(input, 'logo-preview');
+
+    window.previewLogo = input => {
+        const preview = document.getElementById('logo-preview');
+        if (!preview) return;
+        if (input.files && input.files[0]) preview.src = URL.createObjectURL(input.files[0]);
+        else preview.src = '/img/logo-placeholder.png';
+    };
 
     // ---------------- RELLENAR FORMULARIO EDITAR ----------------
     document.addEventListener("click", e => {
         const btn = e.target.closest(".edit-client-btn");
         if (!btn) return;
 
-        const campos = ["id", "nombre", "facebook", "twitter", "instagram", "telegram", "linkedin", "whatsapp", "website"];
-        campos.forEach(campo => {
-            const input = document.getElementById(`edit-${campo}`);
-            if (input) input.value = btn.dataset[campo] || "";
-        });
+        ["id", "nombre", "facebook", "twitter", "instagram", "telegram", "linkedin", "whatsapp", "website"]
+            .forEach(campo => { const input = document.getElementById(`edit-${campo}`); if (input) input.value = btn.dataset[campo] || ""; });
 
-        // ---------- CARGAR UBICACIÓN ----------
         const ubicacionInput = document.getElementById("edit-ubicacion");
-
         if (ubicacionInput) {
-            let lat = btn.dataset.latitud || '';
-            let lng = btn.dataset.longitud || '';
-
-            if (lat && lng) {
-                // Reemplazar coma por punto
-                lat = lat.replace(',', '.');
-                lng = lng.replace(',', '.');
-
-                // Mostrar en el input
-                ubicacionInput.value = `${lat}, ${lng}`;
-            } else {
-                ubicacionInput.value = '';
-            }
+            const lat = btn.dataset.latitud || '';
+            const lng = btn.dataset.longitud || '';
+            ubicacionInput.value = (lat && lng) ? `${lat.replace(',', '.')}, ${lng.replace(',', '.')}` : '';
         }
 
-        // ---------- PREVIEW DEL LOGO ----------
         const preview = document.getElementById('logo-preview');
         if (preview) preview.src = btn.dataset.logo || '/img/logo-placeholder.png';
     });
 
-    // ---------------- SUBMIT GENÉRICO AJAX ----------------
-    const manejarSubmitAjax = (form, mensajeConfirmacion, mensajeExito, modal) => {
+    // ---------------- SUBMIT AJAX ----------------
+    function manejarSubmitAjax(form, mensajeConfirmacion, mensajeExito, modal) {
         form.addEventListener("submit", async e => {
             e.preventDefault();
-
-            // ---------- CONFIRMACIÓN ----------
             const confirmacion = await confirmar(mensajeConfirmacion);
             if (!confirmacion.isConfirmed) return;
 
-            // ---------- PARSEAR Y NORMALIZAR UBICACIÓN ----------
             const ubicacionInput = form.querySelector('input[name="ubicacion"]');
-            if (ubicacionInput && ubicacionInput.value.trim()) {
-                const valor = ubicacionInput.value.trim();
-
-                let latitud, longitud;
-
-                // Determinar si usa punto o coma como decimal
-                if (valor.includes('.')) {
-                    // Formato con punto decimal: "-26.401509831730852, -54.60864114268127"
-                    const partes = valor.split(',').map(p => p.trim());
-                    if (partes.length !== 2) {
-                        await mostrarError("Ubicación inválida. Debe contener latitud y longitud separadas por coma.");
-                        return;
-                    }
-                    latitud = partes[0].replace('.', ',');   // reemplazar punto por coma para enviar
-                    longitud = partes[1].replace('.', ',');
-                } else if (valor.includes(',')) {
-                    // Formato con coma decimal: "-26,401509831730852, -54,60864114268127"
-                    // Usamos regex para extraer correctamente los dos números
-                    const match = valor.match(/([+-]?\d+,\d+)\s*,?\s*([+-]?\d+,\d+)/);
-                    if (!match) {
-                        await mostrarError("Ubicación inválida. Revisa el formato: -26,401509831730852, -54,60864114268127");
-                        return;
-                    }
-                    latitud = match[1];
-                    longitud = match[2];
-                } else {
-                    await mostrarError("Ubicación inválida. Debe contener números con coma o punto decimal.");
-                    return;
-                }
-
-                // Validar números reemplazando temporalmente la coma por punto
-                if (isNaN(parseFloat(latitud.replace(',', '.'))) || isNaN(parseFloat(longitud.replace(',', '.')))) {
-                    await mostrarError("Ubicación inválida. Revisa los números ingresados.");
-                    return;
-                }
-
-                // ---------- CREAR O ACTUALIZAR INPUTS OCULTOS ----------
-                const setHiddenInput = (name, value) => {
-                    let input = form.querySelector(`input[name="${name}"]`);
-                    if (!input) {
-                        input = document.createElement('input');
-                        input.type = 'hidden';
-                        input.name = name;
-                        form.appendChild(input);
-                    }
-                    input.value = value; // enviamos siempre con coma decimal
-                };
-
-                setHiddenInput('latitud', latitud);
-                setHiddenInput('longitud', longitud);
+            if (ubicacionInput?.value.trim()) {
+                const { latitud, longitud } = parseUbicacion(ubicacionInput.value.trim());
+                if (!latitud || !longitud) return;
+                setHiddenInput(form, 'latitud', latitud);
+                setHiddenInput(form, 'longitud', longitud);
             }
 
-            // ---------- ENVIAR FORMULARIO ----------
-            const ok = await fetchConLoader(
-                form.action,
-                { method: "POST", body: new FormData(form) },
-                mensajeExito
-            );
+            const ok = await fetchConLoader(form.action, { method: "POST", body: new FormData(form) });
             if (!ok) return;
 
-            // ---------- CERRAR MODAL Y RESET ----------
-            if (modal) {
-                bootstrap.Modal.getInstance(modal)?.hide();
-                form.reset();
-            }
+            if (modal) { bootstrap.Modal.getInstance(modal)?.hide(); form.reset(); }
 
-            // ---------- RECARGAR CLIENTES ----------
+            // <-- Esperar que el SweetAlert termine antes de recargar clientes
+            await mostrarExito(mensajeExito);
             await recargarClientes();
-        });
-    };
-
-    // ---------------- MODALES ----------------
-    const uploadModal = document.getElementById("uploadClienteModal");
-    if (uploadModal) {
-        const uploadForm = uploadModal.querySelector("form");
-        if (uploadForm) manejarSubmitAjax(uploadForm, "¿Deseas subir este cliente?", "Cliente subido correctamente", uploadModal);
-
-        uploadModal.addEventListener("hidden.bs.modal", () => {
-            uploadForm.reset();
-            document.getElementById('logo-preview-upload').src = '/img/logo-placeholder.png';
-        });
-
-        // INICIALIZAR MAPA AL ABRIR MODAL
-        uploadModal.addEventListener('shown.bs.modal', () => {
-            setTimeout(() => {
-                if (typeof window.initCreateMap === "function") {
-                    window.initCreateMap();
-                }
-            }, 500);
         });
     }
 
-    const editModal = document.getElementById("editClienteModal");
-    if (editModal) {
-        const editForm = editModal.querySelector("form");
-        if (editForm) manejarSubmitAjax(editForm, "¿Guardar cambios?", "Cliente actualizado correctamente", editModal);
+    function setHiddenInput(form, name, value) {
+        let input = form.querySelector(`input[name="${name}"]`);
+        if (!input) { input = document.createElement('input'); input.type = 'hidden'; input.name = name; form.appendChild(input); }
+        input.value = value;
+    }
 
-        // Cuando se abre el modal, inicializamos el mapa
-        editModal.addEventListener('shown.bs.modal', () => {
-            setTimeout(() => {
-                if (typeof window.initEditMap === "function") {
-                    window.initEditMap();
-                }
-            }, 500);
-        });
-
-        // Cuando se cierra el modal, reseteamos el form y preview
-        editModal.addEventListener("hidden.bs.modal", () => {
-            editForm.reset();
-            document.getElementById('logo-preview').src = '/img/logo-placeholder.png';
-        });
+    function parseUbicacion(valor) {
+        const partes = valor.split(',').map(p => p.trim());
+        if (partes.length !== 2) { mostrarError("Ubicación inválida"); return {}; }
+        const [latitud, longitud] = partes;
+        if (isNaN(parseFloat(latitud.replace(',', '.'))) || isNaN(parseFloat(longitud.replace(',', '.')))) { mostrarError("Ubicación inválida"); return {}; }
+        return { latitud, longitud };
     }
 
     // ---------------- ELIMINAR CLIENTE ----------------
@@ -239,163 +141,185 @@
         e.preventDefault();
         const form = deleteBtn.closest("form");
         if (!form) return;
+
         const confirmacion = await confirmar("¿Eliminar cliente?", "Esta acción no se puede deshacer.", "warning");
         if (!confirmacion.isConfirmed) return;
-        const ok = await fetchConLoader(form.action, { method: "POST", body: new FormData(form) }, "Cliente eliminado correctamente");
-        if (ok) await recargarClientes();
+
+        const ok = await fetchConLoader(form.action, { method: "POST", body: new FormData(form) });
+        if (!ok) return;
+
+        // <-- Ocultar modal si corresponde
+        const modal = deleteBtn.closest('.modal');
+        if (modal) bootstrap.Modal.getInstance(modal)?.hide();
+
+        // <-- Mostrar SweetAlert de éxito
+        await mostrarExito("Cliente eliminado correctamente");
     });
+
+    // ---------------- VOZ ----------------
+    let vozTimeout, lecturaEnCurso = false;
+
+    function leerTexto(texto, mostrarHora = false) {
+        if (!('speechSynthesis' in window) || lecturaEnCurso) return;
+        lecturaEnCurso = true;
+
+        const utterance = new SpeechSynthesisUtterance(texto);
+        utterance.lang = 'es-ES';
+        utterance.onend = () => {
+            lecturaEnCurso = false;
+            if (mostrarHora) {
+                const hora = new Date().toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
+                const temperatura = "25°C";
+                const utteranceFinal = new SpeechSynthesisUtterance(`Hora: ${hora}, temperatura: ${temperatura}.`);
+                utteranceFinal.lang = 'es-ES';
+                window.speechSynthesis.speak(utteranceFinal);
+            }
+        };
+        window.speechSynthesis.speak(utterance);
+    }
+
+    function leerDireccion(coords, mostrarHora = false) {
+        clearTimeout(vozTimeout);
+        vozTimeout = setTimeout(() => {
+            const geocoder = new google.maps.Geocoder();
+            geocoder.geocode({ location: coords }, (results, status) => {
+                if (status === 'OK' && results[0]) leerTexto(`Ubicación: ${results[0].formatted_address}`, mostrarHora);
+            });
+        }, 500);
+    }
+
+    // ---------------- MAPAS ----------------
+    const watchIdMap = {};
+
+    function initMap({ mapId, searchId, inputId, defaultCenter, zoom = 18 }) {
+        const mapDiv = document.getElementById(mapId);
+        const ubicacionInput = document.getElementById(inputId);
+        if (!mapDiv) return;
+
+        let valor = ubicacionInput?.value || `${defaultCenter.lat},${defaultCenter.lng}`;
+        const partes = valor.split(',');
+        const center = { lat: parseFloat(partes[0].trim()), lng: parseFloat(partes[1].trim()) };
+
+        const map = new google.maps.Map(mapDiv, { center, zoom });
+        const marker = new google.maps.Marker({ position: center, map, draggable: true });
+
+        const actualizar = (coords, leer = true) => {
+            if (ubicacionInput) ubicacionInput.value = `${coords.lat().toFixed(8)}, ${coords.lng().toFixed(8)}`;
+            if (leer) leerDireccion(coords); // solo leer si no es tiempo real
+        };
+
+        map.addListener("click", e => { marker.setPosition(e.latLng); actualizar(e.latLng); });
+        marker.addListener("dragend", () => actualizar(marker.getPosition()));
+
+        const searchInput = document.getElementById(searchId);
+        if (searchInput) {
+            const autocomplete = new google.maps.places.Autocomplete(searchInput);
+            autocomplete.addListener("place_changed", () => {
+                const place = autocomplete.getPlace();
+                if (!place.geometry) return;
+                const location = place.geometry.location;
+                map.setCenter(location);
+                map.setZoom(18);
+                marker.setPosition(location);
+                actualizar(location); // leer dirección
+            });
+        }
+
+        window[mapId] = { map, marker };
+    }
+
+    // ---------------- USAR UBICACIÓN ACTUAL ----------------
+    function usarUbicacionActual(inputId, mapId) {
+        const input = document.getElementById(inputId);
+        const mapObj = window[mapId];
+        if (!navigator.geolocation) { mostrarError("Geolocalización no soportada"); return; }
+
+        navigator.geolocation.getCurrentPosition(
+            pos => {
+                const coords = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+                if (input) input.value = `${coords.lat().toFixed(8)}, ${coords.lng().toFixed(8)}`;
+                if (mapObj) { mapObj.marker.setPosition(coords); mapObj.map.setCenter(coords); mapObj.map.setZoom(18); }
+                leerDireccion(coords, true); // leer voz solo al botón
+            },
+            err => mostrarError("No se pudo obtener la ubicación actual: " + err.message),
+            { enableHighAccuracy: true }
+        );
+    }
+
+    // ---------------- USO TIEMPO REAL ----------------
+    function usarUbicacionActualTiempoReal(inputId, mapId) {
+        const input = document.getElementById(inputId);
+        const mapObj = window[mapId];
+        if (!navigator.geolocation) { mostrarError("Geolocalización no soportada"); return; }
+
+        if (watchIdMap[inputId]) navigator.geolocation.clearWatch(watchIdMap[inputId]);
+
+        watchIdMap[inputId] = navigator.geolocation.watchPosition(
+            pos => {
+                const coords = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+                if (input) input.value = `${coords.lat.toFixed(8)}, ${coords.lng.toFixed(8)}`;
+                if (mapObj) {
+                    mapObj.marker.setPosition(coords);
+                    mapObj.map.setCenter(coords);
+                    mapObj.map.setZoom(18);
+                }
+                // NO llamar a leerDireccion aquí para evitar bucle infinito
+            },
+            err => mostrarError("No se pudo obtener la ubicación en tiempo real: " + err.message),
+            { enableHighAccuracy: true, maximumAge: 1000, timeout: 5000 }
+        );
+    }
+
+    // ---------------- USAR UBICACIÓN ACTUAL ----------------
+    function usarUbicacionActual(inputId, mapId) {
+        const input = document.getElementById(inputId);
+        const mapObj = window[mapId];
+        if (!navigator.geolocation) { mostrarError("Geolocalización no soportada"); return; }
+
+        navigator.geolocation.getCurrentPosition(
+            pos => {
+                const coords = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+                if (input) input.value = `${coords.lat().toFixed(8)}, ${coords.lng().toFixed(8)}`;
+                if (mapObj) { mapObj.marker.setPosition(coords); mapObj.map.setCenter(coords); mapObj.map.setZoom(18); }
+                leerDireccion(coords, true); // leer voz solo al botón
+            },
+            err => mostrarError("No se pudo obtener la ubicación actual: " + err.message),
+            { enableHighAccuracy: true }
+        );
+    }
+
+    function usarUbicacionActualTiempoReal(inputId, mapId) {
+        const input = document.getElementById(inputId);
+        const mapObj = window[mapId];
+        if (!navigator.geolocation) { mostrarError("Geolocalización no soportada"); return; }
+
+        if (watchIdMap[inputId]) navigator.geolocation.clearWatch(watchIdMap[inputId]);
+
+        watchIdMap[inputId] = navigator.geolocation.watchPosition(
+            pos => {
+                const coords = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+                if (input) input.value = `${coords.lat.toFixed(8)}, ${coords.lng.toFixed(8)}`;
+                if (mapObj) { mapObj.marker.setPosition(coords); mapObj.map.setCenter(coords); mapObj.map.setZoom(18); }
+            },
+            err => mostrarError("No se pudo obtener la ubicación en tiempo real: " + err.message),
+            { enableHighAccuracy: true, maximumAge: 1000, timeout: 5000 }
+        );
+    }
+
+    // ---------------- INICIALIZAR MODALES ----------------
+    [
+        { modalId: "uploadClienteModal", formMsg: "¿Deseas subir este cliente?", successMsg: "Cliente subido correctamente", mapId: "create-map", searchId: "create-search", inputId: "create-ubicacion" },
+        { modalId: "editClienteModal", formMsg: "¿Guardar cambios?", successMsg: "Cliente actualizado correctamente", mapId: "edit-map", searchId: "edit-search", inputId: "edit-ubicacion" }
+    ].forEach(cfg => {
+        const modal = document.getElementById(cfg.modalId);
+        if (!modal) return;
+        const form = modal.querySelector("form");
+        if (form) manejarSubmitAjax(form, cfg.formMsg, cfg.successMsg, modal);
+        modal.addEventListener("shown.bs.modal", () => setTimeout(() => initMap({ mapId: cfg.mapId, searchId: cfg.searchId, inputId: cfg.inputId, defaultCenter: { lat: -26.402552934085946, lng: -54.62956946211035 }, zoom: 15 }), 500));
+    });
+
+    // ---------------- BOTONES UBICACIÓN ACTUAL ----------------
+    document.getElementById('btn-create-ubicacion-actual')?.addEventListener('click', () => usarUbicacionActual('create-ubicacion', 'create-map'));
+    document.getElementById('btn-edit-ubicacion-actual')?.addEventListener('click', () => usarUbicacionActual('edit-ubicacion', 'edit-map'));
+
 });
-
-// ---------------- MAPA EDIT ----------------
-window.initEditMap = function () {
-
-    const mapDiv = document.getElementById("edit-map");
-    const ubicacionInput = document.getElementById("edit-ubicacion");
-
-    if (!mapDiv) return;
-
-    let valor = ubicacionInput?.value || "-26.402552934085946,-54.62956946211035";
-
-    const partes = valor.split(',');
-    if (partes.length !== 2) return;
-
-    const lat = parseFloat(partes[0].trim().replace(',', '.'));
-    const lng = parseFloat(partes[1].trim().replace(',', '.'));
-
-    const center = {
-        lat: isNaN(lat) ? -26.402552934085946 : lat,
-        lng: isNaN(lng) ? -54.62956946211035 : lng
-    };
-
-    // destruir mapa anterior si existe
-    if (window.editMap) {
-        window.editMap = null;
-    }
-
-    window.editMap = new google.maps.Map(mapDiv, {
-        center: center,
-        zoom: 18
-    });
-
-    window.editMarker = new google.maps.Marker({
-        position: center,
-        map: window.editMap,
-        draggable: true
-    });
-
-    const actualizarInput = (coords) => {
-        if (!ubicacionInput) return;
-        const lat = coords.lat().toFixed(8);
-        const lng = coords.lng().toFixed(8);
-        ubicacionInput.value = `${lat}, ${lng}`;
-    };
-
-    // click en mapa
-    window.editMap.addListener("click", function (e) {
-        window.editMarker.setPosition(e.latLng);
-        actualizarInput(e.latLng);
-    });
-
-    // mover pin
-    window.editMarker.addListener("dragend", function () {
-        actualizarInput(window.editMarker.getPosition());
-    });
-
-    const searchInput = document.getElementById("edit-search");
-
-    if (searchInput) {
-
-        const autocomplete = new google.maps.places.Autocomplete(searchInput);
-
-        autocomplete.addListener("place_changed", function () {
-
-            const place = autocomplete.getPlace();
-
-            if (!place.geometry) return;
-
-            const location = place.geometry.location;
-
-            window.editMap.setCenter(location);
-            window.editMap.setZoom(18);
-
-            window.editMarker.setPosition(location);
-
-            if (ubicacionInput) {
-                ubicacionInput.value = `${location.lat()}, ${location.lng()}`;
-            }
-
-        });
-    }
-};
-
-
-// ---------------- MAPA CREATE ----------------
-window.initCreateMap = function () {
-
-    const mapDiv = document.getElementById("create-map");
-    const ubicacionInput = document.getElementById("create-ubicacion");
-
-    if (!mapDiv) return;
-
-    const center = { lat: -26.402552934085946, lng: -54.62956946211035 };
-
-    if (window.createMap) {
-        window.createMap = null;
-    }
-
-    window.createMap = new google.maps.Map(mapDiv, {
-        center: center,
-        zoom: 15
-    });
-
-    window.createMarker = new google.maps.Marker({
-        position: center,
-        map: window.createMap,
-        draggable: true
-    });
-
-    const actualizarInput = (coords) => {
-        if (!ubicacionInput) return;
-        const lat = coords.lat().toFixed(8);
-        const lng = coords.lng().toFixed(8);
-        ubicacionInput.value = `${lat}, ${lng}`;
-    };
-
-    // click en mapa
-    window.createMap.addListener("click", function (e) {
-        window.createMarker.setPosition(e.latLng);
-        actualizarInput(e.latLng);
-    });
-
-    // mover pin
-    window.createMarker.addListener("dragend", function () {
-        actualizarInput(window.createMarker.getPosition());
-    });
-
-    const searchInput = document.getElementById("create-search");
-
-    if (searchInput) {
-
-        const autocomplete = new google.maps.places.Autocomplete(searchInput);
-
-        autocomplete.addListener("place_changed", function () {
-
-            const place = autocomplete.getPlace();
-
-            if (!place.geometry) return;
-
-            const location = place.geometry.location;
-
-            window.createMap.setCenter(location);
-            window.createMap.setZoom(18);
-
-            window.createMarker.setPosition(location);
-
-            if (ubicacionInput) {
-                ubicacionInput.value = `${location.lat()}, ${location.lng()}`;
-            }
-
-        });
-    }
-
-};

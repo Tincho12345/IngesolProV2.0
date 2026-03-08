@@ -1,12 +1,23 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 using WebIngesol.Models;
+using Microsoft.AspNetCore.SignalR;
+using WebIngesol.Hubs;
 
 namespace WebIngesol.Controllers;
 
-public class VisibleClientsController(IWebHostEnvironment env) : Controller
+public class VisibleClientsController : Controller
 {
-    private readonly IWebHostEnvironment _env = env;
+    // 🔴 SIGNALR: contexto para poder enviar eventos a los navegadores
+    private readonly IHubContext<ClientsHub> _hub;
+    private readonly IWebHostEnvironment _env;
+
+    // 🔴 SIGNALR: constructor actualizado para inyectar Hub + Environment
+    public VisibleClientsController(IWebHostEnvironment env, IHubContext<ClientsHub> hub)
+    {
+        _env = env;
+        _hub = hub;
+    }
 
     private static readonly JsonSerializerOptions _jsonOptions = new()
     {
@@ -16,28 +27,32 @@ public class VisibleClientsController(IWebHostEnvironment env) : Controller
     private static readonly string[] _allowedExtensions =
         [".jpg", ".jpeg", ".png", ".webp", ".jfif"];
 
-    private string GetMasterJsonPath() => Path.Combine(_env.WebRootPath, "clients", "clientes.json");
+    private string GetMasterJsonPath() =>
+        Path.Combine(_env.WebRootPath, "clients", "clientes.json");
 
     private async Task<List<VisibleClient>> ReadClientsAsync()
     {
         var path = GetMasterJsonPath();
-        if (!System.IO.File.Exists(path)) return [];
+
+        if (!System.IO.File.Exists(path))
+            return [];
+
         var content = await System.IO.File.ReadAllTextAsync(path);
+
         return JsonSerializer.Deserialize<List<VisibleClient>>(content) ?? [];
     }
 
     private async Task SaveClientsAsync(List<VisibleClient> clients)
     {
         var path = GetMasterJsonPath();
+
         var json = JsonSerializer.Serialize(clients, _jsonOptions);
+
         await System.IO.File.WriteAllTextAsync(path, json);
     }
 
     // =============================
     // POST: Subir cliente
-    // =============================
-    // =============================
-    // POST: Subir cliente con ubicación
     // =============================
     [HttpPost]
     [ValidateAntiForgeryToken]
@@ -57,12 +72,11 @@ public class VisibleClientsController(IWebHostEnvironment env) : Controller
         if (string.IsNullOrWhiteSpace(nombre) || imageFile == null || imageFile.Length == 0)
             return BadRequest(new { message = "Datos inválidos." });
 
-        // Crear carpeta si no existe
         var folderPath = Path.Combine(_env.WebRootPath, "clients");
+
         if (!Directory.Exists(folderPath))
             Directory.CreateDirectory(folderPath);
 
-        // Crear objeto cliente
         var client = new VisibleClient
         {
             Nombre = nombre.Trim(),
@@ -77,33 +91,34 @@ public class VisibleClientsController(IWebHostEnvironment env) : Controller
                 : null,
             Activo = true,
             Orden = 0,
-            Latitud = latitud,     // <-- nuevo
-            Longitud = longitud    // <-- nuevo
+            Latitud = latitud,
+            Longitud = longitud
         };
 
-        // Validar extensión de imagen
         var extension = Path.GetExtension(imageFile.FileName).ToLowerInvariant();
+
         if (!_allowedExtensions.Contains(extension))
             return BadRequest(new { message = "Extensión no permitida." });
 
-        // Guardar imagen
         client.Imagen = $"{client.Id}{extension}";
+
         var imagePath = Path.Combine(folderPath, client.Imagen);
+
         await using (var stream = new FileStream(imagePath, FileMode.Create))
             await imageFile.CopyToAsync(stream);
 
-        // Guardar en JSON
         var allClients = await ReadClientsAsync();
+
         allClients.Add(client);
+
         await SaveClientsAsync(allClients);
+
+        // 🔴 SIGNALR: avisar a TODOS los navegadores que se actualizó la lista
+        await _hub.Clients.All.SendAsync("ClientesActualizados");
 
         return Ok(new { success = true });
     }
 
-
-    // =============================
-    // POST: Editar cliente
-    // =============================
     // =============================
     // POST: Editar cliente
     // =============================
@@ -127,6 +142,7 @@ public class VisibleClientsController(IWebHostEnvironment env) : Controller
             return BadRequest(new { message = "Id inválido." });
 
         var allClients = await ReadClientsAsync();
+
         var client = allClients.FirstOrDefault(c => c.Id == clientId);
 
         if (client == null)
@@ -143,7 +159,6 @@ public class VisibleClientsController(IWebHostEnvironment env) : Controller
             ? new string(whatsapp.Where(char.IsDigit).ToArray())
             : null;
 
-        // ---- NUEVO: guardar coordenadas ----
         client.Latitud = latitud;
         client.Longitud = longitud;
 
@@ -152,6 +167,7 @@ public class VisibleClientsController(IWebHostEnvironment env) : Controller
         if (imageFile != null && imageFile.Length > 0)
         {
             var extension = Path.GetExtension(imageFile.FileName).ToLowerInvariant();
+
             if (_allowedExtensions.Contains(extension))
             {
                 var newImagePath = Path.Combine(folderPath, $"{client.Id}{extension}");
@@ -159,6 +175,7 @@ public class VisibleClientsController(IWebHostEnvironment env) : Controller
                 if (!string.Equals(client.Imagen, $"{client.Id}{extension}", StringComparison.OrdinalIgnoreCase))
                 {
                     var oldImagePath = Path.Combine(folderPath, client.Imagen);
+
                     if (System.IO.File.Exists(oldImagePath))
                         System.IO.File.Delete(oldImagePath);
 
@@ -166,17 +183,21 @@ public class VisibleClientsController(IWebHostEnvironment env) : Controller
                 }
 
                 await using var stream = new FileStream(newImagePath, FileMode.Create);
+
                 await imageFile.CopyToAsync(stream);
             }
         }
 
         await SaveClientsAsync(allClients);
 
+        // 🔴 SIGNALR: avisar a todos que se editó un cliente
+        await _hub.Clients.All.SendAsync("ClientesActualizados");
+
         return Ok(new { success = true });
     }
 
     // =============================
-    // POST: Eliminar cliente (soft delete)
+    // POST: Eliminar cliente
     // =============================
     [HttpPost]
     [ValidateAntiForgeryToken]
@@ -186,17 +207,23 @@ public class VisibleClientsController(IWebHostEnvironment env) : Controller
             return BadRequest(new { message = "Id inválido." });
 
         var allClients = await ReadClientsAsync();
+
         var client = allClients.FirstOrDefault(c => c.Id == clientId);
 
         if (client == null)
             return NotFound(new { message = "Cliente no encontrado." });
 
         var imagePath = Path.Combine(_env.WebRootPath, "clients", client.Imagen ?? "");
+
         if (!string.IsNullOrWhiteSpace(client.Imagen) && System.IO.File.Exists(imagePath))
             System.IO.File.Delete(imagePath);
 
         allClients.Remove(client);
+
         await SaveClientsAsync(allClients);
+
+        // 🔴 SIGNALR: avisar a todos que se eliminó un cliente
+        await _hub.Clients.All.SendAsync("ClientesActualizados");
 
         return Ok(new { success = true });
     }

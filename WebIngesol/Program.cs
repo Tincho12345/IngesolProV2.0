@@ -1,16 +1,30 @@
 ﻿using System.Globalization;
 using WebIngesol;
+using WebIngesol.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // 🌍 FIX DECIMALES Azure → Azure
-// Fuerza la cultura a es-AR para que ASP.NET no convierta 23.50 en 2350
 var cultura = new CultureInfo("es-AR");
 CultureInfo.DefaultThreadCurrentCulture = cultura;
 CultureInfo.DefaultThreadCurrentUICulture = cultura;
 
 // 🛠️ Configuración de servicios
 ServiceConfiguration.ConfigureServices(builder.Services);
+builder.Services.AddSignalR();
+builder.Services.AddSession(); // si no está
+
+// 🔴 CORS: permitir SignalR desde este origen (ajustá según tu URL)
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.WithOrigins("https://webingesolversion2-afdfbkcjd6f6cccj.canadacentral-01.azurewebsites.net/")  // ✅ aquí usás la URL correcta según ENVIRONMENT
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
+    });
+}); 
 
 var app = builder.Build();
 
@@ -24,6 +38,9 @@ if (!app.Environment.IsDevelopment())
 // 🔒 HTTPS y archivos estáticos
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
+// 🔴 Usar CORS antes de routing
+app.UseCors();
 
 // 🧠 Habilitamos la sesión (antes de Auth)
 app.UseSession();
@@ -43,6 +60,9 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
+
+// 🔴 SignalR Hub
+app.MapHub<ClientsHub>("/clientsHub");
 
 // ▶️ Ejecutamos la app
 app.Run();

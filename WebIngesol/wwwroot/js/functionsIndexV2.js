@@ -363,6 +363,38 @@ function parseUbicacion(valor) {
         window[mapId] = { map, marker };
     }
 
+    // ---------------- LIMPIAR FORMULARIOS AL CERRAR MODALES ----------------
+    function limpiarModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (!modal) return;
+
+        modal.addEventListener("hidden.bs.modal", () => {
+
+            const form = modal.querySelector("form");
+            if (form) form.reset();
+
+            // limpiar previews de logos
+            const previewUpload = modal.querySelector("#logo-preview-upload");
+            if (previewUpload) {
+                previewUpload.src = "";
+                previewUpload.style.display = "none";
+            }
+
+            const previewEdit = modal.querySelector("#logo-preview");
+            if (previewEdit) {
+                previewEdit.src = "/img/logo-placeholder.png";
+            }
+
+            // limpiar ubicación
+            const ubicacion = modal.querySelector('input[name="ubicacion"]');
+            if (ubicacion) ubicacion.value = "";
+
+        });
+    }
+
+    limpiarModal("uploadClienteModal");
+    limpiarModal("editClienteModal");
+
     // ---------------- INICIALIZAR MODALES ----------------
     [
         { modalId: "uploadClienteModal", formMsg: "¿Deseas subir este cliente?", successMsg: "Cliente subido correctamente", mapId: "create-map", searchId: "create-search", inputId: "create-ubicacion" },

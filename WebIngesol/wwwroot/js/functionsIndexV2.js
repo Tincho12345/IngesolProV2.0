@@ -257,7 +257,6 @@ function parseUbicacion(valor) {
         if (mapObj) {
             mapObj.marker.setPosition(coords);
             mapObj.map.setCenter(coords);
-            mapObj.map.setZoom(18);
         }
         if (leerVoz) leerDireccion(coords, true);
     }
@@ -345,10 +344,12 @@ function parseUbicacion(valor) {
                 autocomplete.addListener("place_changed", () => {
                     const place = autocomplete.getPlace();
                     if (!place.geometry) return;
+
                     const location = place.geometry.location;
+
                     marker.setPosition(location);
                     map.setCenter(location);
-                    map.setZoom(18);
+
                     actualizarMapaYInput(location, ubicacionInput, { map, marker }, true);
                 });
             }
@@ -357,7 +358,7 @@ function parseUbicacion(valor) {
         // 🔥 Aquí agregamos el listener de input MANUAL
         if (ubicacionInput) {
             escucharCambioInputUbicacion(inputId, mapId);
-        }
+        }   
 
         window[mapId] = { map, marker };
     }

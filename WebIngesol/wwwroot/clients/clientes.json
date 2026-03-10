@@ -46,5 +46,21 @@
     "Orden": 0,
     "Latitud": null,
     "Longitud": null
+  },
+  {
+    "Id": "99e209fe-2f2b-49ed-8d25-19c3704ac7ba",
+    "Nombre": "Laharrage Chodorge",
+    "Imagen": "99e209fe-2f2b-49ed-8d25-19c3704ac7ba.png",
+    "Facebook": null,
+    "Twitter": null,
+    "Instagram": "https://www.instagram.com/laharraguechodorge/",
+    "Telegram": null,
+    "Website": "https://lach.com.ar/",
+    "LinkedIn": null,
+    "WhatsApp": null,
+    "Activo": true,
+    "Orden": 0,
+    "Latitud": -26.54704423,
+    "Longitud": -54.72468072
   }
 ]

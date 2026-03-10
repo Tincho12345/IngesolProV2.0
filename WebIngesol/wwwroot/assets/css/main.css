@@ -4944,3 +4944,30 @@ body.index-page {
         color: #ffc107 !important;
         transform: translateX(4px);
     }
+
+.btn-reserva {
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.6);
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-radius: 30px;
+    padding: 10px 28px;
+    font-weight: 500;
+    letter-spacing: .5px;
+    transition: all .35s ease;
+}
+
+    /* HOVER */
+    .btn-reserva:hover {
+        color: rgba(255,255,255,0.9); /* mismo color que el borde */
+        box-shadow: 0 8px 25px rgba(255,255,255,.35);
+        transform: translateY(-2px);
+        border-color: rgba(255,255,255,0.9);
+    }
+
+    /* CLICK */
+    .btn-reserva:active {
+        transform: translateY(0);
+        box-shadow: 0 4px 12px rgba(255,255,255,.25);
+    }

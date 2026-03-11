@@ -1,0 +1,56 @@
+﻿@model WebIngesol.Models.VisibleClient
+@{
+    string FormatWhatsApp(string? number)
+    {
+        if (string.IsNullOrWhiteSpace(number)) return string.Empty;
+        var cleaned = new string(number.Where(char.IsDigit).ToArray());
+        return $"https://wa.me/{cleaned}";
+    }
+
+    var whatsappLink = FormatWhatsApp(Model.WhatsApp);
+}
+
+<div class="d-flex justify-content-center gap-2 mb-2 flex-wrap">
+    @if (!string.IsNullOrWhiteSpace(Model.Facebook))
+    {
+        <a href="@Model.Facebook" target="_blank" class="btn-register"><i class="bi bi-facebook"></i></a>
+    }
+    @if (!string.IsNullOrWhiteSpace(Model.Twitter))
+    {
+        <a href="@Model.Twitter" target="_blank" class="btn-register"><i class="bi bi-twitter-x"></i></a>
+    }
+    @if (!string.IsNullOrWhiteSpace(Model.Instagram))
+    {
+        <a href="@Model.Instagram" target="_blank" class="btn-register"><i class="bi bi-instagram"></i></a>
+    }
+    @if (!string.IsNullOrWhiteSpace(Model.Telegram))
+    {
+        <a href="@Model.Telegram" target="_blank" class="btn-register"><i class="bi bi-telegram"></i></a>
+    }
+    @if (!string.IsNullOrWhiteSpace(Model.LinkedIn))
+    {
+        <a href="@Model.LinkedIn" target="_blank" class="btn-register"><i class="bi bi-linkedin"></i></a>
+    }
+    @if (!string.IsNullOrWhiteSpace(Model.Website))
+    {
+        <a href="@Model.Website" target="_blank" class="btn-register"><i class="bi bi-globe"></i></a>
+    }
+    @if (!string.IsNullOrWhiteSpace(whatsappLink))
+    {
+        <a href="@whatsappLink" target="_blank" class="btn-register"><i class="bi bi-whatsapp"></i></a>
+    }
+
+    @* Link a Google Maps si existen coordenadas *@
+    @if (Model.Latitud.HasValue && Model.Longitud.HasValue)
+    {
+        var latStr = Model.Latitud.Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
+        var lngStr = Model.Longitud.Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
+
+        <a href="https://www.google.com/maps?q=@latStr,@lngStr"
+           target="_blank"
+           class="btn-register"
+           title="Ubicación: @latStr, @lngStr">
+            <i class="bi bi-geo-alt"></i>
+        </a>
+    }
+</div>

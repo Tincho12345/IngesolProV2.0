@@ -96,52 +96,8 @@
                                      alt="@c.Nombre" />
                             </div>
 
-                            <!-- Redes (misma lógica original) -->
-                            <div class="d-flex justify-content-center gap-2 mb-2 flex-wrap">
-                                @if (!string.IsNullOrWhiteSpace(c.Facebook))
-                                {
-                                    <a href="@c.Facebook" target="_blank" class="btn-register"><i class="bi bi-facebook"></i></a>
-                                }
-                                @if (!string.IsNullOrWhiteSpace(c.Twitter))
-                                {
-                                    <a href="@c.Twitter" target="_blank" class="btn-register"><i class="bi bi-twitter-x"></i></a>
-                                }
-                                @if (!string.IsNullOrWhiteSpace(c.Instagram))
-                                {
-                                    <a href="@c.Instagram" target="_blank" class="btn-register"><i class="bi bi-instagram"></i></a>
-                                }
-                                @if (!string.IsNullOrWhiteSpace(c.Telegram))
-                                {
-                                    <a href="@c.Telegram" target="_blank" class="btn-register"><i class="bi bi-telegram"></i></a>
-                                }
-                                @if (!string.IsNullOrWhiteSpace(c.LinkedIn))
-                                {
-                                    <a href="@c.LinkedIn" target="_blank" class="btn-register"><i class="bi bi-linkedin"></i></a>
-                                }
-                                @if (!string.IsNullOrWhiteSpace(c.Website))
-                                {
-                                    <a href="@c.Website" target="_blank" class="btn-register"><i class="bi bi-globe"></i></a>
-                                }
-                                @if (!string.IsNullOrWhiteSpace(whatsappLink))
-                                {
-                                    <a href="@whatsappLink" target="_blank" class="btn-register"><i class="bi bi-whatsapp"></i></a>
-                                }
-
-                                @* Link a Google Maps si existen coordenadas *@
-                                @if (c.Latitud.HasValue && c.Longitud.HasValue)
-                                {
-                                    var latStr = c.Latitud.Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
-                                    var lngStr = c.Longitud.Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
-
-                                    <a href="https://www.google.com/maps?q=@latStr,@lngStr"
-                                       target="_blank"
-                                       class="btn-register"
-                                       title="Ubicación: @latStr, @lngStr">
-                                        <i class="bi bi-geo-alt"></i>
-                                    </a>
-                                }
-                            </div>
-
+                            <!-- Redes sociales / WhatsApp / Google Maps -->
+                            @await Html.PartialAsync("Sections/_ClientSocials", c)
                             @if (isAdmin)
                             {
                                 <div class="mt-auto d-flex gap-2">

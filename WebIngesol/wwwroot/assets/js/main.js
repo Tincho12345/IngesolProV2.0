@@ -290,7 +290,66 @@
     })
   }
   window.addEventListener('load', navmenuScrollspy);
-  document.addEventListener('scroll', navmenuScrollspy);
+    document.addEventListener('scroll', navmenuScrollspy);
+
+
+    // =======================================
+    // CLIENTES → MODAL
+    // =======================================
+
+    function initClientModal() {
+
+        window.openClient = function (element) {
+
+            const modalEl = document.getElementById("clientModal");
+            const modalImg = document.getElementById("clientModalImage");
+            const modalName = document.getElementById("clientModalName");
+            const modalSocials = document.getElementById("clientModalSocials");
+
+            if (!modalEl || !modalImg) return;
+
+            const data = element.dataset;
+
+            /* imagen */
+            modalImg.src = data.logo ? `${data.logo}?v=${Date.now()}` : "";
+
+            /* nombre */
+            modalName.textContent = data.name || "";
+
+            modalSocials.innerHTML = "";
+
+            const socials = [
+                { key: "facebook", icon: "facebook" },
+                { key: "instagram", icon: "instagram" },
+                { key: "twitter", icon: "twitter-x" },
+                { key: "telegram", icon: "telegram" },
+                { key: "linkedin", icon: "linkedin" },
+                { key: "website", icon: "globe" },
+                { key: "whatsapp", icon: "whatsapp", format: v => `https://wa.me/${v.replace(/\D/g, "")}` }
+            ];
+
+            socials.forEach(s => {
+
+                let value = data[s.key];
+
+                if (!value || value === "null") return;
+
+                let link = s.format ? s.format(value) : value;
+
+                modalSocials.insertAdjacentHTML("beforeend", `
+                <a href="${link}" target="_blank" class="btn-register">
+                    <i class="bi bi-${s.icon}"></i>
+                </a>
+            `);
+
+            });
+
+            bootstrap.Modal.getOrCreateInstance(modalEl).show();
+        };
+
+    }
+
+    window.addEventListener("load", initClientModal);
 
 })();
 

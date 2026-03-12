@@ -24,6 +24,7 @@
 }
 
 <style>
+    /* ================= CLIENTES GRID ================= */
     #visible-clients-partial .client-name {
         font-size: 0.9rem;
         font-weight: 600;
@@ -36,13 +37,30 @@
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        text-align: center;
+    }
+
+    #visible-clients-partial .glass-card-wrapper {
+        overflow: hidden; /* evita que la imagen se salga al escalar */
+        width: 100%;
+        min-height: 240px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
     #visible-clients-partial .glass-card {
         width: 100%;
-        min-height: 240px;
+        height: 100%;
         display: flex;
         flex-direction: column;
+        background: rgba(255,255,255,0.05);
+        border-radius: 12px;
+        padding: 10px;
+    }
+
+    #visible-clients-partial .glass-card-wrapper:hover {
+        transform: scale(1.1); /* escala toda la tarjeta */
+        box-shadow: 0 12px 25px rgba(0,0,0,0.4);
+        z-index: 10;
     }
 
     #visible-clients-partial .glass-card-body {
@@ -55,19 +73,22 @@
         max-height: 100px;
         max-width: 150px;
         object-fit: contain;
+        transition: transform 0.3s ease;
     }
 
+    /* ================= RESPONSIVE ================= */
     @@media (max-width: 576px) {
-        #visible-clients-partial .glass-card {
-            min-height: 210px;
-        }
+        #visible-clients-partial .glass-card-wrapper
+
+    {
+        min-height: 210px;
+    }
+
     }
 </style>
 
 <div id="visible-clients-partial">
-    <!-- 👇 g-3 controla la separación sin romper tu lógica -->
     <div class="row g-3">
-
         @if (clientes.Any())
         {
             @for (int i = 0; i < clientes.Count; i++)
@@ -81,66 +102,79 @@
                      data-aos="zoom-in"
                      data-aos-delay="@delay">
 
-                    <div class="glass-card w-100" title="@c.Nombre">
-                        <div class="glass-card-body p-2 d-flex flex-column">
+                    <!-- Wrapper para controlar overflow del zoom -->
+                    <div class="glass-card-wrapper w-100" title="@c.Nombre">
+                        <div class="glass-card">
+                            <div class="glass-card-body p-2 d-flex flex-column">
 
-                            <!-- Nombre -->
-                            <div class="client-name text-center mb-2">
-                                @c.Nombre
-                            </div>
-
-                            <!-- Imagen -->
-                            <div class="d-flex align-items-center justify-content-center flex-grow-1 mb-2">
-                                <img src="@filePath"
-                                     class="img-fluid client-logo"
-                                     alt="@c.Nombre" />
-                            </div>
-
-                            <!-- Redes sociales / WhatsApp / Google Maps -->
-                            @await Html.PartialAsync("Sections/_ClientSocials", c)
-                            @if (isAdmin)
-                            {
-                                <div class="mt-auto d-flex gap-2">
-
-                                    <button type="button"
-                                            class="btn-glass btn-glass-outline px-2 w-50 edit-client-btn"
-                                            data-id="@c.Id"
-                                            data-nombre="@c.Nombre"
-                                            data-facebook="@c.Facebook"
-                                            data-twitter="@c.Twitter"
-                                            data-instagram="@c.Instagram"
-                                            data-telegram="@c.Telegram"
-                                            data-linkedin="@c.LinkedIn"
-                                            data-whatsapp="@c.WhatsApp"
-                                            data-website="@c.Website"
-                                            data-logo="@Url.Content($"~/clients/{c.Imagen}?v={DateTime.Now.Ticks}")"
-                                            data-latitud="@c.Latitud"
-                                            data-longitud="@c.Longitud"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#editClienteModal">
-                                        Editar
-                                    </button>
-
-                                    <!-- 👇 IMPORTANTE: mantenemos delete-client-form -->
-                                    <form asp-controller="VisibleClients"
-                                          asp-action="Delete"
-                                          method="post"
-                                          class="delete-client-form w-50">
-
-                                        @Html.AntiForgeryToken()
-                                        <input type="hidden" name="id" value="@c.Id" />
-
-                                        <button type="submit"
-                                                class="btn-glass btn-glass-outline px-2 w-100">
-                                            Eliminar
-                                        </button>
-                                    </form>
-
+                                <!-- Nombre -->
+                                <div class="client-name mb-2">
+                                    @c.Nombre
                                 </div>
-                            }
 
+                                <!-- Imagen -->
+                                <div class="d-flex align-items-center justify-content-center flex-grow-1 mb-2">
+                                    <img src="@filePath"
+                                         class="img-fluid client-logo"
+                                         alt="@c.Nombre"
+                                         style="cursor:pointer"
+                                         onclick="openClient(this)"
+                                         data-id="@c.Id"
+                                         data-name="@c.Nombre"
+                                         data-logo="@filePath"
+                                         data-facebook="@(c.Facebook ?? "")"
+                                         data-twitter="@(c.Twitter ?? "")"
+                                         data-instagram="@(c.Instagram ?? "")"
+                                         data-telegram="@(c.Telegram ?? "")"
+                                         data-linkedin="@(c.LinkedIn ?? "")"
+                                         data-whatsapp="@(c.WhatsApp ?? "")"
+                                         data-website="@(c.Website ?? "")" />
+                                </div>
+
+                                <!-- Redes sociales / WhatsApp / Google Maps -->
+                                @await Html.PartialAsync("Sections/_ClientSocials", c)
+
+                                @if (isAdmin)
+                                {
+                                    <div class="mt-auto d-flex gap-2">
+                                        <button type="button"
+                                                class="btn-glass btn-glass-outline px-2 w-50 edit-client-btn"
+                                                data-id="@c.Id"
+                                                data-nombre="@c.Nombre"
+                                                data-facebook="@c.Facebook"
+                                                data-twitter="@c.Twitter"
+                                                data-instagram="@c.Instagram"
+                                                data-telegram="@c.Telegram"
+                                                data-linkedin="@c.LinkedIn"
+                                                data-whatsapp="@c.WhatsApp"
+                                                data-website="@c.Website"
+                                                data-logo="@Url.Content($"~/clients/{c.Imagen}?v={DateTime.Now.Ticks}")"
+                                                data-latitud="@c.Latitud"
+                                                data-longitud="@c.Longitud"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#editClienteModal">
+                                            Editar
+                                        </button>
+
+                                        <form asp-controller="VisibleClients"
+                                              asp-action="Delete"
+                                              method="post"
+                                              class="delete-client-form w-50">
+
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="id" value="@c.Id" />
+
+                                            <button type="submit"
+                                                    class="btn-glass btn-glass-outline px-2 w-100">
+                                                Eliminar
+                                            </button>
+                                        </form>
+                                    </div>
+                                }
+                            </div>
                         </div>
                     </div>
+                    <!-- /Wrapper -->
                 </div>
             }
         }
@@ -152,6 +186,5 @@
                 </p>
             </div>
         }
-
     </div>
 </div>

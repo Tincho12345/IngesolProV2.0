@@ -235,8 +235,12 @@
             });
         </script>
 
+
         <!-- Script propio (SIEMPRE al final) -->
         <script src="~/js/site.js" asp-append-version="true"></script>
+
+        @await Html.PartialAsync("Modals/_ClientModal")
+
    
     </body>
 

@@ -4971,3 +4971,96 @@ body.index-page {
         transform: translateY(0);
         box-shadow: 0 4px 12px rgba(255,255,255,.25);
     }
+
+/* ================= CLIENT MODAL ================= */
+
+#clientModal .modal-body,
+#clientModal .modal-body * {
+    color: white !important;
+}
+
+#clientModal .modal-body {
+    position: relative;
+    z-index: 1;
+    padding: 30px 20px;
+    text-align: center;
+}
+
+/* Imagen cliente */
+#clientModal #clientModalImage {
+    width: 100%;
+    max-width: 700px;
+    max-height: 65vh;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto 20px auto;
+}
+
+/* Nombre cliente */
+#clientModal #clientModalName {
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+/* Redes */
+#clientModal #clientModalSocials {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 18px;
+    flex-wrap: wrap;
+}
+
+    /* Botones redes */
+    #clientModal #clientModalSocials a {
+        font-size: 1.4rem;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+/* Botón cerrar */
+#clientModal .btn-close {
+    transition: transform .2s ease, opacity .2s ease;
+}
+
+    #clientModal .btn-close:hover {
+        opacity: .8;
+        transform: scale(1.1);
+    }
+
+/* Botón cerrar redondeado tipo vidrio oscuro */
+.btn-glass-circle {
+    background: rgba(0, 0, 0, 0.50);
+    color: #fff;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem; /* tamaño de la X */
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+    .btn-glass-circle:hover {
+        background: rgba(0, 0, 0, 0.8);
+        border-color: rgba(255, 255, 255, 0.5);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 20px rgba(255,255,255,0.2), 0 0 10px rgba(255,255,255,0.1) inset;
+    }
+
+/* Modal tipo vidrio ya existente */
+.modal-glass {
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,.35);
+}

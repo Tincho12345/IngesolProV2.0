@@ -1,0 +1,33 @@
+﻿<div class="modal fade" id="clientModal" tabindex="-1" aria-hidden="true"
+     data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content modal-glass position-relative">
+            <!-- Botón cerrar redondeado tipo vidrio con X visible -->
+            <button type="button"
+                    class="btn-glass-circle position-absolute"
+                    style="top:15px; right:15px; z-index:10;"
+                    data-bs-dismiss="modal"
+                    aria-label="Cerrar">
+                &times; <!-- Esto muestra la X -->
+            </button>
+
+            <div class="modal-body text-white p-4 text-center">
+                <!-- Imagen grande -->
+                <div class="mb-4 d-flex justify-content-center">
+                    <img id="clientModalImage"
+                         class="img-fluid"
+                         alt="Cliente"
+                         style="max-height:65vh; object-fit:contain;">
+                </div>
+
+                <!-- Nombre -->
+                <h4 id="clientModalName" class="fw-bold mb-3"></h4>
+
+                <!-- Redes -->
+                <div id="clientModalSocials"
+                     class="d-flex justify-content-center gap-3 flex-wrap">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

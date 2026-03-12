@@ -62,5 +62,21 @@
     "Orden": 0,
     "Latitud": -26.54704423,
     "Longitud": -54.72468072
+  },
+  {
+    "Id": "476c4bf1-96c9-45fb-b211-23852aa05e04",
+    "Nombre": "Iguaz\u00FA Grand Hotel",
+    "Imagen": "476c4bf1-96c9-45fb-b211-23852aa05e04.png",
+    "Facebook": "https://www.facebook.com/iguazugrand",
+    "Twitter": "https://x.com/intent/post?url=https%3A%2F%2Fmaps.app.goo.gl%2FJfdJycstJyFe2KMS7",
+    "Instagram": "https://www.instagram.com/iguazugrand/",
+    "Telegram": null,
+    "Website": "https://www.iguazugrand.com/",
+    "LinkedIn": null,
+    "WhatsApp": "5493757443973",
+    "Activo": true,
+    "Orden": 0,
+    "Latitud": -26.40662995,
+    "Longitud": -54.63215869
   }
 ]

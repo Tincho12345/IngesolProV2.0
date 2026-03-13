@@ -22,23 +22,3 @@
 <partial name="Sections/_Contact" />
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.7/signalr.min.js"></script>
-<script>
-    // Crear conexión al hub
-    const connection = new signalR.HubConnectionBuilder()
-        .withUrl("/clientsHub")
-        .withAutomaticReconnect()
-        .build();
-
-    // Cuando reciba la señal "ClientesActualizados"
-    connection.on("ClientesActualizados", () => {
-        // Recargar la lista de clientes vía AJAX
-        fetch("/Home/ClientesPartial")
-            .then(response => response.text())
-            .then(html => {
-                document.getElementById("clientes-container").innerHTML = html;
-            })
-            .catch(err => console.error("Error al recargar clientes:", err));
-    });
-
-    connection.start().catch(err => console.error(err));
-</script>

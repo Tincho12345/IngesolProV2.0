@@ -63,7 +63,7 @@
     backdrop-filter: blur(12px); 
     -webkit-backdrop-filter: blur(10px);
     border-radius: 15px;
-    padding: 30px;
+    padding: 10px;
     color: var(--default-color);
     z-index: 2;
 }
@@ -1114,7 +1114,7 @@ section,
 @media (max-width: 768px) {
     .hero,
     .hero-content {
-        padding: 30px 0;
+        padding: 10px 0;
     }
 
         .hero h1 {
@@ -2717,7 +2717,7 @@ section,
 
 @media (max-width: 768px) {
   .faq .faq-item .faq-header {
-    padding: 30px 0;
+    padding: 10px 0;
   }
 
   .faq .faq-item .faq-header .faq-number {
@@ -2924,7 +2924,7 @@ section,
 }
 
 .portfolio .content {
-  padding: 30px 0;
+  padding: 10px 0;
   text-align: center;
 }
 
@@ -3418,7 +3418,7 @@ section,
   }
 
   .contact .contact-sidebar {
-    padding: 30px 25px;
+    padding: 10px 15px;
   }
 
   .contact .contact-sidebar .contact-header,
@@ -4812,7 +4812,7 @@ body.index-page {
 /* Ajuste mobile */
 @media (max-width: 768px) {
     #clients.hero.section {
-        padding: 30px 0;
+        padding: 10px 0;
     }
 
     #clients .row.mb-5 {
@@ -4982,7 +4982,7 @@ body.index-page {
 #clientModal .modal-body {
     position: relative;
     z-index: 1;
-    padding: 30px 20px;
+    padding: 10px 10px;
     text-align: center;
 }
 
@@ -5063,4 +5063,13 @@ body.index-page {
     border: 1px solid rgba(255, 255, 255, 0.35);
     border-radius: 20px;
     box-shadow: 0 20px 40px rgba(0,0,0,.35);
+}
+
+.glass-card-wrapper.removing {
+    opacity: 0;
+    transform: translateY(-40px) scale(0.9);
+    height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    transition: all 1.2s cubic-bezier(0.25, 1, 0.5, 1); /* efecto más fluido */
 }

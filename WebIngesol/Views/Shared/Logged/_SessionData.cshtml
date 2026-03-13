@@ -1,0 +1,20 @@
+﻿@inject Microsoft.AspNetCore.Http.IHttpContextAccessor httpAcc
+@using WebIngesol.ConstantsRoute
+@using System.Globalization
+
+@{
+    var usuario = httpAcc.HttpContext?.Session.GetString("Usuario") ?? "";
+    var email = httpAcc.HttpContext?.Session.GetString("Email") ?? "";
+    var rawFirstName = httpAcc.HttpContext?.Session.GetString("Nombre") ?? "";
+    var firstName = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(rawFirstName.ToLower());
+    var lastName = httpAcc.HttpContext?.Session.GetString("LastName") ?? "";
+    var fullName = httpAcc.HttpContext?.Session.GetString("FullName") ?? "";
+    var rol = httpAcc.HttpContext?.Session.GetString("Role") ?? "";
+    var imagePath = httpAcc.HttpContext?.Session.GetString("ImagePath");
+
+    var backendOrigin = CT.Base;
+
+    var profileImageUrl = string.IsNullOrEmpty(imagePath)
+        ? Url.Content("~/images/SinFoto.png")
+        : $"{backendOrigin}{(imagePath.StartsWith("/") ? "" : "/")}{imagePath}";
+}

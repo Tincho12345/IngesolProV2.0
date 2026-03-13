@@ -1,0 +1,65 @@
+﻿@* @inject Microsoft.AspNetCore.Http.IHttpContextAccessor httpAcc
+@using WebIngesol.ConstantsRoute
+@using System.Globalization
+
+@{
+    var usuario = httpAcc.HttpContext?.Session.GetString("Usuario") ?? "";
+    var email = httpAcc.HttpContext?.Session.GetString("Email") ?? "";
+    var rawFirstName = httpAcc.HttpContext?.Session.GetString("Nombre") ?? "";
+    var firstName = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(rawFirstName.ToLower());
+    var lastName = httpAcc.HttpContext?.Session.GetString("LastName") ?? "";
+    var fullName = httpAcc.HttpContext?.Session.GetString("FullName") ?? "";
+    var rol = httpAcc.HttpContext?.Session.GetString("Role") ?? "";
+    var imagePath = httpAcc.HttpContext?.Session.GetString("ImagePath");
+
+    var backendOrigin = CT.Base;
+
+    var profileImageUrl = string.IsNullOrEmpty(imagePath)
+        ? Url.Content("~/images/SinFoto.png")
+        : $"{backendOrigin}{(imagePath.StartsWith("/") ? "" : "/")}{imagePath}";
+} *@
+
+<header id="header" class="header fixed-top">
+
+    <div class="nav-wrap">
+
+        <nav class="navbar navbar-expand-md navbar-dark">
+
+            <div class="container-fluid d-flex align-items-center justify-content-between">
+
+                <!-- LOGO -->
+                <div class="d-flex align-items-center">
+                    <a class="navbar-brand"
+                       asp-controller="Home"
+                       asp-action="Index">
+
+                        <img src="/LogoIngesol.png"
+                             alt="Logo"
+                             class="logo-hover-effect"
+                             style="width:200px;height:40px;margin-left:15px;" />
+
+                    </a>
+                </div>
+
+                <!-- HAMBURGUESA -->
+                <button class="navbar-toggler"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#mainNavbar"
+                        aria-controls="mainNavbar"
+                        aria-expanded="false"
+                        aria-label="Toggle navigation">
+
+                    <span class="navbar-toggler-icon"></span>
+
+                </button>
+
+                @await Html.PartialAsync("Logged/_NavbarLogged")
+
+            </div>
+
+        </nav>
+
+    </div>
+
+</header>

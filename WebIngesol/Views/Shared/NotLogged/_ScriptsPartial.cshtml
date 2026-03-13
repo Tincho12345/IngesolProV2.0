@@ -1,0 +1,54 @@
+﻿<!-- Vendor JS -->
+<script src="~/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="~/assets/vendor/aos/aos.js"></script>
+<script src="~/assets/vendor/swiper/swiper-bundle.min.js"></script>
+<script src="~/assets/vendor/glightbox/js/glightbox.min.js"></script>
+<script src="~/assets/vendor/purecounter/purecounter_vanilla.js"></script>
+
+<!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- JS específico del Home -->
+<script src="~/js/functionsIndexV2.js" asp-append-version="true"></script>
+
+<!-- Main JS Landing -->
+<script src="~/assets/js/main.js" asp-append-version="true"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const links = document.querySelectorAll("#header .nav-link");
+        const navbarCollapse = document.getElementById("mainNavbar");
+
+        function setActiveLink() {
+            const currentHash = window.location.hash || "#hero";
+            links.forEach(link => {
+                link.classList.remove("active");
+                if (link.getAttribute("href") === currentHash) {
+                    link.classList.add("active");
+                }
+            });
+        }
+
+        setActiveLink();
+
+        links.forEach(link => {
+            link.addEventListener("click", function () {
+                links.forEach(l => l.classList.remove("active"));
+                this.classList.add("active");
+
+                if (navbarCollapse.classList.contains("show")) {
+                    const bsCollapse = bootstrap.Collapse.getInstance(navbarCollapse)
+                        || new bootstrap.Collapse(navbarCollapse);
+                    bsCollapse.hide();
+                }
+            });
+        });
+
+        window.addEventListener("hashchange", setActiveLink);
+    });
+</script>
+
+<script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
+
+<!-- Script propio (SIEMPRE al final) -->
+<script src="~/js/site.js" asp-append-version="true"></script>

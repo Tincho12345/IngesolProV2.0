@@ -1,0 +1,68 @@
+﻿<header id="header" class="header fixed-top">
+    <div class="nav-wrap">
+        <nav class="navbar navbar-expand-md navbar-dark">
+            <div class="container-fluid d-flex align-items-center justify-content-between" style="background-color: transparent;">
+
+                <!-- LOGO -->
+                <div class="d-flex align-items-center">
+                    <a class="navbar-brand"
+                       asp-area=""
+                       asp-controller="Home"
+                       asp-action="Index">
+                        <img src="/LogoIngesol.png"
+                             alt="Logo"
+                             class="logo-hover-effect"
+                             style="width: 200px; height: 40px; margin-left: 15px;" />
+                    </a>
+                </div>
+
+                <!-- HAMBURGUESA -->
+                <button class="navbar-toggler"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#mainNavbar"
+                        aria-controls="mainNavbar"
+                        aria-expanded="false"
+                        aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- MENÚ -->
+                <div class="collapse navbar-collapse justify-content-between" id="mainNavbar">
+
+                    <ul class="navbar-nav mx-auto">
+                        <li class="nav-item"><a class="nav-link text-dark active" href="#hero">Home</a></li>
+                        <li class="nav-item"><a class="nav-link text-dark" href="#about">Empresa</a></li>
+                        <li class="nav-item"><a class="nav-link text-dark" href="#clients">Clientes</a></li>
+                        <li class="nav-item"><a class="nav-link text-dark" href="#features">Servicios</a></li>
+                        <li class="nav-item"><a class="nav-link text-dark" href="#features-cards">Tarjeta de Servicios</a></li>
+                        <li class="nav-item"><a class="nav-link text-dark" href="#portfolio">Proyectos</a></li>
+                        <li class="nav-item"><a class="nav-link text-dark" href="#cta-testimonials">Testimonios</a></li>
+                        <li class="nav-item"><a class="nav-link text-dark" href="#services">Servicios Extra</a></li>
+                        <li class="nav-item"><a class="nav-link text-dark" href="#pricing">Planes</a></li>
+                        <li class="nav-item"><a class="nav-link text-dark" href="#faq">Que Hacemos?</a></li>
+                        <li class="nav-item"><a class="nav-link text-dark" href="#portfolio">Portfolio</a></li>
+                        <li class="nav-item"><a class="nav-link text-dark" href="#team">Equipo</a></li>
+                        <li class="nav-item"><a class="nav-link text-dark" href="#contact">Contacto</a></li>
+                    </ul>
+
+                    <!-- DERECHA -->
+                    <div class="d-flex align-items-center gap-3 ms-xl-3">
+                        <div class="d-flex gap-3">
+                            <a href="#" class="btn-register"><i class="bi bi-facebook"></i></a>
+                            <a href="#" class="btn-register"><i class="bi bi-twitter-x"></i></a>
+                            <a href="#" class="btn-register"><i class="bi bi-instagram"></i></a>
+                        </div>
+
+                        <a asp-controller="Home"
+                           asp-action="Login"
+                           class="btn btn-outline-light btn-sm">
+                            Ingresar
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </nav>
+    </div>
+</header>

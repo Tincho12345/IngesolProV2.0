@@ -1,34 +1,34 @@
 [
   {
-    "Id": "59ac629a-79f0-4039-bd3d-4a8dc89d7122",
-    "Nombre": "ABRAZADERA CREMALLERA GALVANIZADA 100-120MM",
-    "Imagen": "59ac629a-79f0-4039-bd3d-4a8dc89d7122.png",
-    "Facebook": null,
+    "Id": "01f6ee38-630c-4048-9399-daa6ba60d7dd",
+    "Nombre": "Coama Sudam\u00E9rica SA",
+    "Imagen": "01f6ee38-630c-4048-9399-daa6ba60d7dd.png",
+    "Facebook": "https://www.facebook.com/coamasudamerica/posts/1859821334214627",
     "Twitter": null,
-    "Instagram": null,
+    "Instagram": "https://www.instagram.com/coamasudamerica/",
     "Telegram": null,
-    "Website": null,
+    "Website": "https://www.cuitonline.com/detalle/30707635580/coama-sud-america-s.a.html",
     "LinkedIn": null,
     "WhatsApp": null,
     "Activo": true,
     "Orden": 0,
-    "Latitud": null,
-    "Longitud": null
+    "Latitud": -26.4241933,
+    "Longitud": -54.6191815
   },
   {
-    "Id": "137e2d10-322a-4c00-a884-745eae5c23b9",
-    "Nombre": "discos",
-    "Imagen": "137e2d10-322a-4c00-a884-745eae5c23b9.png",
-    "Facebook": null,
+    "Id": "90a661ed-b35f-469f-b7ff-887afa8f4660",
+    "Nombre": "Laharrague Chodorge",
+    "Imagen": "90a661ed-b35f-469f-b7ff-887afa8f4660.jpg",
+    "Facebook": "https://www.facebook.com/laharraguechodorge/?locale=es_LA",
     "Twitter": null,
-    "Instagram": null,
+    "Instagram": "https://www.instagram.com/laharraguechodorge/",
     "Telegram": null,
-    "Website": null,
-    "LinkedIn": null,
+    "Website": "https://lach.com.ar/",
+    "LinkedIn": "https://ar.linkedin.com/in/laharrague-chodorge-73974193",
     "WhatsApp": null,
     "Activo": true,
     "Orden": 0,
-    "Latitud": null,
-    "Longitud": null
+    "Latitud": -26.5471546,
+    "Longitud": -54.7246378
   }
 ]

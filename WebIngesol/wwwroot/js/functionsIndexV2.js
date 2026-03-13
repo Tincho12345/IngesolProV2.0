@@ -96,7 +96,6 @@
         }
     }
 
-    // ---------------- SUBMIT AJAX ----------------
     function manejarSubmitAjax(form, mensajeConfirmacion, mensajeExito, modal) {
         form.addEventListener("submit", async e => {
             e.preventDefault();
@@ -105,8 +104,13 @@
 
             const ubicacionInput = form.querySelector('input[name="ubicacion"]');
             if (ubicacionInput?.value.trim()) {
-                const { latitud, longitud } = parseUbicacion(ubicacionInput.value.trim());
+                let { latitud, longitud } = parseUbicacion(ubicacionInput.value.trim());
                 if (!latitud || !longitud) return;
+
+                // ✅ Convertir puntos a comas para enviar al backend
+                latitud = latitud.replace('.', ',');
+                longitud = longitud.replace('.', ',');
+
                 setHiddenInput(form, 'latitud', latitud);
                 setHiddenInput(form, 'longitud', longitud);
             }

@@ -11,9 +11,10 @@
         .withAutomaticReconnect()
         .build();
 
+        let skipNextUpdate = false;
+
     if (!window.signalrClientesInit) {
         window.signalrClientesInit = true;
-        let skipNextUpdate = false;
 
         connection.on("ClientesActualizados", async () => {
             if (skipNextUpdate) { skipNextUpdate = false; return; }
@@ -143,22 +144,39 @@
         );
         if (!confirmacion.isConfirmed) return;
 
-        const ok = await fetchConLoader(form.action, { method: "POST", body: new FormData(form) });
+        skipNextUpdate = true;
+
+        const ok = await fetchConLoader(form.action, {
+            method: "POST",
+            body: new FormData(form)
+        });
+
         if (!ok) return;
+
+        const modal = deleteBtn.closest('.modal');
+        if (modal) bootstrap.Modal.getInstance(modal)?.hide();
+
+        await mostrarExito("Cliente eliminado correctamente");
 
         const cardWrapper = deleteBtn.closest(".glass-card-wrapper");
         if (cardWrapper) {
+
             const altura = cardWrapper.offsetHeight;
             const estilo = getComputedStyle(cardWrapper);
             const marginTop = parseFloat(estilo.marginTop);
             const marginBottom = parseFloat(estilo.marginBottom);
 
-            cardWrapper.style.transition = "transform 1.2s cubic-bezier(0.25,1,0.5,1), opacity 1.2s cubic-bezier(0.25,1,0.5,1), margin 1.2s cubic-bezier(0.25,1,0.5,1), height 1.2s cubic-bezier(0.25,1,0.5,1)";
+            cardWrapper.style.transition =
+                "transform 1.8s cubic-bezier(0.25,1,0.5,1), " +
+                "opacity 1.8s cubic-bezier(0.25,1,0.5,1), " +
+                "margin 1.8s cubic-bezier(0.25,1,0.5,1), " +
+                "height 1.8s cubic-bezier(0.25,1,0.5,1)";
+
             cardWrapper.style.height = `${altura}px`;
             cardWrapper.style.marginTop = `${marginTop}px`;
             cardWrapper.style.marginBottom = `${marginBottom}px`;
 
-            cardWrapper.offsetHeight; // fuerza reflow
+            cardWrapper.offsetHeight;
 
             requestAnimationFrame(() => {
                 cardWrapper.style.transform = "translateY(-20px) scale(0.95)";
@@ -168,15 +186,10 @@
                 cardWrapper.style.marginBottom = "0px";
             });
 
-            cardWrapper.addEventListener("transitionend", () => cardWrapper.remove(), { once: true });
+            cardWrapper.addEventListener("transitionend", () => {
+                cardWrapper.remove();
+            }, { once: true });
         }
-
-        const modal = deleteBtn.closest('.modal');
-        if (modal) bootstrap.Modal.getInstance(modal)?.hide();
-
-        await mostrarExito("Cliente eliminado correctamente");
-
-        connection.invoke("NotificarActualizacionClientes").catch(err => console.error(err));
     });
 
     // ---------------- VISTA PREVIA LOGO ----------------

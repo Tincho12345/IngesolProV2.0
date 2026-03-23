@@ -30,5 +30,21 @@
     "Orden": 0,
     "Latitud": -25.599626,
     "Longitud": -54.571434
+  },
+  {
+    "Id": "55f6e69f-2d30-4cf2-8ed2-f666a54390fa",
+    "Nombre": "Iguaz\u00FA Grand Hotel",
+    "Imagen": "55f6e69f-2d30-4cf2-8ed2-f666a54390fa.jfif",
+    "Facebook": null,
+    "Twitter": null,
+    "Instagram": null,
+    "Telegram": null,
+    "Website": null,
+    "LinkedIn": null,
+    "WhatsApp": null,
+    "Activo": true,
+    "Orden": 0,
+    "Latitud": null,
+    "Longitud": null
   }
 ]

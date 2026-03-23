@@ -261,11 +261,6 @@ namespace ApiIngesol.Mappers
                 .ForMember(dest => dest.Id, opt => opt.Ignore()); // activo por defecto
 
             // ================================
-            // UI - Background Images
-            // ================================
-
-            // Create DTO -> Entity
-            // ================================
             // Solicitud de Proyectos (Formulario Web)
             // ================================
             CreateMap<CreateSolicitudProyectoDto, SolicitudProyecto>()

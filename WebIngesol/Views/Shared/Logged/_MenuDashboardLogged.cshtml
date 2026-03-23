@@ -1,6 +1,9 @@
 ﻿@inject Microsoft.AspNetCore.Http.IHttpContextAccessor httpAcc
 
 @{
+    // =========================================================
+    // OBTENER ROL DEL USUARIO DESDE SESSION
+    // =========================================================
     var rol = httpAcc.HttpContext?.Session.GetString("Role") ?? "";
 
     bool isAdmin = rol.Trim() == "🛡️ Admin";
@@ -10,46 +13,57 @@
 
 <ul class="navbar-nav">
 
+    <!-- =========================================================
+         PROYECTOS
+    ========================================================== -->
     @if (isAdmin || isDataEntry || isEmpleado)
     {
         <li class="nav-item dropdown">
+
+            <!-- MENÚ PRINCIPAL -->
             <a class="nav-link dropdown-toggle text-dark"
                href="#"
-               id="gestionProyectosDropdown"
-               role="button"
-               data-bs-toggle="dropdown"
-               aria-expanded="false">
+               data-bs-toggle="dropdown">
                 <i class="fas fa-project-diagram me-1"></i> Proyectos
             </a>
 
-            <ul class="dropdown-menu" aria-labelledby="gestionProyectosDropdown">
+            <ul class="dropdown-menu">
 
+                <!-- SOLO ADMIN / DATA ENTRY -->
                 @if (isAdmin || isDataEntry)
                 {
                     <li>
                         <a class="dropdown-item"
                            asp-controller="SolicitudesProyecto"
-                           asp-action="Index">
-                            <i class="fas fa-envelope-open-text me-2"></i> Solicitudes de Proyecto
+                           asp-action="Index"
+                           target="_blank" rel="noopener">
+                            <i class="fas fa-envelope-open-text me-2"></i>
+                            Solicitudes de Proyecto
                         </a>
                     </li>
 
                     <li><hr class="dropdown-divider" /></li>
                 }
 
+                <!-- PROYECTOS -->
                 <li>
                     <a class="dropdown-item"
                        asp-controller="Proyectos"
-                       asp-action="Index">
-                        <i class="fas fa-project-diagram me-2"></i> Proyectos
+                       asp-action="Index"
+                       target="_blank" rel="noopener">
+                        <i class="fas fa-project-diagram me-2"></i>
+                        Proyectos
                     </a>
                 </li>
 
+                <!-- ORDENES -->
                 <li>
                     <a class="dropdown-item"
                        asp-controller="Ordenes"
-                       asp-action="Index">
-                        <i class="fas fa-tasks me-2"></i> Órdenes
+                       asp-action="Index"
+                       target="_blank" rel="noopener">
+                        <i class="fas fa-tasks me-2"></i>
+                        Órdenes
                     </a>
                 </li>
 
@@ -58,17 +72,22 @@
                     <li>
                         <a class="dropdown-item"
                            asp-controller="Presupuestos"
-                           asp-action="Index">
-                            <i class="fas fa-clipboard-list me-2"></i> Presupuestos
+                           asp-action="Index"
+                           target="_blank" rel="noopener">
+                            <i class="fas fa-clipboard-list me-2"></i>
+                            Presupuestos
                         </a>
                     </li>
 
                     <li><hr class="dropdown-divider" /></li>
 
+                    <!-- SUBMENÚ INFRAESTRUCTURA -->
                     <li class="dropdown-submenu dropend">
+
                         <a class="dropdown-item dropdown-toggle"
                            data-bs-toggle="dropdown">
-                            <i class="fas fa-sitemap me-2"></i> Infraestructura
+                            <i class="fas fa-sitemap me-2"></i>
+                            Infraestructura
                         </a>
 
                         <ul class="dropdown-menu">
@@ -76,30 +95,40 @@
                             <li>
                                 <a class="dropdown-item"
                                    asp-controller="Plantas"
-                                   asp-action="Index">
-                                    <i class="fas fa-industry me-2"></i> Plantas
+                                   asp-action="Index"
+                                   target="_blank" rel="noopener">
+                                    <i class="fas fa-industry me-2"></i>
+                                    Plantas
                                 </a>
                             </li>
 
                             <li>
                                 <a class="dropdown-item"
                                    asp-controller="Areas"
-                                   asp-action="Index">
-                                    <i class="fas fa-tools me-2"></i> Áreas
+                                   asp-action="Index"
+                                   target="_blank" rel="noopener">
+                                    <i class="fas fa-tools me-2"></i>
+                                    Áreas
                                 </a>
                             </li>
 
                         </ul>
+
                     </li>
                 }
 
             </ul>
+
         </li>
     }
 
+    <!-- =========================================================
+         MAESTRO MATERIALES
+    ========================================================== -->
     @if (isAdmin || isDataEntry)
     {
         <li class="nav-item dropdown">
+
             <a class="nav-link dropdown-toggle text-dark"
                data-bs-toggle="dropdown">
                 <i class="fas fa-boxes me-1"></i> Maestro Materiales
@@ -110,46 +139,60 @@
                 <li>
                     <a class="dropdown-item"
                        asp-controller="Familias"
-                       asp-action="Index">
-                        <i class="fas fa-group-arrows-rotate me-2"></i> Familias
+                       asp-action="Index"
+                       target="_blank" rel="noopener">
+                        <i class="fas fa-group-arrows-rotate me-2"></i>
+                        Familias
                     </a>
                 </li>
 
                 <li>
                     <a class="dropdown-item"
                        asp-controller="Clases"
-                       asp-action="Index">
-                        <i class="fas fa-toolbox me-2"></i> Clases
+                       asp-action="Index"
+                       target="_blank" rel="noopener">
+                        <i class="fas fa-toolbox me-2"></i>
+                        Clases
                     </a>
                 </li>
 
                 <li>
                     <a class="dropdown-item"
                        asp-controller="Tipos"
-                       asp-action="Index">
-                        <i class="fas fa-tags me-2"></i> Tipo
+                       asp-action="Index"
+                       target="_blank" rel="noopener">
+                        <i class="fas fa-tags me-2"></i>
+                        Tipo
                     </a>
                 </li>
 
                 <li>
                     <a class="dropdown-item"
                        asp-controller="UnidadesMedidas"
-                       asp-action="Index">
-                        <i class="fas fa-ruler-combined me-2"></i> Unidades de Medida
+                       asp-action="Index"
+                       target="_blank" rel="noopener">
+                        <i class="fas fa-ruler-combined me-2"></i>
+                        Unidades de Medida
                     </a>
                 </li>
 
                 <li>
                     <a class="dropdown-item"
                        asp-controller="Materiales"
-                       asp-action="Index">
-                        <i class="fas fa-hard-hat me-2"></i> Materiales
+                       asp-action="Index"
+                       target="_blank" rel="noopener">
+                        <i class="fas fa-hard-hat me-2"></i>
+                        Materiales
                     </a>
                 </li>
 
             </ul>
+
         </li>
 
+        <!-- =========================================================
+             DATOS GEOGRÁFICOS
+        ========================================================== -->
         <li class="nav-item dropdown">
 
             <a class="nav-link dropdown-toggle text-dark"
@@ -162,24 +205,30 @@
                 <li>
                     <a class="dropdown-item"
                        asp-controller="Paises"
-                       asp-action="Index">
-                        <i class="fas fa-flag me-2"></i> Países
+                       asp-action="Index"
+                       target="_blank" rel="noopener">
+                        <i class="fas fa-flag me-2"></i>
+                        Países
                     </a>
                 </li>
 
                 <li>
                     <a class="dropdown-item"
                        asp-controller="Provincias"
-                       asp-action="Index">
-                        <i class="fas fa-map me-2"></i> Provincias
+                       asp-action="Index"
+                       target="_blank" rel="noopener">
+                        <i class="fas fa-map me-2"></i>
+                        Provincias
                     </a>
                 </li>
 
                 <li>
                     <a class="dropdown-item"
                        asp-controller="Ciudades"
-                       asp-action="Index">
-                        <i class="fas fa-city me-2"></i> Ciudades
+                       asp-action="Index"
+                       target="_blank" rel="noopener">
+                        <i class="fas fa-city me-2"></i>
+                        Ciudades
                     </a>
                 </li>
 
@@ -188,36 +237,47 @@
         </li>
     }
 
+    <!-- =========================================================
+         ÁREAS TÉCNICAS
+    ========================================================== -->
     @if (isAdmin)
     {
         <li class="nav-item">
 
             <a class="nav-link text-dark"
                asp-controller="AreasTecnicas"
-               asp-action="Index">
-                <i class="fas fa-tools me-2"></i> Áreas Técnicas
+               asp-action="Index"
+               target="_blank" rel="noopener">
+                <i class="fas fa-tools me-2"></i>
+                Áreas Técnicas
             </a>
 
         </li>
     }
 
+    <!-- =========================================================
+         VIÁTICOS / TRANSPORTES
+    ========================================================== -->
     @if (isAdmin || isDataEntry || isEmpleado)
     {
         <li class="nav-item dropdown">
 
             <a class="nav-link dropdown-toggle text-dark"
                data-bs-toggle="dropdown">
-                <i class="fas fa-money-check-alt me-2"></i> Viáticos / Transportes
+                <i class="fas fa-money-check-alt me-2"></i>
+                Viáticos / Transportes
             </a>
 
             <ul class="dropdown-menu">
 
+                <!-- MENÚ PARA EMPLEADOS -->
                 @if (isEmpleado)
                 {
                     <li>
                         <a class="dropdown-item"
                            asp-controller="RegistrosViaticos"
-                           asp-action="Index">
+                           asp-action="Index"
+                           target="_blank" rel="noopener">
                             Registro de Viáticos
                         </a>
                     </li>
@@ -225,7 +285,8 @@
                     <li>
                         <a class="dropdown-item"
                            asp-controller="RegistrosMovilidad"
-                           asp-action="Index">
+                           asp-action="Index"
+                           target="_blank" rel="noopener">
                             Registro de Movilidad
                         </a>
                     </li>
@@ -233,17 +294,21 @@
                     <li>
                         <a class="dropdown-item"
                            asp-controller="RegistrosAsistencias"
-                           asp-action="Index">
+                           asp-action="Index"
+                           target="_blank" rel="noopener">
                             Registro de Horas
                         </a>
                     </li>
                 }
                 else
                 {
+                    <!-- MENÚ ADMIN / DATA ENTRY -->
+
                     <li>
                         <a class="dropdown-item"
                            asp-controller="TipoViaticos"
-                           asp-action="Index">
+                           asp-action="Index"
+                           target="_blank" rel="noopener">
                             Tipos de Viáticos
                         </a>
                     </li>
@@ -251,7 +316,8 @@
                     <li>
                         <a class="dropdown-item"
                            asp-controller="ValoresViaticos"
-                           asp-action="Index">
+                           asp-action="Index"
+                           target="_blank" rel="noopener">
                             Valores de Viáticos
                         </a>
                     </li>
@@ -259,7 +325,8 @@
                     <li>
                         <a class="dropdown-item"
                            asp-controller="RegistrosViaticos"
-                           asp-action="Index">
+                           asp-action="Index"
+                           target="_blank" rel="noopener">
                             Registro de Viáticos
                         </a>
                     </li>
@@ -269,7 +336,8 @@
                     <li>
                         <a class="dropdown-item"
                            asp-controller="TiposMovilidad"
-                           asp-action="Index">
+                           asp-action="Index"
+                           target="_blank" rel="noopener">
                             Tipos de Transporte
                         </a>
                     </li>
@@ -277,7 +345,8 @@
                     <li>
                         <a class="dropdown-item"
                            asp-controller="ValoresMovilidad"
-                           asp-action="Index">
+                           asp-action="Index"
+                           target="_blank" rel="noopener">
                             Valores de Transporte
                         </a>
                     </li>
@@ -285,7 +354,8 @@
                     <li>
                         <a class="dropdown-item"
                            asp-controller="RegistrosMovilidad"
-                           asp-action="Index">
+                           asp-action="Index"
+                           target="_blank" rel="noopener">
                             Registro de Movilidad
                         </a>
                     </li>
@@ -295,7 +365,8 @@
                     <li>
                         <a class="dropdown-item"
                            asp-controller="RegistrosAsistencias"
-                           asp-action="Index">
+                           asp-action="Index"
+                           target="_blank" rel="noopener">
                             Registro de Horas
                         </a>
                     </li>
@@ -306,6 +377,9 @@
         </li>
     }
 
+    <!-- =========================================================
+         PERFILES (SOLO ADMIN)
+    ========================================================== -->
     @if (isAdmin)
     {
         <li class="nav-item dropdown">
@@ -320,7 +394,8 @@
                 <li>
                     <a class="dropdown-item"
                        asp-controller="Clientes"
-                       asp-action="Index">
+                       asp-action="Index"
+                       target="_blank" rel="noopener">
                         Clientes
                     </a>
                 </li>
@@ -328,7 +403,8 @@
                 <li>
                     <a class="dropdown-item"
                        asp-controller="Usuarios"
-                       asp-action="Index">
+                       asp-action="Index"
+                       target="_blank" rel="noopener">
                         Usuarios
                     </a>
                 </li>
@@ -336,7 +412,8 @@
                 <li>
                     <a class="dropdown-item"
                        asp-controller="Roles"
-                       asp-action="Index">
+                       asp-action="Index"
+                       target="_blank" rel="noopener">
                         Roles
                     </a>
                 </li>
@@ -344,7 +421,8 @@
                 <li>
                     <a class="dropdown-item"
                        asp-controller="Puestos"
-                       asp-action="Index">
+                       asp-action="Index"
+                       target="_blank" rel="noopener">
                         Puestos
                     </a>
                 </li>

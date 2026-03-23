@@ -19,29 +19,6 @@ public enum EstadoSolicitudProyecto
     Descartado = 5
 }
 
-public class SolicitudProyecto : AuditableEntity
-{
-    [EmailAddress]
-    [MaxLength(150)]
-    public string Email { get; set; } = string.Empty;
-
-    [MaxLength(50)]
-    public string? Telefono { get; set; }
-
-    [MaxLength(100)]
-    public string? TipoProyecto { get; set; }
-
-    [MaxLength(150)]
-    public string? Ubicacion { get; set; }
-
-    [MaxLength(100)]
-    public string? EtapaProyecto { get; set; }
-
-    public string Mensaje { get; set; } = string.Empty;
-
-    public EstadoSolicitudProyecto Estado { get; set; }
-}
-
 public class SolicitudProyectoDto
 {
     [Required]

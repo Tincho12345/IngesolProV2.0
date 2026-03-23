@@ -3,8 +3,6 @@ namespace ApiIngesol.Repository.IRepository;
 
 public interface IRepository<T> where T : class
 {
-    //Task<IEnumerable<T>> GetAllWithIncludesAsync(params string[] includeProperties);
-    //Task<bool> AddRangeAsync(IEnumerable<T> entities);
     Task<IEnumerable<T>> GetAllAsync(string includeProperties = "");
     Task<T?> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate);
     Task<T?> GetByIdAsync(Guid id);

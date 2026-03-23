@@ -48,7 +48,6 @@ export function insertarEncabezadoYFiltros() {
             <!-- FILTROS -->
             <div id="divFiltros"
                  class="col-12 col-md-6 d-flex justify-content-center justify-content-md-end">
-
                 <div class="w-100 d-flex flex-column flex-md-row align-items-center align-items-md-end gap-2">
                     ${mostrarBotonCrear ? `
                     <button
@@ -64,30 +63,21 @@ export function insertarEncabezadoYFiltros() {
                         id="inputFiltroAcumulado"
                         class="form-control"
                         placeholder="Criterio de Filtro..."
-                        style="max-width:260px"
+                        style="max-width:260px; border-radius:50rem;"
                     />
-
                     <div class="d-flex gap-2">
-
                         <button id="btnAgregarFiltro" class="btn btn-primary btn-sm" title="Agregar filtro">
                             ➕🔍
                         </button>
-
                         <button id="btnLimpiarFiltros" class="btn btn-primary btn-sm" title="Limpiar filtros">
                             ❌🔍
                         </button>
-
                         <button id="btnExportarExcel" class="btn btn-primary btn-sm" title="Exportar a Excel">
                             📊📤
                         </button>
-
                     </div>
-
-
-
                 </div>
             </div>
-
         </div>
 
         <!-- FILTROS ACTIVOS -->

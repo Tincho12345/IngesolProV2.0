@@ -1080,13 +1080,6 @@ html, body {
     background: transparent !important;
 }
 
-/* Dropdown */
-#header .dropdown-menu {
-    background: rgba(33, 53, 63, 0.9);
-    backdrop-filter: blur(10px);
-    border: none;
-}
-
     #header .dropdown-item,
     #header .dropdown-menu .nav-link {
         color: #ffffff !important;
@@ -1185,17 +1178,6 @@ html, body {
         font-weight: 700;
     }
 
-/* =========================
-   DROPDOWN
-   ========================= */
-#header .dropdown-menu {
-    background: rgba(33, 53, 63, 0.9);
-    backdrop-filter: blur(10px);
-    border: none;
-    border-radius: 10px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-}
-
 #header .dropdown-item {
     color: #ffffff !important;
     font-weight: 500;
@@ -1245,4 +1227,43 @@ html, body {
 /* opcional: un pelín más de aire arriba */
 .dataTables_wrapper .dataTables_length {
     margin-top: 0.25rem;
+}
+
+/* Dropdown */
+#header .dropdown-menu {
+    background: rgba(33, 53, 63, 0.9); /* tu fondo con transparencia */
+    backdrop-filter: blur(10px); /* tu efecto blur */
+    border: none;
+    color: #ffffff; /* texto en blanco */
+    border-radius: 0.25rem;
+    min-width: 200px; /* opcional: ancho mínimo */
+}
+
+    /* Íconos dentro del dropdown */
+    #header .dropdown-menu .dropdown-item i {
+        color: #ffffff; /* íconos en blanco */
+    }
+
+    /* Divisor igual al color del texto */
+    #header .dropdown-menu .dropdown-divider {
+        border-top: 1px solid currentColor; /* usa color del texto (blanco) */
+    }
+
+    /* Hover de cada item */
+    #header .dropdown-menu .dropdown-item:hover {
+        background-color: rgba(50, 70, 80, 0.8); /* ligero contraste al pasar mouse */
+        color: #ffffff;
+    }
+
+/* Submenús (dropend) */
+#header .dropdown-submenu .dropdown-menu {
+    background: rgba(33, 53, 63, 0.9);
+    backdrop-filter: blur(10px);
+    color: #ffffff;
+}
+
+/* Hover en submenus */
+#header .dropdown-submenu .dropdown-item:hover {
+    background-color: rgba(50, 70, 80, 0.8);
+    color: #ffffff;
 }

@@ -57,7 +57,7 @@
         }
 </style>
 
-<section id="hero" class="hero section">
+<section id="hero" class="hero section dark-background">
 
     @if (videoExists)
     {
@@ -86,19 +86,35 @@
                             procesos productivos y ampliar la capacidad de tus instalaciones.
                         </p>
                         <div class="hero-buttons" data-aos="fade-up" data-aos-delay="300">
-                            <a href="#services" class="btn btn-reserva px-4" onclick="playHeroVideo()">Servicios</a>
-                            <a href="#contact" class="btn btn-reserva px-4" onclick="playHeroVideo()">Contactanos</a>
-                            <button id="videoToggleBtn" class="btn btn-reserva px-4">Subir Video</button>
+
+                            <a href="#services" class="btn btn-reserva px-4" onclick="playHeroVideo()">
+                                <i class="bi bi-gear"></i> Servicios
+                            </a>
+
+                            <a href="#contact" class="btn btn-reserva px-4" onclick="playHeroVideo()">
+                                <i class="bi bi-envelope"></i> Contactanos
+                            </a>
+
+                            <button id="videoToggleBtn" class="btn btn-reserva px-4">
+                                <i class="bi bi-upload"></i> Subir Video
+                            </button>
+
+                            <button id="deleteVideoBtn" class="btn btn-reserva px-4">
+                                <i class="bi bi-trash"></i> Eliminar Video
+                            </button>
+
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
-    <button id="videoPlayBtn" class="btn btn-reserva px-4" style="color: white !important;">
-        ▶ Play
-    </button>
+    @if (videoExists)
+    {        
+        <button id="videoPlayBtn" class="btn btn-reserva px-4" style="color: white !important;">
+            ▶ Play
+        </button>
+    }
 
     <form id="videoUploadForm" method="post" enctype="multipart/form-data" action="/VisibleClients/UploadVideo" style="display:none">
         @Html.AntiForgeryToken()

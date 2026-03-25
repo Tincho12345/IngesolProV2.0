@@ -269,4 +269,35 @@ public class VisibleClientsController : Controller
         // 🔹 DEVOLVER 200 OK
         return Ok(new { fileName });
     }
+
+    // =============================
+    // POST: Eliminar video
+    // =============================
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteVideo()
+    {
+        var folderPath = Path.Combine(_env.WebRootPath, "videos");
+
+        if (!Directory.Exists(folderPath))
+            return Ok(new { success = true });
+
+        // 🔴 BORRAR TODOS LOS VIDEOS
+        foreach (var file in Directory.GetFiles(folderPath))
+        {
+            try
+            {
+                System.IO.File.Delete(file);
+            }
+            catch
+            {
+                // ignorar si algún archivo está en uso
+            }
+        }
+
+        // 🔴 AVISAR A TODOS LOS NAVEGADORES QUE EL VIDEO FUE ELIMINADO
+        await _hub.Clients.All.SendAsync("VideoActualizado", "");
+
+        return Ok(new { success = true });
+    }
 }

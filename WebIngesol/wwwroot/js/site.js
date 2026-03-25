@@ -28,6 +28,7 @@
     const toggleBtn = document.getElementById("videoToggleBtn");
     const videoInput = document.getElementById("videoInput");
     const heroContent = document.getElementById("heroContent");
+    const deleteBtn = document.getElementById("deleteVideoBtn");
 
     const playHeroVideo = () => video && video.paused && video.play().catch(() => video.controls = true);
     const togglePlay = () => video && (video.paused ? video.play().catch(() => video.controls = true) : video.pause());
@@ -45,37 +46,35 @@
     }
     if (toggleBtn && videoInput) toggleBtn.addEventListener("click", () => videoInput.click());
 
-    if (videoInput) {
-        videoInput.addEventListener("change", async () => {
-            const file = videoInput.files[0];
-            if (!file) return;
-            if (video) {
-                video.pause();
-                video.querySelectorAll("source").forEach(src => src.src = URL.createObjectURL(file));
-                video.load();
-            }
-            const formData = new FormData();
-            formData.append("videoFile", file);
-            const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
-            token && formData.append("__RequestVerificationToken", token);
+    if (videoInput) videoInput.addEventListener("change", async () => {
+        const file = videoInput.files?.[0];
+        if (!file) return;
 
-            try {
-                Swal.fire({ title: "Subiendo video...", allowOutsideClick: false, didOpen: () => Swal.showLoading() });
-                const res = await fetch("/VisibleClients/UploadVideo", { method: "POST", body: formData });
-                const data = await res.json();
-                Swal.close();
+        video?.pause();
+        video?.querySelectorAll("source").forEach(s => s.src = URL.createObjectURL(file));
+        video?.load();
 
-                if (data?.fileName && video) {
-                    await Swal.fire({ title: "Video subido correctamente", icon: "success", timer: 1500, showConfirmButton: false });
-                    video.querySelectorAll("source").forEach(src => src.src = `/videos/${data.fileName}?v=${Date.now()}`);
-                    video.load();
-                }
-            } catch {
-                Swal.close();
-                await Swal.fire({ title: "Error subiendo el video", icon: "error" });
+        const fd = new FormData();
+        fd.append("videoFile", file);
+        const token = document.querySelector('[name="__RequestVerificationToken"]')?.value;
+        if (token) fd.append("__RequestVerificationToken", token);
+
+        try {
+            Swal.fire({ title: "Subiendo video...", allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+
+            const data = await fetch("/VisibleClients/UploadVideo", { method: "POST", body: fd }).then(r => r.json());
+            Swal.close();
+
+            if (data?.fileName) {
+                await Swal.fire({ title: "Video subido correctamente", icon: "success", timer: 1500, showConfirmButton: false });
+                location.reload();
             }
-        });
-    }
+
+        } catch {
+            Swal.close();
+            Swal.fire({ title: "Error subiendo el video", icon: "error" });
+        }
+    });
 
     if (!window.signalrClientesInit && typeof signalR !== "undefined") {
         window.signalrClientesInit = true;
@@ -85,8 +84,18 @@
             .build();
 
         connection.on("VideoActualizado", fileName => {
+
+            if (!fileName) {
+                location.reload();
+                return;
+            }
+
             if (!video) return;
-            video.querySelectorAll("source").forEach(src => src.src = `/videos/${fileName}?v=${Date.now()}`);
+
+            video.querySelectorAll("source").forEach(src =>
+                src.src = `/videos/${fileName}?v=${Date.now()}`
+            );
+
             video.load();
         });
 
@@ -94,4 +103,60 @@
             .catch(err => console.error("Error conectando a SignalR:", err));
     }
     window.playHeroVideo = playHeroVideo;
+
+    // ---------- ELIMINAR VIDEO ----------
+    if (deleteBtn) deleteBtn.addEventListener("click", async () => {
+
+        const confirm = await Swal.fire({
+            title: "Eliminar video?",
+            text: "Esta acción eliminará el video del sitio.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Eliminar",
+            cancelButtonText: "Cancelar"
+        });
+
+        if (!confirm.isConfirmed) return;
+
+        const token = document.querySelector('[name="__RequestVerificationToken"]')?.value;
+
+        try {
+
+            Swal.fire({
+                title: "Eliminando video...",
+                allowOutsideClick: false,
+                didOpen: () => Swal.showLoading()
+            });
+
+            const res = await fetch("/VisibleClients/DeleteVideo", {
+                method: "POST",
+                headers: {
+                    "RequestVerificationToken": token,
+                    "Content-Type": "application/json"
+                }
+            });
+
+            const data = await res.json();
+            Swal.close();
+
+            if (data?.success) {
+                await Swal.fire({
+                    title: "Video eliminado",
+                    icon: "success",
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+
+                location.reload();
+            }
+
+        } catch {
+            Swal.close();
+            Swal.fire({
+                title: "Error eliminando el video",
+                icon: "error"
+            });
+        }
+
+    });
 });

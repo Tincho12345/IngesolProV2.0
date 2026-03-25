@@ -6,12 +6,12 @@
 @await Html.PartialAsync("Logged/_HeadLogged")
 
 @{
-        var controller = ViewContext.RouteData.Values["controller"]?.ToString();
-        var action = ViewContext.RouteData.Values["action"]?.ToString();
+    var controller = ViewContext.RouteData.Values["controller"]?.ToString();
+    var action = ViewContext.RouteData.Values["action"]?.ToString();
 
-        var bodyClass = (controller == "Home" && action == "Index")
-                ? "index-page"
-                : "";
+    var bodyClass = (controller == "Home" && action == "Index")
+            ? "index-page"
+            : "";
 }
 
 <body class="@bodyClass">

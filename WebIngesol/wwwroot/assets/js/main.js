@@ -146,25 +146,26 @@
    * Scroll top button
    */
     let scrollTop = document.querySelector('.scroll-top');
+    let videoPlayBtn = document.getElementById('videoPlayBtn');
 
-    function toggleScrollTop() {
+    function toggleFloatingButtons() {
+
         if (scrollTop) {
-            window.scrollY > 100 ? scrollTop.classList.add('active') : scrollTop.classList.remove('active');
+            window.scrollY > 100
+                ? scrollTop.classList.add('active')
+                : scrollTop.classList.remove('active');
         }
+
+        if (videoPlayBtn) {
+            window.scrollY > 100
+                ? videoPlayBtn.classList.remove('active')
+                : videoPlayBtn.classList.add('active');
+        }
+
     }
 
-    if (scrollTop) {
-        scrollTop.addEventListener('click', (e) => {
-            e.preventDefault();
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        });
-    }
-
-  window.addEventListener('load', toggleScrollTop);
-  document.addEventListener('scroll', toggleScrollTop);
+    window.addEventListener('load', toggleFloatingButtons);
+    document.addEventListener('scroll', toggleFloatingButtons);
 
   /**
    * Animation on scroll function and init

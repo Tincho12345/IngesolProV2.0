@@ -40,12 +40,16 @@
         color: white !important;
     }
 
-    /* Botón flotante sobre el video */
+    /* Botón flotante sobre el video, centrado horizontal */
     #videoPlayBtn {
         position: fixed;
         bottom: 20px;
-        right: 20px;
+        left: 50%;
+        transform: translateX(-50%);
         z-index: 10;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        pointer-events: none; /* evita clic cuando está oculto */
     }
 </style>
 
@@ -88,8 +92,9 @@
         </div>
     </div>
 
-    <!-- Botón flotante Play/Pause -->
-    <button id="videoPlayBtn" class="btn btn-reserva px-4">▶ Play</button>
+    <button id="videoPlayBtn" class="btn btn-reserva px-4">
+        ▶ Play
+    </button>
 
     <form id="videoUploadForm" method="post" enctype="multipart/form-data" action="/VisibleClients/UploadVideo" style="display:none">
         @Html.AntiForgeryToken()
@@ -108,99 +113,127 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
+            // ---------------- ELEMENTOS ----------------
             const video = document.getElementById("heroVideo");
             const playBtn = document.getElementById("videoPlayBtn");
             const toggleBtn = document.getElementById("videoToggleBtn");
             const videoInput = document.getElementById("videoInput");
             const heroContent = document.getElementById("heroContent");
+            const heroSection = document.getElementById("hero");
+            const scrollTopBtn = document.getElementById("scroll-top");
 
-            // ---------------- HERO VIDEO FUNCTIONS ----------------
-            window.playHeroVideo = function() {
+            // ---------------- FUNCIONES DEL VIDEO ----------------
+            window.playHeroVideo = () => {
                 if (video && video.paused) video.play().catch(() => video.controls = true);
-            }
+            };
 
-            // ---------------- PLAY BUTTON ----------------
-            if(playBtn && video) {
-                playBtn.addEventListener("click", () => {
-                    if(video.paused){
-                        video.play().catch(() => video.controls = true);
-                    } else {
-                        video.pause();
-                    }
-                });
-            }
+            const togglePlay = () => {
+                if (!video) return;
+                if (video.paused) video.play().catch(() => video.controls = true);
+                else video.pause();
+            };
 
-            // ---------------- UPLOAD VIDEO BUTTON ----------------
-            if(toggleBtn && videoInput){
-                toggleBtn.addEventListener("click", () => videoInput.click());
-            }
+            const updateVideoState = () => {
+                if (!video || !playBtn || !heroContent) return;
+                if (video.paused) {
+                    heroContent.classList.remove("hidden");
+                    playBtn.textContent = "▶ Play";
+                } else {
+                    heroContent.classList.add("hidden");
+                    playBtn.textContent = "⏸ Pause";
+                }
+            };
 
-            // ---------------- SYNC VIDEO STATE ----------------
-            if(video){
-                video.addEventListener("play", () => {
-                    if(heroContent) heroContent.classList.add("hidden");
-                    if(playBtn) playBtn.textContent = "⏸ Pause";
-                });
-                video.addEventListener("pause", () => {
-                    if(heroContent) heroContent.classList.remove("hidden");
-                    if(playBtn) playBtn.textContent = "▶ Play";
-                });
+            // ---------------- EVENTOS BOTONES ----------------
+            if (playBtn) playBtn.addEventListener("click", togglePlay);
+            if (video) {
+                video.addEventListener("play", updateVideoState);
+                video.addEventListener("pause", updateVideoState);
             }
+            if (toggleBtn && videoInput) toggleBtn.addEventListener("click", () => videoInput.click());
 
             // ---------------- SUBIR VIDEO ----------------
-            if(videoInput){
+            if (videoInput) {
                 videoInput.addEventListener("change", async () => {
                     const file = videoInput.files[0];
-                    if(!file) return;
+                    if (!file) return;
 
-                    if(video){
-                        video.pause(); // siempre en pausa
+                    if (video) {
+                        video.pause();
                         video.querySelectorAll("source").forEach(src => src.src = URL.createObjectURL(file));
                         video.load();
                     }
 
                     const formData = new FormData();
                     formData.append("videoFile", file);
-                    const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
-                    formData.append("__RequestVerificationToken", token);
+                    const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
+                    if (token) formData.append("__RequestVerificationToken", token);
 
                     try {
-                        Swal.fire({title:"Subiendo video...", allowOutsideClick:false, didOpen:()=>Swal.showLoading()});
-                        const res = await fetch("/VisibleClients/UploadVideo", {method:"POST", body:formData});
+                        Swal.fire({ title: "Subiendo video...", allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+                        const res = await fetch("/VisibleClients/UploadVideo", { method: "POST", body: formData });
                         const data = await res.json();
                         Swal.close();
 
-                        if(data?.fileName){
-                            await Swal.fire({title:"Video subido correctamente", icon:"success", timer:1500, showConfirmButton:false});
-                            if(video){
-                                video.querySelectorAll("source").forEach(src => src.src = `/videos/${data.fileName}?v=${Date.now()}`);
-                                video.load(); // siempre en pausa
-                            }
+                        if (data?.fileName && video) {
+                            await Swal.fire({ title: "Video subido correctamente", icon: "success", timer: 1500, showConfirmButton: false });
+                            video.querySelectorAll("source").forEach(src => src.src = `/videos/${data.fileName}?v=${Date.now()}`);
+                            video.load();
                         }
-                    } catch(err){
+                    } catch (err) {
                         Swal.close();
-                        await Swal.fire({title:"Error subiendo el video", icon:"error"});
+                        await Swal.fire({ title: "Error subiendo el video", icon: "error" });
                     }
                 });
             }
 
             // ---------------- SIGNALR ----------------
-            const connection = new signalR.HubConnectionBuilder()
-                .withUrl("/clientsHub")
-                .withAutomaticReconnect()
-                .build();
-
-            if(!window.signalrClientesInit){
+            if (!window.signalrClientesInit && typeof signalR !== "undefined") {
                 window.signalrClientesInit = true;
+                const connection = new signalR.HubConnectionBuilder()
+                    .withUrl("/clientsHub")
+                    .withAutomaticReconnect()
+                    .build();
+
                 connection.on("VideoActualizado", fileName => {
-                    if(!video) return;
+                    if (!video) return;
                     video.querySelectorAll("source").forEach(src => src.src = `/videos/${fileName}?v=${Date.now()}`);
-                    video.load(); // siempre en pausa
+                    video.load();
                 });
+
                 connection.start()
-                    .then(()=>console.log("Conectado a SignalR"))
-                    .catch(err=>console.error("Error conectando a SignalR:", err));
+                    .then(() => console.log("Conectado a SignalR"))
+                    .catch(err => console.error("Error conectando a SignalR:", err));
+            }
+
+            // ---------------- FADE BOTÓN PLAY SEGÚN VISIBILIDAD DEL SCROLL-TOP ----------------
+            if (playBtn && heroSection && scrollTopBtn) {
+                const fadeDistance = 50; // margen antes de desaparecer
+
+                const updatePlayBtn = () => {
+                    const heroRect = heroSection.getBoundingClientRect();
+                    const heroBottom = heroRect.bottom;
+
+                    // El arrow es visible si offsetParent !== null
+                    const scrollTopVisible = scrollTopBtn.offsetParent !== null;
+
+                    let opacity = 1;
+
+                    if (scrollTopVisible || heroBottom < fadeDistance) {
+                        // Fade progresivo: cuando heroBottom < fadeDistance*2 empieza a desaparecer
+                        opacity = Math.max(0, (heroBottom - 0) / fadeDistance);
+                    }
+
+                    playBtn.style.opacity = opacity;
+                    playBtn.style.pointerEvents = opacity > 0.1 ? "auto" : "none";
+                };
+
+                // Ejecutar al cargar, scroll y resize
+                updatePlayBtn();
+                window.addEventListener("scroll", updatePlayBtn);
+                window.addEventListener("resize", updatePlayBtn);
             }
         });
     </script>
+
 </section>

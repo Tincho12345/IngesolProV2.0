@@ -16,9 +16,9 @@
     "Longitud": null
   },
   {
-    "Id": "62fd9737-e00d-489f-9f96-433c68a851c4",
-    "Nombre": "AQVA",
-    "Imagen": "62fd9737-e00d-489f-9f96-433c68a851c4.jpg",
+    "Id": "55f6e69f-2d30-4cf2-8ed2-f666a54390fa",
+    "Nombre": "Iguaz\u00FA Grand Hotel",
+    "Imagen": "55f6e69f-2d30-4cf2-8ed2-f666a54390fa.jfif",
     "Facebook": null,
     "Twitter": null,
     "Instagram": null,
@@ -28,13 +28,29 @@
     "WhatsApp": null,
     "Activo": true,
     "Orden": 0,
-    "Latitud": -25.599626,
-    "Longitud": -54.571434
+    "Latitud": null,
+    "Longitud": null
   },
   {
-    "Id": "55f6e69f-2d30-4cf2-8ed2-f666a54390fa",
-    "Nombre": "Iguaz\u00FA Grand Hotel",
-    "Imagen": "55f6e69f-2d30-4cf2-8ed2-f666a54390fa.jfif",
+    "Id": "78e2f319-ab32-4acb-b850-93b3fb59b204",
+    "Nombre": "ABRAZADERA CREMALLERA GALVANIZADA 100-120MM",
+    "Imagen": "78e2f319-ab32-4acb-b850-93b3fb59b204.jfif",
+    "Facebook": null,
+    "Twitter": null,
+    "Instagram": null,
+    "Telegram": null,
+    "Website": null,
+    "LinkedIn": null,
+    "WhatsApp": null,
+    "Activo": true,
+    "Orden": 0,
+    "Latitud": null,
+    "Longitud": null
+  },
+  {
+    "Id": "c0a68b7a-7424-4c3d-a7c2-9017a8366c86",
+    "Nombre": "HOTEL IGUAZU GRAND",
+    "Imagen": "c0a68b7a-7424-4c3d-a7c2-9017a8366c86.jfif",
     "Facebook": null,
     "Twitter": null,
     "Instagram": null,

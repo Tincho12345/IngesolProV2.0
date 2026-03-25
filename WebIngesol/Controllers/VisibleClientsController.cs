@@ -251,10 +251,9 @@ public class VisibleClientsController : Controller
             Directory.CreateDirectory(folderPath);
 
         // 🔴 BORRAR TODO LO EXISTENTE EN LA CARPETA
-        var existingVideos = Directory.GetFiles(folderPath);
-        foreach (var file in existingVideos)
+        foreach (var file in Directory.GetFiles(folderPath))
         {
-            System.IO.File.Delete(file);
+            try { System.IO.File.Delete(file); } catch { /* ignorar errores si algún archivo está en uso */ }
         }
 
         // 🔹 GUARDAR NUEVO VIDEO
@@ -264,10 +263,10 @@ public class VisibleClientsController : Controller
         await using (var stream = new FileStream(videoPath, FileMode.Create))
             await videoFile.CopyToAsync(stream);
 
-        // 🔹 AVISAR A LOS NAVEGADORES QUE CARGUEN EL NUEVO VIDEO
+        // 🔹 AVISAR A TODOS LOS NAVEGADORES QUE HAY NUEVO VIDEO
         await _hub.Clients.All.SendAsync("VideoActualizado", fileName);
 
-        return Redirect("/#hero");
+        // 🔹 DEVOLVER 200 OK
+        return Ok(new { fileName });
     }
-
 }

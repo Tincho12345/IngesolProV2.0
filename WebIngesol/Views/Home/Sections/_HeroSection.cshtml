@@ -1,13 +1,15 @@
-﻿<!-- ===================================================== -->
-<!-- HERO + TARJETAS ACOPLADAS -->
-<!-- Sección principal con video de fondo + contenido -->
-<!-- ===================================================== -->
-@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment Env
+﻿@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment Env
+
+@{
+    var videoFilePath = Env.WebRootPath + "/videos/hero.mp4";
+    var videoExists = System.IO.File.Exists(videoFilePath);
+}
 
 <style>
     .hero {
         position: relative;
         overflow: hidden;
+        @(videoExists ? "height: 100vh;" : "height: auto; background: none;") /* solo alto si hay video */
     }
 
     .hero-video {
@@ -29,10 +31,11 @@
     }
 </style>
 
+
 <section id="hero" class="hero section">
 
     <!-- VIDEO DE FONDO -->
-    @if (System.IO.File.Exists(System.IO.Path.Combine(Env.WebRootPath, "videos/hero.mp4")))
+    @if (videoExists)
     {
         <div class="hero-video">
             <video id="heroVideo" loop playsinline>
@@ -62,8 +65,7 @@
                         <div class="hero-buttons" data-aos="fade-up" data-aos-delay="300">
                             <a href="#services" class="btn btn-reserva px-4" onclick="playHeroVideo()">Servicios</a>
                             <a href="#contact" class="btn btn-reserva px-4" onclick="playHeroVideo()">Contactanos</a>
-                            <button class="btn btn-reserva px-4"
-                                    onclick="document.getElementById('videoInput').click(); playHeroVideo()">
+                            <button class="btn btn-reserva px-4" onclick="videoSubirClick()">
                                 Subir Video
                             </button>
                             <!-- BOTÓN PLAY -->
@@ -107,19 +109,34 @@
     </div>
 
     <script>
+            function videoSubirClick() {
+                const video = document.getElementById("heroVideo");
+                const videoInput = document.getElementById("videoInput");
+
+                if (video) {
+                    video.pause();
+                    video.removeAttribute('src');
+                    video.load();
+                }
+
+                videoInput.click();
+            }
+
         document.addEventListener("DOMContentLoaded", () => {
 
             const video = document.getElementById("heroVideo");
             const playBtn = document.getElementById("videoPlayBtn");
+            const uploading = document.getElementById("videoUploading");
+            const videoInput = document.getElementById("videoInput");
 
-            // Función general para reproducir video si está pausado
+            // Función general para reproducir video
             window.playHeroVideo = function() {
                 if (video && video.paused) {
                     video.play().catch(() => video.controls = true);
                 }
             }
 
-            // Play/Pause desde el botón específico
+            // Botón play/pause
             if (playBtn && video) {
                 playBtn.addEventListener("click", () => {
                     if (video.paused) {
@@ -141,11 +158,6 @@
             if (!window.signalrClientesInit) {
                 window.signalrClientesInit = true;
 
-                connection.on("ClientesActualizados", async () => {
-                    await recargarClientes();
-                });
-
-                // REFRESCAR VIDEO HERO CUANDO SE SUBE UNO NUEVO
                 connection.on("VideoActualizado", fileName => {
                     if (!video) return;
                     video.querySelectorAll("source").forEach(src => {
@@ -160,23 +172,43 @@
                     .catch(err => console.error("Error conectando a SignalR:", err));
             }
 
-            // BOTÓN SUBIR VIDEO
-            const videoInput = document.getElementById("videoInput");
+            // ---------------- SUBIR VIDEO ----------------
             if (videoInput) {
                 videoInput.addEventListener("change", () => {
-                    const form = document.getElementById("videoUploadForm");
-                    const uploading = document.getElementById("videoUploading");
-                    if (form && uploading) {
-                        // 🔹 DETENER VIDEO Y LIBERAR ARCHIVO
-                        if (video) {
-                            video.pause();
-                            video.removeAttribute('src'); // Esto libera el handle en Windows
-                            video.load();
-                        }
+                    const file = videoInput.files[0];
+                    if (!file) return;
 
-                        uploading.style.display = "flex";
-                        form.submit();
+                    // Detener video y liberar archivo
+                    if (video) {
+                        video.pause();
+                        video.removeAttribute('src');
+                        video.load();
                     }
+
+                    uploading.style.display = "flex";
+
+                    // FormData + token AntiForgery
+                    const formData = new FormData();
+                    formData.append("videoFile", file);
+                    const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+                    formData.append("__RequestVerificationToken", token);
+
+                    // Enviar via fetch para progreso y async
+                    fetch("/VisibleClients/UploadVideo", {
+                        method: "POST",
+                        body: formData
+                    })
+                    .then(async res => {
+                        if (!res.ok) throw new Error("Error subiendo video");
+                        const data = await res.json();
+                        uploading.style.display = "none";
+                        console.log("Video subido:", data.fileName);
+                        // SignalR se encarga de refrescar el video
+                    })
+                    .catch(err => {
+                        uploading.style.display = "none";
+                        alert(err.message);
+                    });
                 });
             }
 

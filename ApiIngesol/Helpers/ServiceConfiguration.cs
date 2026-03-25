@@ -92,7 +92,11 @@ namespace ApiIngesol.Helpers
             });
 
             // AutoMapper
-            builder.Services.AddAutoMapper(typeof(IngeSolMapper));
+            // 🔹 AutoMapper corregido
+            builder.Services.AddAutoMapper(cfg =>
+            {
+                cfg.AddMaps(typeof(ServiceConfiguration).Assembly);
+            });
 
             // IHttpContextAccessor
             builder.Services.AddHttpContextAccessor();

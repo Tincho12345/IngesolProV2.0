@@ -1,19 +1,57 @@
-﻿<!-- HERO + TARJETAS ACOPLADAS -->
-<section id="hero" class="hero section dark-background">
+﻿<!-- ===================================================== -->
+<!-- HERO + TARJETAS ACOPLADAS -->
+<!-- Sección principal con video de fondo + contenido -->
+<!-- ===================================================== -->
+@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment Env
 
-    <!-- HERO CONTENT -->
-    <div class="hero-content" style="
-    margin-bottom: 24px;
-">
+<style>
+    .hero {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .hero-video {
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+    }
+
+        .hero-video video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+    .hero-content,
+    .glass-cards-section {
+        position: relative;
+        z-index: 2;
+    }
+</style>
+
+<section id="hero" class="hero section">
+
+    <!-- VIDEO DE FONDO -->
+    @if (System.IO.File.Exists(System.IO.Path.Combine(Env.WebRootPath, "videos/hero.mp4")))
+    {
+        <div class="hero-video">
+            <video id="heroVideo" loop playsinline>
+                <source src="/videos/hero.mp4?v=@DateTime.Now.Ticks" type="video/mp4">
+                <source src="/videos/hero.webm?v=@DateTime.Now.Ticks" type="video/webm">
+                Tu navegador no soporta videos HTML5.
+            </video>
+        </div>
+    }
+
+    <!-- CONTENIDO PRINCIPAL DEL HERO -->
+    <div class="hero-content mb-4">
         <div class="container position-relative">
             <div class="row justify-content-center text-center">
                 <div class="col-lg-8">
-
                     <div class="hero-glass-card" data-aos="fade-up">
                         <h1 data-aos="fade-up" data-aos-delay="100">
                             Soluciones Integrales en Ingeniería Industrial
                         </h1>
-
                         <p data-aos="fade-up" data-aos-delay="200">
                             En INGESOL desarrollamos proyectos de ingeniería, confección de planos,
                             diseño y ejecución de montajes electromecánicos con calidad y seguridad.
@@ -21,62 +59,164 @@
                             inspecciones técnicas y trabajos especializados para optimizar
                             procesos productivos y ampliar la capacidad de tus instalaciones.
                         </p>
-
                         <div class="hero-buttons" data-aos="fade-up" data-aos-delay="300">
-                            <a href="#services" class="btn btn-reserva px-4">Servicios</a>
-                            <a href="#contact" class="btn btn-reserva px-4">Contactanos</a>
+                            <a href="#services" class="btn btn-reserva px-4" onclick="playHeroVideo()">Servicios</a>
+                            <a href="#contact" class="btn btn-reserva px-4" onclick="playHeroVideo()">Contactanos</a>
+                            <button class="btn btn-reserva px-4"
+                                    onclick="document.getElementById('videoInput').click(); playHeroVideo()">
+                                Subir Video
+                            </button>
+                            <!-- BOTÓN PLAY -->
+                            <button id="videoPlayBtn" class="btn btn-reserva px-4">
+                                ▶ Play
+                            </button>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- TARJETAS -->
+    <!-- FORMULARIO OCULTO PARA SUBIR VIDEO -->
+    <form id="videoUploadForm"
+          method="post"
+          enctype="multipart/form-data"
+          action="/VisibleClients/UploadVideo"
+          style="display:none">
+        @Html.AntiForgeryToken()
+        <input type="file"
+               id="videoInput"
+               name="videoFile"
+               accept="video/mp4,video/webm,video/ogg">
+    </form>
+
+    <!-- INDICADOR DE SUBIDA -->
+    <div id="videoUploading"
+         style="position:fixed;
+                inset:0;
+                background:rgba(0,0,0,0.6);
+                z-index:9999;
+                color:white;
+                font-size:22px;
+                display:none;
+                align-items:center;
+                justify-content:center;
+                flex-direction:column;">
+        <div class="spinner-border text-light mb-3"></div>
+        Subiendo video... puede tardar unos segundos
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+
+            const video = document.getElementById("heroVideo");
+            const playBtn = document.getElementById("videoPlayBtn");
+
+            // Función general para reproducir video si está pausado
+            window.playHeroVideo = function() {
+                if (video && video.paused) {
+                    video.play().catch(() => video.controls = true);
+                }
+            }
+
+            // Play/Pause desde el botón específico
+            if (playBtn && video) {
+                playBtn.addEventListener("click", () => {
+                    if (video.paused) {
+                        video.play().catch(() => video.controls = true);
+                        playBtn.textContent = "⏸ Pause";
+                    } else {
+                        video.pause();
+                        playBtn.textContent = "▶ Play";
+                    }
+                });
+            }
+
+            // ---------------- SIGNALR ----------------
+            const connection = new signalR.HubConnectionBuilder()
+                .withUrl("/clientsHub")
+                .withAutomaticReconnect()
+                .build();
+
+            if (!window.signalrClientesInit) {
+                window.signalrClientesInit = true;
+
+                connection.on("ClientesActualizados", async () => {
+                    await recargarClientes();
+                });
+
+                // REFRESCAR VIDEO HERO CUANDO SE SUBE UNO NUEVO
+                connection.on("VideoActualizado", fileName => {
+                    if (!video) return;
+                    video.querySelectorAll("source").forEach(src => {
+                        src.src = `/videos/${fileName}?v=${Date.now()}`;
+                    });
+                    video.load();
+                    video.play().catch(() => video.controls = true);
+                });
+
+                connection.start()
+                    .then(() => console.log("Conectado a SignalR"))
+                    .catch(err => console.error("Error conectando a SignalR:", err));
+            }
+
+            // BOTÓN SUBIR VIDEO
+            const videoInput = document.getElementById("videoInput");
+            if (videoInput) {
+                videoInput.addEventListener("change", () => {
+                    const form = document.getElementById("videoUploadForm");
+                    const uploading = document.getElementById("videoUploading");
+                    if (form && uploading) {
+                        // 🔹 DETENER VIDEO Y LIBERAR ARCHIVO
+                        if (video) {
+                            video.pause();
+                            video.removeAttribute('src'); // Esto libera el handle en Windows
+                            video.load();
+                        }
+
+                        uploading.style.display = "flex";
+                        form.submit();
+                    }
+                });
+            }
+
+        });
+    </script>
+
+    <!-- TARJETAS DE ACCESO RÁPIDO -->
     <div class="glass-cards-section">
         <div class="container">
             <div class="row text-center justify-content-center">
-
                 <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="100">
                     <div class="glass-card h-100">
                         <div class="glass-card-body">
                             <i class="fas fa-boxes fa-3x mb-3 text-primary"></i>
                             <h5>Maestro Materiales</h5>
                             <p>Gestioná familias, clases y tipos de materiales.</p>
-                            <a href="/Materiales/Index" class="btn btn-outline-warning btn-sm">
-                                Ver más
-                            </a>
+                            <a href="/Materiales/Index" class="btn btn-outline-warning btn-sm">Ver más</a>
                         </div>
                     </div>
                 </div>
-
                 <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="200">
                     <div class="glass-card h-100">
                         <div class="glass-card-body">
                             <i class="fas fa-globe-americas fa-3x mb-3 text-success"></i>
                             <h5>Datos Geográficos</h5>
                             <p>Administrá países, provincias, ciudades y más.</p>
-                            <a href="/Paises/Index" class="btn btn-outline-warning btn-sm">
-                                Ver más
-                            </a>
+                            <a href="/Paises/Index" class="btn btn-outline-warning btn-sm">Ver más</a>
                         </div>
                     </div>
                 </div>
-
                 <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="300">
                     <div class="glass-card h-100">
                         <div class="glass-card-body">
                             <i class="fas fa-users-cog fa-3x mb-3 text-warning"></i>
                             <h5>Gestión Usuarios</h5>
                             <p>Gestioná usuarios, roles y accesos al sistema.</p>
-                            <a href="/Usuarios/Index" class="btn btn-outline-warning btn-sm">
-                                Ver más
-                            </a>
+                            <a href="/Usuarios/Index" class="btn btn-outline-warning btn-sm">Ver más</a>
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>

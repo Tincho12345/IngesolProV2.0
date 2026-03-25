@@ -227,4 +227,47 @@ public class VisibleClientsController : Controller
 
         return Ok(new { success = true });
     }
+
+    // 🎬 Permitir solo estos formatos de video
+    private static readonly string[] _allowedVideoExtensions = { ".mp4", ".webm", ".ogg" };
+
+    // =============================
+    // POST: Subir video
+    // =============================
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [RequestSizeLimit(500_000_000)]
+    public async Task<IActionResult> UploadVideo(IFormFile? videoFile)
+    {
+        if (videoFile == null || videoFile.Length == 0)
+            return BadRequest(new { message = "Video inválido." });
+
+        var extension = Path.GetExtension(videoFile.FileName).ToLowerInvariant();
+        if (!_allowedVideoExtensions.Contains(extension))
+            return BadRequest(new { message = "Formato de video no permitido." });
+
+        var folderPath = Path.Combine(_env.WebRootPath, "videos");
+        if (!Directory.Exists(folderPath))
+            Directory.CreateDirectory(folderPath);
+
+        // 🔴 BORRAR TODO LO EXISTENTE EN LA CARPETA
+        var existingVideos = Directory.GetFiles(folderPath);
+        foreach (var file in existingVideos)
+        {
+            System.IO.File.Delete(file);
+        }
+
+        // 🔹 GUARDAR NUEVO VIDEO
+        var fileName = $"hero{extension}";
+        var videoPath = Path.Combine(folderPath, fileName);
+
+        await using (var stream = new FileStream(videoPath, FileMode.Create))
+            await videoFile.CopyToAsync(stream);
+
+        // 🔹 AVISAR A LOS NAVEGADORES QUE CARGUEN EL NUEVO VIDEO
+        await _hub.Clients.All.SendAsync("VideoActualizado", fileName);
+
+        return Redirect("/#hero");
+    }
+
 }

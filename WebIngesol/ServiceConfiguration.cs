@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
-using WebIngesol.Repository.IRepository;
-using WebIngesol.Repository;
+using Microsoft.Extensions.DependencyInjection;
 using System.Text.Json;
+using WebIngesol.Repository;
+using WebIngesol.Repository.IRepository;
+using AutoMapper; // 🔹 necesario
 
 namespace WebIngesol;
 
@@ -44,6 +46,10 @@ public static class ServiceConfiguration
             options.Cookie.IsEssential = true;
         });
 
-        services.AddAutoMapper(typeof(Program));
+        // 🔹 AutoMapper corregido
+        services.AddAutoMapper(cfg =>
+        {
+            cfg.AddMaps(AppDomain.CurrentDomain.GetAssemblies());
+        });
     }
 }

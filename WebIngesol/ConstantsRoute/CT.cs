@@ -8,8 +8,8 @@
         {
             BaseUrl = (Environment.GetEnvironmentVariable("ENVIRONMENT")?.ToLower()) switch
             {
-                "local" => "https://localhost:7268",
-                _ => "https://apiingesol-b3gfdje9bga8feah.canadacentral-01.azurewebsites.net"
+                "local" => "http://localhost:5000",
+                _ => "http://localhost:5000"
             };
         }
 

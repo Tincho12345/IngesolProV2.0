@@ -7,13 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="wwwroot\Images\NewFolder\**" />
-    <Content Remove="wwwroot\Images\NewFolder\**" />
-    <EmbeddedResource Remove="wwwroot\Images\NewFolder\**" />
-    <None Remove="wwwroot\Images\NewFolder\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="16.1.1" />
     <PackageReference Include="EPPlus" Version="7.7.2" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.5" />
@@ -31,6 +24,7 @@
 
   <ItemGroup>
     <Folder Include="logs\" />
+    <Folder Include="wwwroot\" />
   </ItemGroup>
 
 </Project>
